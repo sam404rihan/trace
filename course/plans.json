@@ -1,0 +1,557 @@
+{
+  "plans": [
+    {
+      "id": "blind75",
+      "title": "Blind 75",
+      "about": "The original short list of the most commonly asked interview problems, grouped by data structure. A good first pass when time is short.",
+      "sections": [
+        {
+          "name": "Array",
+          "items": [
+            "two_sum",
+            "max_profit",
+            "contains_duplicate",
+            "product_except_self",
+            "max_subarray",
+            "max_product_subarray",
+            "find_min_rotated",
+            "search_rotated",
+            "three_sum",
+            "container_with_most_water"
+          ]
+        },
+        {
+          "name": "Binary",
+          "items": [
+            "get_sum",
+            "hamming_weight",
+            "count_bits",
+            "missing_number",
+            "reverse_bits"
+          ]
+        },
+        {
+          "name": "Dynamic programming",
+          "items": [
+            "climb_stairs",
+            "coin_change",
+            "longest_increasing_subsequence",
+            "longest_common_subsequence",
+            "word_break",
+            "combination_sum_iv",
+            "house_robber",
+            "house_robber_ii",
+            "decode_ways",
+            "unique_paths",
+            "can_jump"
+          ]
+        },
+        {
+          "name": "Graph",
+          "items": [
+            "clone_graph",
+            "course_schedule",
+            "pacific_atlantic",
+            "num_islands",
+            "longest_consecutive",
+            "alien_dictionary",
+            "graph_valid_tree",
+            "count_components"
+          ]
+        },
+        {
+          "name": "Interval",
+          "items": [
+            "insert_interval",
+            "merge_intervals",
+            "non_overlapping",
+            "can_attend_meetings",
+            "min_meeting_rooms"
+          ]
+        },
+        {
+          "name": "Linked list",
+          "items": [
+            "reverse_list",
+            "has_cycle",
+            "merge_two_lists",
+            "merge_k_sorted",
+            "remove_nth_from_end",
+            "reorder_list"
+          ]
+        },
+        {
+          "name": "Matrix",
+          "items": [
+            "set_matrix_zeroes",
+            "spiral_order",
+            "rotate_image",
+            "word_search"
+          ]
+        },
+        {
+          "name": "String",
+          "items": [
+            "longest_unique_substring",
+            "character_replacement",
+            "min_window",
+            "valid_anagram",
+            "group_anagrams",
+            "valid_parentheses",
+            "valid_palindrome",
+            "longest_palindrome_substring",
+            "palindromic_substrings",
+            "encode_decode"
+          ]
+        },
+        {
+          "name": "Tree",
+          "items": [
+            "max_depth",
+            "same_tree",
+            "invert_tree",
+            "max_path_sum",
+            "level_order",
+            "serialize_tree",
+            "is_subtree",
+            "build_tree_pre_in",
+            "is_valid_bst",
+            "kth_smallest_bst",
+            "lowest_common_ancestor",
+            "implement_trie",
+            "word_dictionary",
+            "word_search_ii"
+          ]
+        },
+        {
+          "name": "Heap",
+          "items": [
+            "top_k_frequent",
+            "median_finder"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "neetcode150",
+      "title": "NeetCode 150",
+      "about": "Blind 75 extended to 150 problems and ordered by pattern, from arrays and hashing through advanced graphs and 2D DP. Aim to finish this one if you're going for mid-level or senior roles.",
+      "sections": [
+        {
+          "name": "Arrays and hashing",
+          "items": [
+            "contains_duplicate",
+            "valid_anagram",
+            "two_sum",
+            "group_anagrams",
+            "top_k_frequent",
+            "encode_decode",
+            "product_except_self",
+            "is_valid_sudoku",
+            "longest_consecutive"
+          ]
+        },
+        {
+          "name": "Two pointers",
+          "items": [
+            "valid_palindrome",
+            "two_sum_sorted",
+            "three_sum",
+            "container_with_most_water",
+            "trap_rain_water"
+          ]
+        },
+        {
+          "name": "Sliding window",
+          "items": [
+            "max_profit",
+            "longest_unique_substring",
+            "character_replacement",
+            "check_inclusion",
+            "min_window",
+            "sliding_window_max"
+          ]
+        },
+        {
+          "name": "Stack",
+          "items": [
+            "valid_parentheses",
+            "min_stack",
+            "eval_rpn",
+            "generate_parentheses",
+            "daily_temperatures",
+            "car_fleet",
+            "largest_rectangle"
+          ]
+        },
+        {
+          "name": "Binary search",
+          "items": [
+            "binary_search",
+            "search_matrix",
+            "min_eating_speed",
+            "find_min_rotated",
+            "search_rotated",
+            "time_map",
+            "median_two_sorted"
+          ]
+        },
+        {
+          "name": "Linked list",
+          "items": [
+            "reverse_list",
+            "merge_two_lists",
+            "reorder_list",
+            "remove_nth_from_end",
+            "copy_random_list",
+            "add_two_numbers",
+            "has_cycle",
+            "find_duplicate",
+            "lru_cache",
+            "merge_k_sorted",
+            "reverse_k_group"
+          ]
+        },
+        {
+          "name": "Trees",
+          "items": [
+            "invert_tree",
+            "max_depth",
+            "diameter_of_tree",
+            "is_balanced",
+            "same_tree",
+            "is_subtree",
+            "lowest_common_ancestor",
+            "level_order",
+            "right_side_view",
+            "good_nodes",
+            "is_valid_bst",
+            "kth_smallest_bst",
+            "build_tree_pre_in",
+            "max_path_sum",
+            "serialize_tree"
+          ]
+        },
+        {
+          "name": "Tries",
+          "items": [
+            "implement_trie",
+            "word_dictionary",
+            "word_search_ii"
+          ]
+        },
+        {
+          "name": "Heap / priority queue",
+          "items": [
+            "kth_largest_stream",
+            "last_stone",
+            "k_closest",
+            "kth_largest",
+            "least_interval",
+            "twitter",
+            "median_finder"
+          ]
+        },
+        {
+          "name": "Backtracking",
+          "items": [
+            "subsets",
+            "combination_sum",
+            "permutations",
+            "subsets_ii",
+            "combination_sum_ii",
+            "word_search",
+            "palindrome_partition",
+            "letter_combinations",
+            "n_queens"
+          ]
+        },
+        {
+          "name": "Graphs",
+          "items": [
+            "num_islands",
+            "clone_graph",
+            "max_area_island",
+            "pacific_atlantic",
+            "surrounded_regions",
+            "rotting_oranges",
+            "distance_to_exit",
+            "course_schedule",
+            "build_order",
+            "redundant_connection",
+            "count_components",
+            "graph_valid_tree",
+            "word_ladder"
+          ]
+        },
+        {
+          "name": "Advanced graphs",
+          "items": [
+            "reconstruct_itinerary",
+            "min_cost_connect_points",
+            "network_delay",
+            "swim_rising_water",
+            "alien_dictionary",
+            "cheapest_flights"
+          ]
+        },
+        {
+          "name": "1-D dynamic programming",
+          "items": [
+            "climb_stairs",
+            "min_cost_stairs",
+            "house_robber",
+            "house_robber_ii",
+            "longest_palindrome_substring",
+            "palindromic_substrings",
+            "decode_ways",
+            "coin_change",
+            "max_product_subarray",
+            "word_break",
+            "longest_increasing_subsequence",
+            "partition_equal_subset"
+          ]
+        },
+        {
+          "name": "2-D dynamic programming",
+          "items": [
+            "unique_paths",
+            "longest_common_subsequence",
+            "stock_cooldown",
+            "coin_change_ii",
+            "target_sum",
+            "interleaving_string",
+            "longest_increasing_path",
+            "distinct_subsequences",
+            "edit_distance",
+            "burst_balloons",
+            "regex_matching"
+          ]
+        },
+        {
+          "name": "Greedy",
+          "items": [
+            "max_subarray",
+            "can_jump",
+            "min_jumps",
+            "gas_station",
+            "hand_of_straights",
+            "merge_triplets",
+            "partition_labels",
+            "valid_paren_string"
+          ]
+        },
+        {
+          "name": "Intervals",
+          "items": [
+            "insert_interval",
+            "merge_intervals",
+            "non_overlapping",
+            "can_attend_meetings",
+            "min_meeting_rooms",
+            "min_interval_query"
+          ]
+        },
+        {
+          "name": "Math and geometry",
+          "items": [
+            "rotate_image",
+            "spiral_order",
+            "set_matrix_zeroes",
+            "is_happy",
+            "plus_one",
+            "power",
+            "multiply_strings",
+            "detect_squares"
+          ]
+        },
+        {
+          "name": "Bit manipulation",
+          "items": [
+            "single_number",
+            "hamming_weight",
+            "count_bits",
+            "reverse_bits",
+            "missing_number",
+            "get_sum",
+            "reverse_integer"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "advanced",
+      "title": "Beyond NeetCode",
+      "about": "Techniques that show up in harder interviews and contests once the core patterns are solid: range-query trees, string matching, bitmask/interval/tree DP, advanced graphs, number theory, geometry, binary lifting, network flow and digit DP.",
+      "sections": [
+        {
+          "name": "Range queries",
+          "items": [
+            "num_array",
+            "num_matrix",
+            "range_min_queries",
+            "count_inversions",
+            "count_smaller",
+            "price_board"
+          ]
+        },
+        {
+          "name": "String matching",
+          "items": [
+            "find_all",
+            "repeated_substring_pattern",
+            "repeated_dna",
+            "longest_happy_prefix",
+            "shortest_palindrome",
+            "shared_phrases"
+          ]
+        },
+        {
+          "name": "Advanced DP",
+          "items": [
+            "shortest_tour",
+            "house_robber_iii",
+            "ones_and_zeroes",
+            "partition_k_subsets",
+            "stock_k_transactions",
+            "min_palindrome_cuts",
+            "best_job_schedule"
+          ]
+        },
+        {
+          "name": "Advanced graphs",
+          "items": [
+            "city_fewest_reachable",
+            "is_bipartite",
+            "has_negative_cycle",
+            "min_obstacles",
+            "critical_connections",
+            "count_scc",
+            "find_arbitrage"
+          ]
+        },
+        {
+          "name": "Number theory",
+          "items": [
+            "count_primes",
+            "trailing_zeroes",
+            "binomials",
+            "factorize_all"
+          ]
+        },
+        {
+          "name": "Geometry",
+          "items": [
+            "convex_hull",
+            "point_in_polygon",
+            "max_points_on_line"
+          ]
+        },
+        {
+          "name": "Advanced trees",
+          "items": [
+            "tree_ancestor",
+            "lca_queries",
+            "sum_of_distances"
+          ]
+        },
+        {
+          "name": "Flow and matching",
+          "items": [
+            "max_flow",
+            "max_matching",
+            "min_cut_edges"
+          ]
+        },
+        {
+          "name": "Digit DP and DP speed-ups",
+          "items": [
+            "count_digit_one",
+            "at_most_n_given_digits",
+            "jump_game_vi",
+            "constrained_subset_sum"
+          ]
+        }
+      ]
+    }
+  ],
+  "reported_note": "From public interview write-ups and discussion threads. Unofficial, and may be out of date: use it as a hint, not a guarantee.",
+  "reported": {
+    "two_sum": [
+      "Amazon",
+      "Google"
+    ],
+    "lru_cache": [
+      "Amazon",
+      "Microsoft",
+      "Meta"
+    ],
+    "merge_intervals": [
+      "Meta",
+      "Google"
+    ],
+    "num_islands": [
+      "Amazon",
+      "Meta"
+    ],
+    "trap_rain_water": [
+      "Amazon",
+      "Google"
+    ],
+    "min_window": [
+      "Meta",
+      "Amazon"
+    ],
+    "serialize_tree": [
+      "Meta",
+      "Amazon"
+    ],
+    "median_finder": [
+      "Amazon",
+      "Google"
+    ],
+    "word_ladder": [
+      "Amazon",
+      "Meta"
+    ],
+    "course_schedule": [
+      "Amazon"
+    ],
+    "alien_dictionary": [
+      "Meta",
+      "Airbnb"
+    ],
+    "product_except_self": [
+      "Meta",
+      "Amazon"
+    ],
+    "valid_parentheses": [
+      "Amazon",
+      "Meta"
+    ],
+    "top_k_frequent": [
+      "Amazon",
+      "Meta"
+    ],
+    "kth_largest": [
+      "Meta"
+    ],
+    "longest_unique_substring": [
+      "Amazon"
+    ],
+    "group_anagrams": [
+      "Amazon"
+    ],
+    "merge_k_sorted": [
+      "Amazon",
+      "Google"
+    ],
+    "max_path_sum": [
+      "Meta"
+    ],
+    "word_search_ii": [
+      "Amazon",
+      "Microsoft"
+    ]
+  }
+}

@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DSA Playground</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%231d2926'/><path d='M8 7v18M13 7v18M18 7v18M23 7v18M5 22L26 10' stroke='%23f0d58a' stroke-width='2.4' stroke-linecap='round'/></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Recursive:slnt,wght,CASL,CRSV,MONO@-15..0,300..1000,0..1,0..1,0..1&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <aside class="sidebar" aria-label="Course">
+    <header class="brand">
+      <h1>DSA playground</h1>
+      <svg class="tally" id="tally" role="img" aria-label=""></svg>
+      <p class="tally-caption" id="tally-caption"></p>
+      <button class="continue" id="continue-btn" hidden></button>
+    </header>
+    <nav id="nav"></nav>
+  </aside>
+
+  <section class="brief" id="brief" aria-label="Lesson or problem">
+    <header class="brief-head">
+      <h2 id="title"></h2>
+      <p class="meta" id="meta"></p>
+    </header>
+
+    <div class="panel" id="lesson-panel" hidden>
+      <article class="notes" id="notes"></article>
+      <div class="lesson-end">
+        <button class="btn primary" id="practice-btn"></button>
+      </div>
+    </div>
+
+    <div class="panel" id="problem-panel" hidden>
+      <pre class="statement" id="statement"></pre>
+      <div class="reveals">
+        <button class="btn" id="hint-btn" aria-expanded="false" aria-controls="hint">Show hint</button>
+        <button class="btn" id="solution-btn" aria-expanded="false" aria-controls="solution">Show solution</button>
+      </div>
+      <pre class="statement callout" id="hint" hidden></pre>
+      <div class="solution" id="solution" hidden></div>
+      <nav class="stepper" aria-label="Problems in this topic">
+        <button class="link" id="prev-btn"></button>
+        <button class="link" id="next-btn"></button>
+      </nav>
+    </div>
+  </section>
+
+  <main class="bench" aria-label="Code">
+    <div class="docker-banner" id="docker-banner" hidden></div>
+    <div class="editor-wrap">
+      <div class="editor-title" id="editor-title"></div>
+      <div class="editor" id="editor"></div>
+    </div>
+    <div class="toolbar">
+      <button class="btn primary" id="run-btn" title="Ctrl+Enter">Run tests</button>
+      <button class="btn ghost" id="custom-toggle" aria-expanded="false" aria-controls="custom-wrap">Custom input</button>
+      <label class="custom" id="custom-wrap" hidden>
+        <span class="sr-only">Call your function with your own input</span>
+        <input id="custom" spellcheck="false" autocomplete="off">
+      </label>
+      <span class="save-state" id="save-state" aria-live="polite"></span>
+      <button class="btn ghost" id="reset-btn">Reset code</button>
+    </div>
+    <div class="splitter" id="splitter" role="separator" aria-orientation="horizontal" aria-label="Resize results" tabindex="0"></div>
+    <section class="results" id="results" aria-live="polite" aria-label="Results"></section>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/comment/comment.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/selection/active-line.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/runmode/runmode.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

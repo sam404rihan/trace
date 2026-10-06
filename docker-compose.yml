@@ -1,0 +1,14 @@
+# docker compose up -d     then open http://localhost:8000
+# docker compose down      to stop it
+services:
+  trace:
+    build: .
+    image: trace-server
+    container_name: trace
+    ports:
+      - "127.0.0.1:8000:8000"     # only reachable from this machine: the server runs code
+      - "[::1]:8000:8000"         # IPv6 localhost too, so http://localhost doesn't stall on a ::1 attempt
+    volumes:
+      - .:/app                                      # course, UI and workspace/ stay on your disk
+      - /var/run/docker.sock:/var/run/docker.sock   # lets it start a sandbox container per Run
+    restart: unless-stopped

@@ -1,0 +1,20 @@
+# Build output (python desktop/build.py recreates all of these)
+dist/
+.build-venv/
+.build-work/
+runtime/python/
+
+# Your own code and progress (the server creates this folder when needed)
+workspace/
+
+# Python caches
+__pycache__/
+*.pyc
+
+# Tool caches
+.impeccable/hook.cache.json
+
+# OS clutter
+.DS_Store
+Thumbs.db
+desktop.ini

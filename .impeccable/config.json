@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "codex-grid-background",
+        "value": "*",
+        "files": [
+          "web/app.css"
+        ],
+        "createdAt": "2026-10-04T12:54:09.731Z",
+        "reason": "Claude decided: the grid is only on .board, the working canvas where arrays, BFS grids and DP tables are drawn and traced (a graph-paper surface for the content itself, not page decoration)"
+      }
+    ]
+  }
+}
