@@ -356,6 +356,47 @@ def added_lines(before, after):
             for j in range(j1, j2) if new[j].strip()]
 
 
+def parse_walkthrough(path):
+    """walkthrough.py: a docstring title and LAYERS, each building the topic's code one idea further."""
+    module = load_module(path)
+    layers = module.get("LAYERS")
+    if not isinstance(layers, list) or not layers:
+        raise ValueError(f"{path.name}: LAYERS must be a non-empty list")
+    out, previous = [], ""
+    for i, layer in enumerate(layers, 1):
+        where = f"{path.name} layer {i}"
+        missing = [k for k in ("title", "why", "code", "check") if not layer.get(k)]
+        if missing:
+            raise ValueError(f"{where}: missing {', '.join(missing)}")
+        check = layer["check"]
+        options, answer = check.get("options") or [], check.get("answer")
+        if not check.get("question") or not check.get("explain") or len(options) < 2 \
+                or type(answer) is not int or not 0 <= answer < len(options):
+            raise ValueError(f"{where}: check needs a question, 2+ options, an answer index into them, and an explanation")
+        code, marks = strip_markers(textwrap.dedent(layer["code"]).strip("\n"))
+        roles = layer.get("roles") or {}
+        unknown = sorted(set(marks) - set(roles))
+        if unknown:
+            raise ValueError(f"{where}: marker(s) {', '.join(unknown)} not listed in roles")
+        reuse = layer.get("reuse") or None
+        out.append({"title": layer["title"], "why": textwrap.dedent(layer["why"]).strip(), "code": code,
+                    "added": [] if reuse else added_lines(previous, code), "marks": marks, "roles": roles,
+                    "reuse": reuse, "check": {k: check[k] for k in ("question", "options", "answer", "explain")}})
+        if not reuse:
+            previous = code
+    title = (module.get("__doc__") or "").strip() or folder_label(path.parent.name)
+    return {"title": title, "layers": out}
+
+
+def load_walkthrough_safely(path):
+    """A broken walkthrough hides itself (and says why) rather than taking the course down. --check fails on it."""
+    try:
+        return parse_walkthrough(path)
+    except Exception as exc:  # noqa: BLE001 - course content: reported, never fatal
+        sys.stderr.write(f"  walkthrough skipped: {exc}\n")
+        return None
+
+
 def split_statement(text):
     """Pull 'Aim for:' and 'Hint:' blocks out of a problem statement."""
     out, extra, current = [], {"aim": [], "hint": []}, None
@@ -505,9 +546,12 @@ class CourseCache:
                 lesson_path = topic_dir / "lesson.py"
                 lesson = (self._cached(lesson_path, sig.get(str(lesson_path)), parse_lesson)
                           if str(lesson_path) in sig else None)
+                wt_path = topic_dir / "walkthrough.py"
+                walkthrough = (self._cached(wt_path, sig.get(str(wt_path)), load_walkthrough_safely)
+                               if str(wt_path) in sig else None)
                 found = []
                 for p in sorted(topic_dir.glob("*.py")):
-                    if p.name == "lesson.py" or p.name.startswith("_"):
+                    if p.name in ("lesson.py", "walkthrough.py") or p.name.startswith("_"):
                         continue
                     sol = SOLUTIONS / f"{p.stem}.py"
                     found.append(dict(self._cached(p, (sig.get(str(p)), sig.get(str(sol))), parse_problem)))
@@ -517,6 +561,7 @@ class CourseCache:
                     "title": (lesson and lesson["title"]) or folder_label(topic_dir.name),
                     "stage": folder_label(stage_dir.name),
                     "lesson": lesson,
+                    "walkthrough": walkthrough,
                     "items": [p["name"] for p in found],
                 }
                 for p in found:
@@ -633,6 +678,7 @@ def load_progress():
         progress = {}
     progress.setdefault("problems", {})
     progress.setdefault("unlocked", [])
+    progress.setdefault("walkthroughs", {})      # topic id -> layers answered
     return progress
 
 
@@ -643,6 +689,16 @@ def update_progress(change):
         WORKSPACE.mkdir(exist_ok=True)
         PROGRESS_FILE.write_text(json.dumps(progress, indent=2), encoding="utf-8")
         return progress
+
+
+def record_walkthrough(topic_id, layers, total):
+    """Remember how far into a topic's walkthrough you've answered. Never goes backwards."""
+    if type(layers) is not int or not 0 <= layers <= total:
+        raise ValueError("layers must be a whole number within the walkthrough")
+
+    def change(progress):
+        progress["walkthroughs"][topic_id] = max(progress["walkthroughs"].get(topic_id, 0), layers)
+    return update_progress(change)
 
 
 def record_result(problem, tests):
@@ -729,7 +785,9 @@ class Handler(BaseHTTPRequestHandler):
             topics, problems = load_course()
             return self.send_json({
                 "docker": sandbox_status(),
-                "topics": [{**{k: v for k, v in t.items() if k != "lesson"}, "has_lesson": bool(t["lesson"])}
+                "topics": [{**{k: v for k, v in t.items() if k not in ("lesson", "walkthrough")},
+                            "has_lesson": bool(t["lesson"]), "has_walkthrough": bool(t["walkthrough"]),
+                            "walkthrough_layers": len(t["walkthrough"]["layers"]) if t["walkthrough"] else 0}
                            for t in topics],
                 "problems": {n: {k: p[k] for k in ("name", "title", "kind", "difficulty", "tests", "topic_id")}
                              | {"steps": len(p["steps"])} for n, p in problems.items()},
@@ -762,11 +820,18 @@ class Handler(BaseHTTPRequestHandler):
                 return self.fail("Unknown lesson", HTTPStatus.NOT_FOUND)
             return self.send_json(topic["lesson"])
 
+        if route == "/api/walkthrough":
+            topic = next((t for t in load_course()[0] if t["id"] == query.get("topic")), None)
+            if not topic or not topic["walkthrough"]:
+                return self.fail("Unknown walkthrough", HTTPStatus.NOT_FOUND)
+            return self.send_json(topic["walkthrough"])
+
         if route == "/api/solution":
             problem = load_course()[1].get(query.get("name", ""))
             if not problem or not problem["has_solution"]:
                 return self.fail("No reference solution", HTTPStatus.NOT_FOUND)
-            return self.send_json({"code": (SOLUTIONS / f"{problem['name']}.py").read_text(encoding="utf-8")})
+            code, marks = strip_markers((SOLUTIONS / f"{problem['name']}.py").read_text(encoding="utf-8"))
+            return self.send_json({"code": code, "skeleton": marks.get("skeleton", [])})
 
         if route.startswith("/api/"):
             return self.fail("Not found", HTTPStatus.NOT_FOUND)
@@ -808,8 +873,18 @@ class Handler(BaseHTTPRequestHandler):
 
         if route == "/api/reset-progress":
             def wipe(progress):
-                progress["problems"], progress["unlocked"] = {}, []
+                progress["problems"], progress["unlocked"], progress["walkthroughs"] = {}, [], {}
             return self.send_json({"progress": update_progress(wipe)})
+
+        if route == "/api/walkthrough-progress":
+            topic = next((t for t in load_course()[0] if t["id"] == data.get("topic")), None)
+            if not topic or not topic["walkthrough"]:
+                return self.fail("Unknown walkthrough")
+            try:
+                progress = record_walkthrough(topic["id"], data.get("layers"), len(topic["walkthrough"]["layers"]))
+            except ValueError as exc:
+                return self.fail(str(exc))
+            return self.send_json({"progress": progress})
 
         if route == "/api/test":
             if not problem:
@@ -879,6 +954,26 @@ def check(only=None):
                 print("        ", json.dumps(bad or reply)[:1500])
             if not stub_ok:
                 print("         starter didn't report 'todo':", json.dumps(stub)[:600])
+    for path in sorted(COURSE.glob("*/*/walkthrough.py")):
+        if only and not any(o in path.parent.name for o in only):
+            continue
+        label = f"walkthrough {path.parent.name}"
+        try:
+            layers = parse_walkthrough(path)["layers"]
+        except ValueError as exc:
+            failures += 1
+            print(f"  FAIL {label:<50} {exc}")
+            continue
+        bad = [f"layer {i}: reuses unknown problem {layer['reuse']}" for i, layer in enumerate(layers, 1)
+               if layer["reuse"] and layer["reuse"] not in problems]
+        for i, layer in enumerate(layers, 1):
+            run = run_script(layer["code"])
+            if run["exit_code"] != 0 or run["killed"]:
+                bad.append(f"layer {i} didn't run cleanly: {(run['killed'] or run['output'])[-600:]}")
+        failures += bool(bad)
+        print(f"  {'FAIL' if bad else 'ok  '} {label:<50} {len(layers):>2} layers")
+        for line in bad:
+            print("        ", line)
     print("\nAll good." if not failures else f"\n{failures} problem(s).")
     return 1 if failures else 0
 
