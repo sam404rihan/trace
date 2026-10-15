@@ -11,12 +11,14 @@ Needs Python 3.10+ and Docker Desktop. No pip installs.
 """
 import argparse
 import ast
+import difflib
 import json
 import os
 import re
 import subprocess
 import sys
 import tempfile
+import textwrap
 import threading
 import time
 import uuid
@@ -329,6 +331,29 @@ def parse_lesson(path):
         code = "\n".join(source.splitlines()[first.end_lineno:]).lstrip("\n")
     title = next((line[2:].strip() for line in notes.splitlines() if line.startswith("# ")), "")
     return {"notes": notes, "code": code, "title": title}
+
+
+MARKER = re.compile(r"\s*#@([A-Za-z_][\w-]*)\s*$")
+
+
+def strip_markers(code):
+    """Remove trailing '#@name' line tags. Returns the clean code and {name: [line numbers]}."""
+    lines, marks = [], {}
+    for number, line in enumerate(code.split("\n"), 1):
+        m = MARKER.search(line)
+        if m:
+            marks.setdefault(m.group(1), []).append(number)
+            line = line[:m.start()]
+        lines.append(line)
+    return "\n".join(lines), marks
+
+
+def added_lines(before, after):
+    """Line numbers in `after` that are new or changed compared with `before` (blank lines ignored)."""
+    new = after.split("\n")
+    matcher = difflib.SequenceMatcher(a=before.split("\n") if before else [], b=new, autojunk=False)
+    return [j + 1 for tag, _, _, j1, j2 in matcher.get_opcodes() if tag in ("insert", "replace")
+            for j in range(j1, j2) if new[j].strip()]
 
 
 def split_statement(text):
