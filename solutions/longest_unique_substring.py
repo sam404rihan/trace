@@ -2,7 +2,7 @@ def longest_unique_substring(s: str) -> int:
     # Sliding window [left, right] with no repeats. O(n).
     last_seen = {}                 # char -> most recent index
     left = best = 0
-    for right, ch in enumerate(s):
+    for right, ch in enumerate(s):  #@skeleton
         if last_seen.get(ch, -1) >= left:
             left = last_seen[ch] + 1   # jump past the previous copy
         last_seen[ch] = right

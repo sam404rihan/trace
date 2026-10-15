@@ -3,10 +3,10 @@ def min_subarray_len(target: int, nums: list[int]) -> int:
     # Each index enters and leaves once, so O(n). (Only valid because nums > 0.)
     left = total = 0
     best = float("inf")
-    for right, x in enumerate(nums):
+    for right, x in enumerate(nums):  #@skeleton
         total += x
-        while total >= target:
+        while total >= target:  #@skeleton
             best = min(best, right - left + 1)
             total -= nums[left]
-            left += 1
+            left += 1  #@skeleton
     return 0 if best == float("inf") else best
