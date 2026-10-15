@@ -109,6 +109,8 @@
     flushPara(); flushList();
     return out;
   }
+  T.inline = inline;               // shared with walkthrough.js
+  T.renderMarkdown = renderMarkdown;
 
   // ── course model ───────────────────────────────────────────────────────────
   const drillTopic = (topic) => T.topics.find((d) => d.n === topic.n);

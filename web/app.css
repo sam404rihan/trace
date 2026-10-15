@@ -412,6 +412,38 @@ g.reveal circle, g.reveal rect { stroke: var(--ok) !important; stroke-width: 4 !
 .progress { height: 4px; border-radius: 4px; background: var(--fill-2); overflow: hidden; }
 .progress i { display: block; height: 100%; width: calc(var(--p, 0) * 100%); background: var(--accent); border-radius: 4px; transition: width 0.25s ease; }
 
+/* ── Read the code (walkthrough) ─────────────────────── */
+.wt-page { max-width: 760px; margin: 0 auto; padding: 32px 24px 96px; }
+.wt-label { margin: 26px 0 0; font-size: 13.5px; font-weight: 600; color: var(--accent); }
+.wt-page h1 { font-size: 32px; line-height: 1.15; letter-spacing: -0.025em; margin: 6px 0 4px; }
+.wt-why { max-width: none; color: var(--ink-2); }
+.wt-legend { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 0; }
+.wt-legend span { display: inline-flex; align-items: center; gap: 8px; padding: 4px 12px 4px 10px; border-radius: 999px; font-size: 13.5px; font-weight: 500; }
+.wt-legend span::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+.wt-code { margin: 18px 0 0; padding: 14px 0; background: var(--fill); border-radius: var(--radius); font: 14px/1.75 var(--mono); overflow-x: auto; }
+.wt-code .ln { display: block; min-width: max-content; padding-right: 18px; white-space: pre; }
+.wt-code .ln::before { content: attr(data-g); display: inline-block; width: 30px; text-align: center; color: var(--accent); font-weight: 600; }
+.wt-code .ln.add { background: var(--accent-soft); }
+.wt-code .r0, .wt-legend .r0 { background: var(--pa-soft); } .wt-code .r0 { box-shadow: inset 3px 0 var(--pa); } .wt-legend .r0 { color: var(--pa); }
+.wt-code .r1, .wt-legend .r1 { background: var(--pb-soft); } .wt-code .r1 { box-shadow: inset 3px 0 var(--pb); } .wt-legend .r1 { color: var(--pb); }
+.wt-code .r2, .wt-legend .r2 { background: var(--pc-soft); } .wt-code .r2 { box-shadow: inset 3px 0 var(--pc); } .wt-legend .r2 { color: var(--pc); }
+.wt-code .r3, .wt-legend .r3 { background: var(--pd-soft); } .wt-code .r3 { box-shadow: inset 3px 0 var(--pd); } .wt-legend .r3 { color: var(--pd); }
+.wt-run { display: flex; align-items: center; gap: 16px; margin-top: 12px; }
+.wt-check { margin-top: 36px; }
+.wt-q { margin: 0 0 12px; font-size: 18.5px; font-weight: 600; letter-spacing: -0.01em; }
+.wt-q code, .wt-opts code, .wt-explain code { font-size: 0.88em; background: var(--fill-2); padding: 1px 5px; border-radius: 4px; }
+.wt-opts { display: grid; gap: 8px; }
+.wt-opts .opt { width: 100%; padding: 12px 16px; font-size: 16px; }
+.wt-opts .opt kbd { flex: none; }
+.wt-explain { margin: 12px 0 0; padding: 12px 16px; border-radius: var(--radius); }
+.wt-explain.ok { background: var(--ok-soft); color: var(--ok); }
+.wt-explain.bad { background: var(--bad-soft); color: var(--bad); }
+.wt-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 36px; }
+.wt-next { display: flex; align-items: center; gap: 14px; }
+.wt-hint { font-size: 14px; color: var(--ink-3); }
+.wt-nav .btn[disabled] { opacity: 0.45; cursor: not-allowed; }
+@media (max-width: 900px) { .wt-page { padding: 24px 16px 72px; } .wt-page h1 { font-size: 26px; } }
+
 /* drill board pieces (shared with core.js renderers) */
 .line { margin: 0; font-size: 15px; max-width: 78ch; white-space: pre-wrap; }
 .line strong { font-weight: 600; }
