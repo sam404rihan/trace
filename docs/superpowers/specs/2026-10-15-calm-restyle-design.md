@@ -39,8 +39,9 @@ borders, one accent colour, clear right/wrong feedback, a visible sense of progr
 - Drill answer choices: soft filled blocks; correct → `--ok-soft` fill with an inset 1.5px
   `--ok` ring; wrong → `--bad-soft` with a `--bad` ring. The explanation line under the
   question uses the matching ink colour.
-- Drill pages (and the walkthrough, see the Read-step spec) get a thin 4px progress bar at the
-  top of the content: accent on a `--fill` track. For drills it shows question i of n.
+- A shared `.progress` component (4px, accent on a `--fill-2` track) for step-by-step screens.
+  The walkthrough uses it (see the Read-step spec). Drills don't: they are open-ended
+  generators with no fixed question count, so there is no honest "i of n" to show.
 
 ### Dark mode
 - Every new token gets a dark value in both existing dark blocks
@@ -49,8 +50,7 @@ borders, one accent colour, clear right/wrong feedback, a visible sense of progr
 
 ## Implementation notes
 - Almost all work is in `web/app.css`: add tokens, then rewrite component rules to use them.
-- `web/drill.js` gains the progress bar element (it already knows the question index via
-  `ctx`/the generator loop). No other JS changes are expected.
+- No JS changes are expected; class names stay as they are.
 - Nothing in `server.py` changes.
 
 ## Verification
