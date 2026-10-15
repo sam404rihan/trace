@@ -117,6 +117,8 @@
   const topicTitle = (topic) => drillTopic(topic)?.title || topic.title;
   const pstate = (name) => S.progress.problems[name] || {};
   const solved = (name) => !!pstate(name).solved;
+  const wtGot = (topic) => (S.progress.walkthroughs || {})[topic.id] || 0;
+  const wtDone = (topic) => topic.has_walkthrough && wtGot(topic) >= topic.walkthrough_layers;
   const kindLabel = (p) => (p.kind === "solo" ? p.difficulty[0].toUpperCase() + p.difficulty.slice(1) : p.kind[0].toUpperCase() + p.kind.slice(1));
 
   // Ladder rule: snippet → guided → all solo problems open together → build after two solos.
@@ -153,6 +155,7 @@
       const next = topic.items.find((n) => !solved(n));
       if (!next) continue;
       if (dt && !started && topic.items.every((n) => !solved(n))) return { kind: "drill", topic, dt, drill: dt.drills[0] };
+      if (topic.has_walkthrough && !wtDone(topic) && topic.items.every((n) => !solved(n))) return { kind: "walkthrough", topic };
       return { kind: "problem", topic, name: next };
     }
     return null;
@@ -212,6 +215,7 @@
     const dt = drillTopic(topic);
     const kids = [];
     if (dt) dt.drills.forEach((d) => kids.push(h("i", { class: "drill " + (T.DrillProgress.solid(dt, d) ? "on" : T.DrillProgress.rec(dt, d).runs ? "part" : "") })));
+    if (topic.has_walkthrough) kids.push(h("i", { class: "drill " + (wtDone(topic) ? "on" : wtGot(topic) ? "part" : ""), title: "Read the code" }));
     kids.push(h("span", { class: "gap" }));
     topic.items.forEach((n) => kids.push(h("i", { class: solved(n) ? "on" : pstate(n).passed ? "part" : "", title: S.problems[n].title })));
     return h("span", { class: "ladder-bar", "aria-hidden": "true" }, kids);
@@ -234,9 +238,10 @@
       h("h1", {}, "Learn it in your head, then in code."),
       h("p", { class: "lede" }, "Every topic starts with a short drill where you run the algorithm by hand. Then you climb: a three-line snippet, a guided problem, problems on your own, and a small program you build yourself."),
       h("div", { class: "hero-actions" },
-        up ? h("a", { class: "btn primary", href: up.kind === "drill" ? `#/d/${up.dt.id}/${up.drill.id}` : `#/p/${up.name}` },
-          done || up.kind === "problem" ? "Continue" : "Start", h("span", { style: "opacity:.7;font-weight:400" },
-            up.kind === "drill" ? `${topicTitle(up.topic)}: intuition` : `${topicTitle(up.topic)}: ${S.problems[up.name].title}`)) : null,
+        up ? h("a", { class: "btn primary", href: up.kind === "drill" ? `#/d/${up.dt.id}/${up.drill.id}` : up.kind === "walkthrough" ? `#/w/${up.topic.id}` : `#/p/${up.name}` },
+          done || up.kind !== "drill" ? "Continue" : "Start", h("span", { style: "opacity:.7;font-weight:400" },
+            up.kind === "drill" ? `${topicTitle(up.topic)}: intuition`
+              : up.kind === "walkthrough" ? `${topicTitle(up.topic)}: read the code` : `${topicTitle(up.topic)}: ${S.problems[up.name].title}`)) : null,
         h("span", { class: "hero-stat" }, `${done} of ${total} exercises solved`)),
       h("div", { class: "stats" },
         h("div", { class: "stat" }, h("b", {}, `${done}`), h("span", {}, "problems solved")),
@@ -341,6 +346,7 @@
   // ── topic page ─────────────────────────────────────────────────────────────
   const RUNGS = [
     ["Build the intuition", "Run the algorithm by hand until its decisions feel obvious."],
+    ["Read the code", "The pattern's code, built up one piece at a time."],
     ["Snippet", "The core move, in a few lines."],
     ["Guided", "One problem in steps: make it work, handle the edges, make it fast."],
     ["Problems", "On your own, easy to hard."],
@@ -361,6 +367,23 @@
       h("span", { class: "badge " + (p.difficulty || p.kind) }, kindLabel(p)));
   }
 
+  // The reference solution, with the topic's skeleton lines dimmed so the problem-specific part stands out.
+  function solutionView({ code, skeleton = [] }) {
+    const skel = new Set(skeleton);
+    return h("div", { class: "solution-box" },
+      skel.size ? h("p", { class: "solution-note" }, "Dimmed lines are the pattern's skeleton. The rest is what this problem adds.") : null,
+      h("pre", {}, skel.size ? code.split("\n").map((line, k) => h("span", { class: skel.has(k + 1) ? "dim" : null }, line + "\n")) : code));
+  }
+
+  function walkthroughRow(topic) {
+    const got = wtGot(topic), of = topic.walkthrough_layers;
+    return h("a", { class: "item" + (got >= of ? " solved" : got ? " partial" : ""), href: `#/w/${topic.id}`, style: `--p:${Math.round((100 * got) / of)}` },
+      h("span", { class: "state" }),
+      h("span", { class: "t" }, "Build the pattern, one piece at a time"),
+      h("span", { class: "meta" }, `${got} of ${of} layers`),
+      h("span", { class: "badge read" }, "Read"));
+  }
+
   async function viewTopic(id) {
     const topic = S.topics.find((t) => t.id === id);
     if (!topic) return viewHome();
@@ -369,13 +392,15 @@
     crumbs({ label: "Topics", href: "#/" }, { label: topicTitle(topic) });
     const groups = [
       dt ? dt.drills : [],
+      topic.has_walkthrough ? ["walkthrough"] : [],
       topic.items.filter((n) => S.problems[n].kind === "snippet"),
       topic.items.filter((n) => S.problems[n].kind === "guided"),
       topic.items.filter((n) => S.problems[n].kind === "solo"),
       topic.items.filter((n) => S.problems[n].kind === "build"),
     ];
-    const rungDone = (i) => (i === 0 ? dt && T.DrillProgress.topicSolid(dt) : groups[i].length && groups[i].every(solved));
-    const current = [0, 1, 2, 3, 4].find((i) => groups[i].length && !rungDone(i));
+    const rungDone = (i) => (i === 0 ? dt && T.DrillProgress.topicSolid(dt) : i === 1 ? wtDone(topic) : groups[i].length && groups[i].every(solved));
+    const shown = RUNGS.map((_, i) => i).filter((i) => groups[i].length);
+    const current = shown.find((i) => !rungDone(i));
     const sheet = h("details", { class: "sheet" }, h("summary", {}, "Cheat sheet"), h("div", { class: "sheet-body", "aria-busy": "true" }, [90, 75, 82, 40].map((w) => sk("sk-line", `width:${w}%`))));
     app.replaceChildren(h("div", { class: "page" },
       h("div", { class: "topic-top" }, h("span", { class: "num" }, pad2(topic.n)), h("h1", {}, topicTitle(topic))),
@@ -387,12 +412,13 @@
       h("div", { class: "rungs" }, RUNGS.map(([title, sub], i) => {
         if (!groups[i].length) return null;
         return h("section", { class: "rung" + (rungDone(i) ? " done" : i === current ? " current" : "") },
-          h("span", { class: "rung-dot" }, rungDone(i) ? "✓" : i),
+          h("span", { class: "rung-dot" }, rungDone(i) ? "✓" : shown.indexOf(i)),
           h("div", {},
             h("div", { class: "rung-head" }, h("h3", {}, title), h("p", {}, sub)),
             i === 0
               ? h("div", { class: "drill-chips" }, dt.drills.map((d) =>
                 h("a", { class: "chip-link", href: `#/d/${dt.id}/${d.id}` }, d.name, T.pips(T.DrillProgress.rec(dt, d).clean))))
+              : i === 1 ? h("div", { class: "items" }, walkthroughRow(topic))
               : h("div", { class: "items" }, groups[i].map((n) => itemRow(topic, n)))));
       })),
       topic.has_lesson ? sheet : null));
@@ -416,6 +442,34 @@
         lesson.code ? h("div", { class: "run-box" }, h("h3", { style: "font-size:14px;margin:22px 0 8px" }, "Runnable examples"),
           h("div", { class: "prose" }, h("pre", {}, h("code", {}, lesson.code))), runBtn, out) : null);
     }
+  }
+
+  // ── read the code (walkthrough) ────────────────────────────────────────────
+  async function viewWalkthrough(id) {
+    const topic = S.topics.find((t) => t.id === id);
+    if (!topic || !topic.has_walkthrough) return viewTopic(id);
+    document.title = `${topicTitle(topic)}: read the code | Trace`;
+    crumbs({ label: "Topics", href: "#/" }, { label: topicTitle(topic), href: `#/t/${topic.id}` }, { label: "Read the code" });
+    const host = h("div", { class: "wt-page", "aria-busy": "true" }, sk("", "height:4px"), sk("sk-title", "margin-top:30px"), sk("sk-line", "width:90%"), sk("sk-line", "width:70%"));
+    app.replaceChildren(host);
+    const wt = await api(`/api/walkthrough?topic=${encodeURIComponent(id)}`);
+    if (!host.isConnected) return;               // you navigated away while it loaded
+    host.removeAttribute("aria-busy");
+    const m = T.mountWalkthrough(host, wt, {
+      done: wtGot(topic),
+      run: async (code) => {
+        const r = await api("/api/run", { code });
+        if (r.docker_error) showDocker(r.docker);
+        return r;
+      },
+      onAnswer: async (layers) => {
+        if (layers <= wtGot(topic)) return;
+        try { S.progress = (await api("/api/walkthrough-progress", { topic: id, layers })).progress; } catch (err) { console.error(err); }
+      },
+      problemHref: (name) => `#/p/${name}`,
+      topicHref: `#/t/${id}`,
+    });
+    S.cleanup = () => m.unmount();
   }
 
   // ── drill view ─────────────────────────────────────────────────────────────
@@ -506,7 +560,7 @@
     const st = () => pstate(name);
     const stepCount = p.steps.length;
     const stepsDone = () => Math.min(st().steps || 0, stepCount);
-    let showHint = false, solutionCode = null, solutionShown = false, tab = "problem";
+    let showHint = false, solution = null, solutionShown = false, tab = "problem";
 
     // stepper across the topic's ladder
     const order = inPlan ? planItems : topic.items;
@@ -577,11 +631,11 @@
       } else {
         body.append(h("h1", {}, "Reference solution"));
         if (!p.has_solution) body.append(h("p", { class: "console-empty" }, "No reference solution for this one yet."));
-        else if (solutionCode && (solutionShown || solved(name))) body.append(h("div", { class: "solution-box" }, h("pre", {}, solutionCode)));
+        else if (solution && (solutionShown || solved(name))) body.append(solutionView(solution));
         else body.append(h("div", { class: "reveal-box" },
           h("p", {}, solved(name) ? "You've solved it. Compare your approach with the reference." : "Reading the answer too early skips the part that builds the skill. Give it a real attempt first: run your code, read the failing test, try once more."),
           h("button", { class: "btn small", type: "button", onclick: async () => {
-            solutionCode = (await api(`/api/solution?name=${encodeURIComponent(name)}`)).code;
+            solution = await api(`/api/solution?name=${encodeURIComponent(name)}`);
             solutionShown = true;
             renderLeft();
           } }, "Show the solution")));
@@ -989,6 +1043,7 @@
       if (kind === "p") return await viewProblem(a, b === "plan" ? c : null);
       if (kind === "plan") return viewPlan(a);
       if (kind === "d") return viewDrill(a, b);
+      if (kind === "w") return await viewWalkthrough(a);
       return viewHome();
     } catch (err) {
       console.error(err);

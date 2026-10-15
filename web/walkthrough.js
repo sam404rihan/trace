@@ -67,7 +67,7 @@
       }
 
       const roles = Object.keys(layer.roles || {});
-      container.replaceChildren(
+      container.replaceChildren(...[
         h("div", { class: "progress", role: "progressbar", "aria-valuemin": 1, "aria-valuemax": n, "aria-valuenow": i + 1, style: `--p:${(i + 1) / n}` }, h("i")),
         h("p", { class: "wt-label" }, layer.reuse ? "Same skeleton, new problem" : `Layer ${i + 1} of ${base}`),
         h("h1", {}, layer.title),
@@ -81,7 +81,8 @@
           h("p", { class: "wt-q" }, T.inline(check.question)), h("div", { class: "wt-opts" }, opts), explain),
         h("nav", { class: "wt-nav" },
           i > 0 ? h("button", { class: "btn ghost", type: "button", onclick: () => go(i - 1) }, "Back") : h("span"),
-          h("span", { class: "wt-next" }, hint, next)));
+          h("span", { class: "wt-next" }, hint, next)),
+      ].filter(Boolean));
     }
 
     function go(j) {
