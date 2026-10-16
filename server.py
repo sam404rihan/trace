@@ -37,6 +37,9 @@ WEB = ROOT / "web"
 _DEFAULT_WORKSPACE = (Path(os.environ.get("LOCALAPPDATA") or Path.home()) / "Trace" / "workspace") if FROZEN else ROOT / "workspace"
 WORKSPACE = Path(os.environ.get("TRACE_WORKSPACE") or _DEFAULT_WORKSPACE)
 PROGRESS_FILE = WORKSPACE / "progress.json"
+STARTING_CHECK = COURSE / "starting_check.py"
+SKILLS = ("names", "loops", "functions", "lists", "dicts", "objects")    # the ready check asks one question each
+DOORS = ("new", "python", "dsa", "skip")                                  # "Where are you starting?"
 
 IMAGE = "trace-runner"
 SANDBOX = [
@@ -397,6 +400,49 @@ def load_walkthrough_safely(path):
         return None
 
 
+def _check_question(q, where):
+    """One multiple-choice question: question, 2-5 options, an answer index, an explanation; optional code."""
+    if not isinstance(q, dict):
+        raise ValueError(f"{where}: must be a dict")
+    options, answer = q.get("options"), q.get("answer")
+    if not q.get("question") or not q.get("explain") or not isinstance(options, list) \
+            or not 2 <= len(options) <= 5 or type(answer) is not int or not 0 <= answer < len(options):
+        raise ValueError(f"{where}: needs a question, 2-5 options, an answer index into them, and an explanation")
+    if q.get("output") and not q.get("code"):
+        raise ValueError(f"{where}: an output question needs code")
+    return {"question": q["question"], "options": [str(o) for o in options], "answer": answer,
+            "explain": q["explain"], "code": textwrap.dedent(q.get("code") or "").strip("\n"),
+            "output": bool(q.get("output"))}
+
+
+def parse_starting_check(path, topics):
+    """starting_check.py: READY (one Python question per skill) and TOPICS (two questions for every
+    Stage 1-4 topic, the more telling one first). Raises FileNotFoundError if the file is missing."""
+    module = load_module(path)
+    ready, asked = module.get("READY"), module.get("TOPICS")
+    skills = sorted(str(q.get("skill")) if isinstance(q, dict) else "" for q in ready) if isinstance(ready, list) else []
+    if skills != sorted(SKILLS):
+        raise ValueError(f"{path.name}: READY needs exactly one question for each skill: {', '.join(SKILLS)}")
+    if not isinstance(asked, dict):
+        raise ValueError(f"{path.name}: TOPICS must map topic ids to questions")
+    expected = [t for t in topics if 1 <= t["stage_n"] <= 4]
+    unknown = sorted(set(asked) - {t["id"] for t in expected})
+    missing = [t["id"] for t in expected if t["id"] not in asked]
+    if unknown or missing:
+        raise ValueError(f"{path.name}: TOPICS must cover every Stage 1-4 topic"
+                         + (f"; unknown: {', '.join(unknown)}" if unknown else "")
+                         + (f"; missing: {', '.join(missing)}" if missing else ""))
+    out = []
+    for t in expected:
+        qs = asked[t["id"]]
+        if not isinstance(qs, list) or len(qs) != 2:
+            raise ValueError(f"{path.name} {t['id']}: needs exactly two questions")
+        out.append({"id": t["id"], "title": t["title"], "stage_n": t["stage_n"],
+                    "questions": [_check_question(q, f"{path.name} {t['id']} question {i}") for i, q in enumerate(qs, 1)]})
+    return {"ready": [{**_check_question(q, f"{path.name} READY {i}"), "skill": q["skill"]} for i, q in enumerate(ready, 1)],
+            "topics": out}
+
+
 def split_statement(text):
     """Pull 'Aim for:' and 'Hint:' blocks out of a problem statement."""
     out, extra, current = [], {"aim": [], "hint": []}, None
@@ -680,6 +726,7 @@ def load_progress():
     progress.setdefault("problems", {})
     progress.setdefault("unlocked", [])
     progress.setdefault("walkthroughs", {})      # topic id -> layers answered
+    progress.setdefault("placement", None)        # where the starting check put you; None = not taken
     return progress
 
 
@@ -700,6 +747,42 @@ def record_walkthrough(topic_id, layers, total):
     def change(progress):
         progress["walkthroughs"][topic_id] = max(progress["walkthroughs"].get(topic_id, 0), layers)
     return update_progress(change)
+
+
+def place(door, ready, answers, topic_order):
+    """Where a finished starting check puts you. A topic is placed out when at least one question about
+    it was asked and every one asked was right; you start at the first topic that isn't placed out.
+    (door and ready start to matter in Phase 4, when Stage 0 exists.)"""
+    placed = [t for t in topic_order if answers.get(t) and all(answers[t])]
+    return {"start": next((t for t in topic_order if t not in placed), None), "placed_out": placed}
+
+
+def record_placement(door, ready=None, answers=None):
+    """Validate a starting check and store where it puts you, replacing any earlier result."""
+    if door not in DOORS:
+        raise ValueError(f"door must be one of: {', '.join(DOORS)}")
+    result = {"door": door, "date": time.strftime("%Y-%m-%d")}
+    if door in ("python", "dsa"):
+        ready, answers = {} if ready is None else ready, {} if answers is None else answers
+        topics = load_course()[0]
+        known = {t["id"] for t in topics if 1 <= t["stage_n"] <= 4}
+        if not isinstance(ready, dict) or any(k not in SKILLS or type(v) is not bool for k, v in ready.items()):
+            raise ValueError("ready must map skills to true or false")
+        if not isinstance(answers, dict) or any(
+                k not in known or not isinstance(v, list) or not 1 <= len(v) <= 2 or any(type(x) is not bool for x in v)
+                for k, v in answers.items()):
+            raise ValueError("answers must map Stage 1-4 topic ids to one or two true/false results")
+        result |= {"ready": ready, **place(door, ready, answers, [t["id"] for t in topics])}
+
+    def change(progress):
+        progress["placement"] = result
+    return update_progress(change)
+
+
+def reset_progress():
+    def wipe(progress):
+        progress["problems"], progress["unlocked"], progress["walkthroughs"], progress["placement"] = {}, [], {}, None
+    return update_progress(wipe)
 
 
 def record_result(problem, tests):
@@ -834,6 +917,14 @@ class Handler(BaseHTTPRequestHandler):
             code, marks = strip_markers((SOLUTIONS / f"{problem['name']}.py").read_text(encoding="utf-8"))
             return self.send_json({"code": code, "skeleton": marks.get("skeleton", [])})
 
+        if route == "/api/starting-check":
+            try:
+                return self.send_json(parse_starting_check(STARTING_CHECK, load_course()[0]))
+            except FileNotFoundError:
+                return self.fail("This course has no starting check", HTTPStatus.NOT_FOUND)
+            except ValueError as exc:
+                return self.fail(str(exc), HTTPStatus.INTERNAL_SERVER_ERROR)
+
         if route.startswith("/api/"):
             return self.fail("Not found", HTTPStatus.NOT_FOUND)
         return self.serve_static(route.lstrip("/"))
@@ -873,9 +964,14 @@ class Handler(BaseHTTPRequestHandler):
             return self.send_json({"progress": update_progress(unlock)})
 
         if route == "/api/reset-progress":
-            def wipe(progress):
-                progress["problems"], progress["unlocked"], progress["walkthroughs"] = {}, [], {}
-            return self.send_json({"progress": update_progress(wipe)})
+            return self.send_json({"progress": reset_progress()})
+
+        if route == "/api/placement":
+            try:
+                progress = record_placement(data.get("door"), data.get("ready"), data.get("answers"))
+            except ValueError as exc:
+                return self.fail(str(exc))
+            return self.send_json({"progress": progress})
 
         if route == "/api/walkthrough-progress":
             topic = next((t for t in load_course()[0] if t["id"] == data.get("topic")), None)
