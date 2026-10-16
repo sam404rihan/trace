@@ -132,6 +132,7 @@
     if (p.placement || Object.keys(p.problems || {}).length || (p.unlocked || []).length || Object.keys(p.walkthroughs || {}).length) return false;
     return !T.topics.some((dt) => dt.drills.some((d) => T.DrillProgress.rec(dt, d).runs > 0));
   }
+  const placedOut = (topic) => (S.progress.placement?.placed_out || []).includes(topic.id);
 
   // Ladder rule: snippet → guided → all solo problems open together → build after two solos.
   function blocker(topic, name) {
@@ -162,6 +163,7 @@
 
   function nextUp() {
     for (const topic of S.topics) {
+      if (placedOut(topic)) continue;
       const dt = drillTopic(topic);
       const started = dt && dt.drills.some((d) => T.DrillProgress.rec(dt, d).runs > 0);
       const next = topic.items.find((n) => !solved(n));
@@ -274,12 +276,14 @@
     app.replaceChildren(h("div", { class: "page" },
       h("h1", {}, "Learn it in your head, then in code."),
       h("p", { class: "lede" }, "Every topic starts with a short drill where you run the algorithm by hand. Then you climb: a three-line snippet, a guided problem, problems on your own, and a small program you build yourself."),
-      h("div", { class: "hero-actions" },
+      h("section", { class: "today", "aria-label": "Today" },
+        h("p", { class: "today-label" }, "Today"),
         up ? h("a", { class: "btn primary", href: up.kind === "drill" ? `#/d/${up.dt.id}/${up.drill.id}` : up.kind === "walkthrough" ? `#/w/${up.topic.id}` : `#/p/${up.name}` },
           done || up.kind !== "drill" ? "Continue" : "Start", h("span", { style: "opacity:.7;font-weight:400" },
             up.kind === "drill" ? `${topicTitle(up.topic)}: intuition`
               : up.kind === "walkthrough" ? `${topicTitle(up.topic)}: read the code` : `${topicTitle(up.topic)}: ${S.problems[up.name].title}`)) : null,
-        h("span", { class: "hero-stat" }, `${done} of ${total} exercises solved`)),
+        h("span", { class: "hero-stat" }, `${done} of ${total} exercises solved`),
+        S.progress.placement ? null : h("a", { class: "link", href: "#/start" }, "Take the starting check")),
       h("div", { class: "stats" },
         h("div", { class: "stat" }, h("b", {}, `${done}`), h("span", {}, "problems solved")),
         h("div", { class: "stat" }, h("b", {}, `${S.topics.filter((t) => t.items.length && t.items.every(solved)).length} / ${S.topics.length}`), h("span", {}, "topics complete")),
@@ -295,7 +299,7 @@
           const counts = topic.items.reduce((c, n) => (c[S.problems[n].kind] = (c[S.problems[n].kind] || 0) + 1, c), {});
           return h("a", { class: "topic-row", href: `#/t/${topic.id}` },
             h("span", { class: "num" }, pad2(topic.n)),
-            h("span", { class: "name" }, topicTitle(topic),
+            h("span", { class: "name" }, topicTitle(topic), placedOut(topic) ? h("span", { class: "badge placed" }, "Placed out") : null,
               h("span", { class: "sub" }, [counts.snippet && "snippet", counts.guided && "guided", counts.solo && `${counts.solo} problems`, counts.build && "build"].filter(Boolean).join(", "))),
             ladderBar(topic));
         })),
@@ -307,7 +311,9 @@
           h("span", { class: "name" }, review.title, h("span", { class: "sub" }, "Read a problem, name the technique. Mixes every topic.")),
           h("span", { class: "ladder-bar" }, T.pips(T.DrillProgress.rec(review, review.drills[0]).clean)))),
       ] : null,
-      h("p", { style: "margin-top:48px" }, h("button", { class: "link", type: "button", onclick: resetAll }, "Reset all progress"))));
+      h("p", { class: "home-foot" },
+        S.progress.placement ? h("a", { class: "link", href: "#/start" }, "Retake the starting check") : null,
+        h("button", { class: "link", type: "button", onclick: resetAll }, "Reset all progress"))));
   }
 
   async function resetAll(e) {
@@ -441,6 +447,7 @@
     const sheet = h("details", { class: "sheet" }, h("summary", {}, "Cheat sheet"), h("div", { class: "sheet-body", "aria-busy": "true" }, [90, 75, 82, 40].map((w) => sk("sk-line", `width:${w}%`))));
     app.replaceChildren(h("div", { class: "page" },
       h("div", { class: "topic-top" }, h("span", { class: "num" }, pad2(topic.n)), h("h1", {}, topicTitle(topic))),
+      placedOut(topic) ? h("p", { class: "placed-note" }, "You placed out of this. Everything stays open.") : null,
       dt ? h("p", { class: "lede" }, dt.idea) : null,
       dt ? h("dl", { class: "facts" },
         h("div", {}, h("dt", {}, "Reach for it when"), h("dd", {}, dt.signals)),
