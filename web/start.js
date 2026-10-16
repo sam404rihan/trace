@@ -172,4 +172,16 @@
     doors();
     return { unmount: () => document.removeEventListener("keydown", onKey) };
   };
+
+  // The four stages Trace uses everywhere. Shown on your first problem; "I'm stuck" (Phase 3) reuses it.
+  const HOW = [
+    ["Understand.", "Work the example by hand, then make up a smaller input and solve that too."],
+    ["Plan.", "Say the brute force first, then look for the work it repeats."],
+    ["Code.", "Write the slow version and get one test passing, then change one thing at a time."],
+    ["Check.", "Open the first failing test, run your function on it with Try a call, and find where it differs from your plan."],
+  ];
+  T.howToCard = ({ onClose } = {}) => h("section", { class: "howto", "aria-label": "How to work a problem" },
+    h("div", { class: "howto-head" }, h("h4", {}, "How to work a problem"),
+      onClose ? h("button", { class: "btn ghost small", type: "button", onclick: onClose }, "Got it") : null),
+    h("ol", {}, HOW.map(([stage, text]) => h("li", {}, h("strong", {}, stage), " ", text))));
 })();

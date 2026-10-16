@@ -605,6 +605,7 @@
     const stepCount = p.steps.length;
     const stepsDone = () => Math.min(st().steps || 0, stepCount);
     let showHint = false, solution = null, solutionShown = false, tab = "problem";
+    let showHowTo = !local.get("trace.howtoSeen", false);
 
     // stepper across the topic's ladder
     const order = inPlan ? planItems : topic.items;
@@ -653,6 +654,9 @@
             h("span", { class: "badge" }, stepCount ? `${stepCount} steps` : `${p.tests} tests`),
             ...(p.in_plans || []).map((t) => h("span", { class: "badge plan" }, t)),
             p.reported && p.reported.length ? h("span", { class: "badge reported", title: p.reported_note }, `Often reported: ${p.reported.join(", ")}`) : null),
+          showHowTo
+            ? T.howToCard({ onClose: () => { showHowTo = false; local.set("trace.howtoSeen", true); renderLeft(); } })
+            : h("button", { class: "link howto-link", type: "button", onclick: () => { showHowTo = true; renderLeft(); } }, "How to work a problem"),
           h("div", { class: "body-text" }, renderStatement(p.statement)));
         if (p.aim) body.append(h("div", { class: "callout" }, h("h4", {}, "Aim for"), h("p", {}, inline(p.aim))));
         if (stepCount) {
