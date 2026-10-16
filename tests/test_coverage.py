@@ -178,6 +178,17 @@ class Stage1Audit(unittest.TestCase):
         items = self.items("01_big_o_in_practice")
         self.assertLess(items.index("max_profit"), items.index("best_sightseeing_pair"))
 
+    def test_topic_03(self):
+        self.assert_audited("03_arrays_and_strings")
+        self.assert_teaches({"rotate_index": ["array.wrap_index"], "spiral_order": ["matrix.boundaries"],
+                             "move_zeroes": ["array.write_pointer"], "plus_one": ["math.carry"],
+                             "distance_to_char": ["array.left_right_passes"]})
+        self.assert_uses({"multiply_strings": ["math.carry"], "product_except_self": ["array.left_right_passes"],
+                          "rotate_array": ["array.wrap_index"], "set_matrix_zeroes": ["hash.set_lookup"],
+                          "max_chunks_to_sorted": ["array.left_right_passes", "scan.best_so_far"],
+                          "detect_squares": ["hash.set_lookup"], "first_missing_positive": []})
+        self.assertEqual(self.problems["distance_to_char"]["difficulty"], "easy")
+
     def test_tags_stay_out_of_starters(self):
         leaks = [n for n, p in self.problems.items() if "USES" in p["starter"] or "TEACHES" in p["starter"]]
         self.assertEqual(leaks, [])

@@ -65,6 +65,8 @@ def _cases():
     return out
 
 
+USES = ["hash.set_lookup"]
+
 TESTS = [
     ([("DetectSquares",), ("add", [3, 10]), ("add", [11, 2]), ("add", [3, 2]), ("count", [11, 10]),
       ("count", [14, 8]), ("add", [11, 2]), ("count", [11, 10])],

@@ -27,6 +27,8 @@ def format_table(rows: list[list[str]]) -> list[str]:
     raise NotImplementedError  # replace this line with your solution
 
 
+USES = []
+
 TESTS = [
     (([["name", "qty"], ["apple", "3"], ["kiwi", "12"]],),
      ["name  | qty", "------+----", "apple |   3", "kiwi  |  12"]),

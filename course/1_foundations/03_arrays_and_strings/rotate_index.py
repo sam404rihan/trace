@@ -18,6 +18,9 @@ def rotate_index(i: int, k: int, n: int) -> int:
     raise NotImplementedError  # replace this line with your solution
 
 
+TEACHES = ["array.wrap_index"]
+USES = []
+
 TESTS = [
     ((1, 2, 5), 3),
     ((4, 2, 5), 1),

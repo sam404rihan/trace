@@ -17,6 +17,9 @@ def move_zeroes(nums: list[int]) -> list[int]:
     raise NotImplementedError  # replace this line with your solution
 
 
+TEACHES = ["array.write_pointer"]
+USES = []
+
 TESTS = [
     (([0, 1, 0, 3, 12],), [1, 3, 12, 0, 0]),
     (([0],), [0]),

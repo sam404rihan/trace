@@ -16,6 +16,9 @@ def spiral_order(matrix: list[list[int]]) -> list[int]:
     raise NotImplementedError  # replace this line with your solution
 
 
+TEACHES = ["matrix.boundaries"]
+USES = []
+
 STEPS = [
     {
         "title": "Square grids",

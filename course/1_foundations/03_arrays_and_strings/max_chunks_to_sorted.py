@@ -59,6 +59,8 @@ def _cases():
     return out
 
 
+USES = ["array.left_right_passes", "scan.best_so_far"]
+
 TESTS = [
     (([5, 4, 3, 2, 1],), 1),
     (([2, 1, 3, 4, 4],), 4),

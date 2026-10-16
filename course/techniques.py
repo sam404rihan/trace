@@ -29,6 +29,36 @@ TECHNIQUES = {
                    "appeared so far. A new x pairs with every earlier x, so add `seen[x]` to the answer, then "
                    "increase `seen[x]`. One pass instead of checking every pair.",
     },
+    "array.wrap_index": {
+        "name": "Wrapping around with %",
+        "explain": "`(i + k) % n` keeps an index inside 0..n - 1 however far it moves, and in Python it works for "
+                   "negative k too. Use it for anything circular: rotating a list, a clock, a ring of seats. Doing "
+                   "`k %= n` first also stops a huge k from going round extra times.",
+    },
+    "matrix.boundaries": {
+        "name": "Shrinking boundaries",
+        "explain": "Keep four edges: top, bottom, left and right. Walk along one edge, then move it inward by one, "
+                   "and stop once top > bottom or left > right. Check those again before the third and fourth "
+                   "sides, or a single row or column gets read twice.",
+    },
+    "array.write_pointer": {
+        "name": "Write pointer",
+        "explain": "Keep an index `w` for where the next kept item goes. Walk the list, copy each item you keep to "
+                   "`a[w]` and add 1 to `w`. Everything before `w` is the answer so far, built in place in one pass "
+                   "with no extra list.",
+    },
+    "math.carry": {
+        "name": "Carrying digits",
+        "explain": "Add digit by digit from the right, as on paper. A column's total gives the digit `total % 10` "
+                   "and carries `total // 10` into the next column to the left. A carry left over at the end "
+                   "becomes a new leading digit.",
+    },
+    "array.left_right_passes": {
+        "name": "Left and right passes",
+        "explain": "When the answer at i depends on both sides of i, make one pass left to right that carries what "
+                   "you know about everything before i, and one pass right to left for everything after it. "
+                   "Combine the two at each i: two O(n) passes instead of searching both ways from every index.",
+    },
     "grid.neighbors": {
         "name": "Grid neighbours",
         "explain": "A cell (r, c) has up to four neighbours: (r - 1, c), (r + 1, c), (r, c - 1) and (r, c + 1). "

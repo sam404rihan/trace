@@ -48,6 +48,8 @@ def _cases():
     return out
 
 
+USES = []
+
 TESTS = [
     (([3, 4, -1, 1],), 2),
     (([1, 2, 0],), 3),

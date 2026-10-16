@@ -30,6 +30,8 @@ def _cases():
     return out
 
 
+USES = ["math.carry"]
+
 TESTS = [
     (("2", "3"), "6"),
     (("123", "456"), "56088"),

@@ -18,6 +18,8 @@ def longest_common_prefix(words: list[str]) -> str:
     raise NotImplementedError  # replace this line with your solution
 
 
+USES = []
+
 TESTS = [
     ((["flower", "flow", "flight"],), "fl"),
     ((["dog", "racecar", "car"],), ""),
