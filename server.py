@@ -1071,6 +1071,27 @@ def check(only=None):
         print(f"  {'FAIL' if bad else 'ok  '} {label:<50} {len(layers):>2} layers")
         for line in bad:
             print("        ", line)
+    if not only or any(o in "starting_check" for o in only):
+        label = "starting check"
+        try:
+            sc = parse_starting_check(STARTING_CHECK, topics)
+        except (ValueError, FileNotFoundError) as exc:
+            failures += 1
+            print(f"  FAIL {label:<50} {exc}")
+        else:
+            questions = [(f"READY {q['skill']}", q) for q in sc["ready"]] + \
+                        [(f"{t['id']} question {i}", q) for t in sc["topics"] for i, q in enumerate(t["questions"], 1)]
+            bad = []
+            for where, q in questions:
+                if q["output"]:
+                    run = run_script(q["code"])
+                    got, want = (run["output"] or "").strip(), q["options"][q["answer"]].strip()
+                    if run["exit_code"] != 0 or run["killed"] or got != want:
+                        bad.append(f"{where}: printed {got!r}, but the answer says {want!r}")
+            failures += bool(bad)
+            print(f"  {'FAIL' if bad else 'ok  '} {label:<50} {len(questions):>2} questions")
+            for line in bad:
+                print("        ", line)
     print("\nAll good." if not failures else f"\n{failures} problem(s).")
     return 1 if failures else 0
 

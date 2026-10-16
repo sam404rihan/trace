@@ -143,5 +143,13 @@ class RecordPlacement(unittest.TestCase):
         self.assertIsNone(server.reset_progress()["placement"])
 
 
+class RealFile(unittest.TestCase):
+    def test_course_file_parses(self):
+        check = server.parse_starting_check(server.STARTING_CHECK, server.load_course()[0])
+        self.assertEqual(len(check["ready"]), 6)
+        self.assertEqual(len(check["topics"]), 25)
+        self.assertEqual(check["topics"][0]["id"], "01_big_o_in_practice")
+
+
 if __name__ == "__main__":
     unittest.main()
