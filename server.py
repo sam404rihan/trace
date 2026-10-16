@@ -40,6 +40,7 @@ PROGRESS_FILE = WORKSPACE / "progress.json"
 STARTING_CHECK = COURSE / "starting_check.py"
 SKILLS = ("names", "loops", "functions", "lists", "dicts", "objects")    # the ready check asks one question each
 DOORS = ("new", "python", "dsa", "skip")                                  # "Where are you starting?"
+TECHNIQUES_FILE = COURSE / "techniques.py"                                # named techniques problems teach and use
 
 IMAGE = "trace-runner"
 SANDBOX = [
@@ -450,6 +451,68 @@ def parse_starting_check(path, topics):
             "topics": out}
 
 
+TECHNIQUE_ID = re.compile(r"[a-z0-9_]+\.[a-z0-9_]+")
+
+
+def parse_techniques(path):
+    """course/techniques.py: TECHNIQUES = {"area.variant": {"name", "explain"}}. No file means no techniques."""
+    try:
+        module = load_module(path)
+    except FileNotFoundError:
+        return {}
+    except Exception as exc:  # noqa: BLE001 - a typo in course content is reported, never fatal
+        raise ValueError(f"{path.name}: {type(exc).__name__}: {exc}") from exc
+    found = module.get("TECHNIQUES")
+    if not isinstance(found, dict):
+        raise ValueError(f"{path.name}: TECHNIQUES must be a dict of id -> {{name, explain}}")
+    out = {}
+    for tid, entry in found.items():
+        if not isinstance(tid, str) or not TECHNIQUE_ID.fullmatch(tid):
+            raise ValueError(f"{path.name}: bad technique id {tid!r} (use area.variant, lowercase)")
+        if not isinstance(entry, dict) or not all(isinstance(entry.get(k), str) and entry[k].strip() for k in ("name", "explain")):
+            raise ValueError(f"{path.name}: {tid} needs a name and an explain")
+        out[tid] = {"name": entry["name"], "explain": entry["explain"]}
+    return out
+
+
+def load_techniques_safely(path):
+    """A broken registry hides the technique UI (and says why) rather than taking the course down."""
+    try:
+        return parse_techniques(path)
+    except ValueError as exc:
+        sys.stderr.write(f"  techniques skipped: {exc}\n")
+        return {}
+
+
+def _tag_list(value):
+    return value if isinstance(value, list) and all(isinstance(x, str) for x in value) else []
+
+
+def ladder_order(found):
+    """A topic's problems by rank. Within a rank, a problem comes after every same-topic problem that
+    teaches a technique it uses (so chains of basics read in teaching order), then by title."""
+    teacher = {t: p["name"] for p in found for t in _tag_list(p.get("teaches"))}
+    by_name = {p["name"]: p for p in found}
+    depth, visiting = {}, set()
+
+    def d(name):
+        if name in depth:
+            return depth[name]
+        if name in visiting:
+            return 0                            # a cycle: the coverage check reports it
+        visiting.add(name)
+        deps = [teacher[t] for t in _tag_list(by_name[name].get("uses")) if teacher.get(t) not in (None, name)]
+        depth[name] = 1 + max((d(t) for t in deps), default=-1)
+        visiting.discard(name)
+        return depth[name]
+    return sorted(found, key=lambda p: (p["rank"], d(p["name"]), p["title"].lower()))
+
+
+def techniques_payload(problems, techniques):
+    teacher = {t: name for name, p in problems.items() for t in _tag_list(p.get("teaches"))}
+    return {tid: {**info, "teacher": teacher.get(tid)} for tid, info in techniques.items()}
+
+
 def split_statement(text):
     """Pull 'Aim for:' and 'Hint:' blocks out of a problem statement."""
     out, extra, current = [], {"aim": [], "hint": []}, None
@@ -558,6 +621,9 @@ def parse_problem(path):
         "steps": steps,
         "is_class": bool(module.get("CLASS")),
         "has_solution": (SOLUTIONS / f"{path.stem}.py").exists(),
+        "uses": module.get("USES", []),
+        "teaches": module.get("TEACHES", []),
+        "audited": "USES" in module or "TEACHES" in module,
     }
 
 
@@ -608,7 +674,7 @@ class CourseCache:
                         continue
                     sol = SOLUTIONS / f"{p.stem}.py"
                     found.append(dict(self._cached(p, (sig.get(str(p)), sig.get(str(sol))), parse_problem)))
-                found.sort(key=lambda p: (p["rank"], p["title"].lower()))
+                found = ladder_order(found)
                 topic = {
                     "id": topic_dir.name, "n": number,
                     "title": (lesson and lesson["title"]) or folder_label(topic_dir.name),
@@ -880,10 +946,11 @@ class Handler(BaseHTTPRequestHandler):
                             "has_lesson": bool(t["lesson"]), "has_walkthrough": bool(t["walkthrough"]),
                             "walkthrough_layers": len(t["walkthrough"]["layers"]) if t["walkthrough"] else 0}
                            for t in topics],
-                "problems": {n: {k: p[k] for k in ("name", "title", "kind", "difficulty", "tests", "topic_id")}
+                "problems": {n: {k: p[k] for k in ("name", "title", "kind", "difficulty", "tests", "topic_id", "uses", "teaches")}
                              | {"steps": len(p["steps"])} for n, p in problems.items()},
                 "progress": load_progress(),
                 "plans": load_plans(),
+                "techniques": techniques_payload(problems, load_techniques_safely(TECHNIQUES_FILE)),
             })
 
         if route == "/api/docker":
