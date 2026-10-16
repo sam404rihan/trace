@@ -7,6 +7,7 @@ const solve = (p, name) => p.eval(`fetch("/api/solution?name=${name}").then(r =>
   .then(r => r.json()).then(r => r.progress.problems["${name}"].solved)`);
 const post = (p, path, body) => p.eval(`fetch("${path}", { method: "POST", headers: { "Content-Type": "application/json" }, body: ${JSON.stringify(JSON.stringify(body))} }).then(r => r.json())`);
 const text = (p, sel) => p.eval(`document.querySelector(${JSON.stringify(sel)})?.textContent || ""`);
+const isOpen = (p) => p.eval(`![...document.querySelectorAll(".reveal-box button")].some(b => b.textContent === "Open anyway")`);
 
 const p = await open(BASE + "/");
 await post(p, "/api/placement", { door: "skip" });
@@ -25,6 +26,15 @@ const lock = await text(p, ".reveal-box");
 check("in-topic lock names the technique and its teacher", lock.includes("This uses Flood fill") && lock.includes("Flood Fill teaches it"), lock);
 check("lock offers Open anyway", (await p.eval(`[...document.querySelectorAll(".reveal-box button")].some(b => b.textContent === "Open anyway")`)));
 
+// A problem the learner already started (some tests passing) never gets a new technique lock.
+const tried = await p.eval(`fetch("/api/test", { method: "POST", headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ name: "count_enclosed", code: "def count_enclosed(grid):\\n    return 0\\n" }) })
+  .then(r => r.json()).then(r => r.progress.problems.count_enclosed)`);
+check("partial attempt recorded", tried && tried.passed > 0 && !tried.solved, JSON.stringify(tried));
+await p.reload(BASE + "/#/p/count_enclosed");
+check("an attempted problem stays open", await isOpen(p));
+await post(p, "/api/reset", { name: "count_enclosed" });
+
 // Solved problems stay open even with an unsolved same-topic teacher.
 check("solve max_area_island directly", await solve(p, "max_area_island"));
 await p.reload(BASE + "/#/p/max_area_island");
@@ -33,7 +43,7 @@ check("solved problems stay open", !(await p.eval(`!!document.querySelector(".re
 // Solving the teacher opens the problem; the chip is known and explains itself.
 check("solve flood_fill", await solve(p, "flood_fill"));
 await p.reload(BASE + "/#/p/count_enclosed");
-check("problem opens once its teacher is solved", (await text(p, ".statement h1")) === "Count enclosed cells");
+check("problem opens once its teacher is solved", await isOpen(p));
 check("Uses chip shows as known", (await text(p, ".tech-chip.known")).includes("Flood fill"));
 check("teaching box for the new technique", (await text(p, ".tech-new h4")) === "New technique: Searching back from the targets");
 await p.eval(`document.querySelector(".tech-chip").click()`); await sleep(200);
@@ -43,7 +53,7 @@ check("chip opens its explanation and teacher link", (await text(p, ".tech-detai
 const planned = await p.eval(`fetch("/api/course").then(r => r.json()).then(d => { for (const pl of d.plans.plans) for (const s of pl.sections) if (s.items.includes("clone_graph")) return pl.id; return null; })`);
 if (planned) {
   await p.reload(BASE + `/#/p/clone_graph/plan/${planned}`);
-  check("plan mode skips the technique lock", (await text(p, ".statement h1")) === "Clone Graph");
+  check("plan mode skips the technique lock", await isOpen(p));
   check("plan mode chip shows the unlearned technique", (await text(p, ".tech-chip:not(.known)")).includes("Walking a graph from its edges"));
 }
 
@@ -64,7 +74,7 @@ check("banner names the technique, its topic and its teacher", banner.includes("
 await post(p, "/api/reset-progress", {});
 await post(p, "/api/placement", { door: "dsa", ready: {}, answers: { "19_graph_traversal": [true] } });
 await p.reload(BASE + "/#/p/count_enclosed");
-check("placed-out topic: no technique lock", (await text(p, ".statement h1")) === "Count enclosed cells");
+check("placed-out topic: no technique lock", await isOpen(p));
 
 check("no console errors", p.logs.length === 0, p.logs.join(" | "));
 await p.shot("technique_coverage.png");

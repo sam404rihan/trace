@@ -165,6 +165,7 @@
       const solos = of("solo");
       if (solos.filter(solved).length < Math.min(2, solos.length)) return solos.find((n) => !solved(n));
     }
+    if ((pstate(name).passed || 0) > 0 || (pstate(name).steps || 0) > 0) return null;   // already started: never lock it later
     return (S.problems[name].uses || []).map(techTeacher).find((t) => t && t !== name && topic.items.includes(t) && !solved(t)) || null;
   }
   function isUnlocked(topic, name) {
