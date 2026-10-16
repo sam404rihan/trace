@@ -700,3 +700,18 @@ button, .crumbs, .tabs, .stepper, .ws-bar, .drill-tabs, .badge, .console-bar, .r
 .howto-link { display: inline-block; margin-top: 12px; font-size: 13.5px; }
 .topic-row.disabled { cursor: default; color: var(--ink-3); }
 .topic-row.disabled:hover { background: none; }
+/* ── Techniques ──────────────────────────────────────── */
+.tech-uses { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 12px; }
+.tech-label { font-size: 12.5px; font-weight: 600; color: var(--ink-3); margin-right: 2px; }
+.tech-chip { border: 0; border-radius: 999px; padding: 3px 10px; font-size: 12.5px; font-weight: 500; background: var(--fill-2); color: var(--ink-2); cursor: pointer; }
+.tech-chip.known { color: var(--ok); background: var(--ok-soft); }
+.tech-chip[aria-expanded="true"] { box-shadow: inset 0 0 0 1.5px var(--accent); }
+.tech-detail { margin-top: 8px; padding: 10px 14px; border-radius: var(--radius); background: var(--fill); color: var(--ink-2); font-size: 14.5px; }
+.tech-detail p { margin: 0; }
+.tech-detail p + p { margin-top: 6px; }
+.tech-new { margin: 16px 0 0; padding: 14px 16px; border-radius: var(--radius); background: var(--accent-soft); }
+.tech-new h4 { margin: 0 0 4px; font-size: 13px; font-weight: 600; color: var(--accent); }
+.tech-new p { margin: 0; color: var(--ink-2); }
+.tech-banner { margin-top: 12px; padding: 10px 14px; border-radius: var(--radius); background: var(--fill); color: var(--ink-2); font-size: 14.5px; }
+.tech-banner p { margin: 0; }
+.tech-banner p + p { margin-top: 6px; }

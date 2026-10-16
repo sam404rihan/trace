@@ -142,8 +142,19 @@
     }
     return out;
   };
+  // A technique is known once its teacher is solved, or its teacher's topic is placed out.
+  const techTeacher = (id) => (S.techniques || {})[id]?.teacher || null;
+  const techKnown = (id) => { const t = techTeacher(id); return !!t && (solved(t) || placedOut(topicOf(t))); };
+  const techCtx = () => ({
+    techniques: S.techniques || {}, known: techKnown,
+    teacherHref: (id) => (techTeacher(id) ? `#/p/${techTeacher(id)}` : null),
+    teacherTitle: (id) => (techTeacher(id) ? S.problems[techTeacher(id)].title : ""),
+    teacherTopic: (id) => (techTeacher(id) ? topicOf(techTeacher(id)) : null),
+    topicTitle,
+    taughtIn: (topic) => topic.items.flatMap((n) => S.problems[n].teaches || []).filter((id) => (S.techniques || {})[id]),
+  });
 
-  // Ladder rule: snippet → guided → all solo problems open together → build after two solos.
+  // Ladder rule: snippet → guided → solos together → build after two solos, and never before a same-topic teacher of a technique it uses.
   function blocker(topic, name) {
     const of = (k) => topic.items.filter((n) => S.problems[n].kind === k);
     const kind = S.problems[name].kind;
@@ -154,7 +165,7 @@
       const solos = of("solo");
       if (solos.filter(solved).length < Math.min(2, solos.length)) return solos.find((n) => !solved(n));
     }
-    return null;
+    return (S.problems[name].uses || []).map(techTeacher).find((t) => t && t !== name && topic.items.includes(t) && !solved(t)) || null;
   }
   function isUnlocked(topic, name) {
     if (solved(name) || S.progress.unlocked.includes(name) || placedOut(topic)) return true;
@@ -481,6 +492,7 @@
               : i === 1 ? h("div", { class: "items" }, walkthroughRow(topic))
               : h("div", { class: "items" }, groups[i].map((n) => itemRow(topic, n)))));
       })),
+      T.topicTechniques(topic, techCtx()),
       topic.has_lesson ? sheet : null));
     if (topic.has_lesson) {
       const lesson = await api(`/api/lesson?topic=${encodeURIComponent(topic.id)}`).catch(() => null);
@@ -657,7 +669,10 @@
         const before = blocker(topic, name);
         body.append(h("h1", {}, p.title),
           h("div", { class: "reveal-box" },
-            S.problems[name].kind === "build" && S.problems[before].kind === "solo"
+            (S.problems[name].uses || []).some((t) => techTeacher(t) === before)
+              ? h("p", {}, "This uses ", h("strong", {}, S.techniques[(S.problems[name].uses || []).find((t) => techTeacher(t) === before)].name),
+                ". ", h("strong", {}, S.problems[before].title), " teaches it, so do that one first.")
+              : S.problems[name].kind === "build" && S.problems[before].kind === "solo"
               ? h("p", {}, "The build opens once you've solved two of this topic's problems. It combines what they teach.")
               : h("p", {}, `This unlocks after `, h("strong", {}, S.problems[before].title), `. The ladder builds on itself, so each rung makes the next one easier.`),
             h("div", { style: "display:flex;gap:8px;flex-wrap:wrap" },
@@ -676,9 +691,11 @@
             h("span", { class: "badge" }, stepCount ? `${stepCount} steps` : `${p.tests} tests`),
             ...(p.in_plans || []).map((t) => h("span", { class: "badge plan" }, t)),
             p.reported && p.reported.length ? h("span", { class: "badge reported", title: p.reported_note }, `Often reported: ${p.reported.join(", ")}`) : null),
+          ...[T.usesRow(S.problems[name], techCtx()), T.techniqueBanner(S.problems[name], topic, techCtx())].filter(Boolean),
           showHowTo
             ? T.howToCard({ onClose: () => { showHowTo = false; local.set("trace.howtoSeen", true); renderLeft(); } })
             : h("button", { class: "link howto-link", type: "button", onclick: () => { showHowTo = true; renderLeft(); } }, "How to work a problem"),
+          ...T.techniqueBoxes(S.problems[name], techCtx()),
           h("div", { class: "body-text" }, renderStatement(p.statement)));
         if (p.aim) body.append(h("div", { class: "callout" }, h("h4", {}, "Aim for"), h("p", {}, inline(p.aim))));
         if (stepCount) {
@@ -1131,6 +1148,7 @@
       S.problems = data.problems;
       S.progress = data.progress;
       S.plans = data.plans || S.plans;
+      S.techniques = data.techniques || {};
       showDocker(data.docker);
     } catch (err) {
       app.replaceChildren(h("div", { class: "page" }, h("h1", {}, "Can't reach Trace's engine"),
