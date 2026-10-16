@@ -145,15 +145,19 @@ USES = ["bfs.grid"]                # other techniques this problem needs, each t
 
 ### The coverage rules
 
-Course order means topics in order. Within a topic, it means ladder rank: snippet 0, guided 1,
-easy 2, medium 3, hard 4, build 5. The check enforces these rules:
+Course order means topics in order. Within a topic, problems are sorted by ladder rank (snippet 0,
+guided 1, easy 2, medium 3, hard 4, build 5). Within a rank, a problem goes after every same-topic
+problem that teaches a technique it uses, then the rest are sorted by title. So a chain of basics,
+such as an easy problem that needs flood fill from another easy problem, comes out in teaching
+order. The server sorts this way and the check uses the same order. The check enforces these
+rules:
 
 1. Every id in `USES` or `TEACHES` exists in the registry.
 2. Every registry technique has exactly one teacher.
 3. A teacher's kind is `snippet`, `guided` or `easy` (or `parsons`).
-4. For every problem P and every technique t in P's `USES`, t's teacher comes **strictly before** P:
-   either in an earlier topic, or in the same topic with a lower rank. Two problems of the same
-   rank in the same topic don't count as ordered, because their order comes from titles.
+4. For every problem P and every technique t in P's `USES`, t's teacher comes **before** P in
+   course order: in an earlier topic, or earlier in the same topic. A dependency cycle always
+   breaks this rule, so the check catches cycles too.
    Rule 4 applies to teachers' own `USES` as well, so every chain of prerequisites is valid.
 5. No problem lists the same id in both `TEACHES` and `USES`.
 6. **Audit progress.** A problem that isn't audited yet produces a warning, not a failure. Once
@@ -163,8 +167,7 @@ easy 2, medium 3, hard 4, build 5. The check enforces these rules:
 
 New `coverage.py`: a pure function `check_coverage(topics, problems, techniques) -> (errors,
 warnings)`, which returns plain-English lines that name the problem, the technique and the rule.
-For example: "rotting_oranges uses bfs.multi_source, but its teacher spreading_fire is also
-medium; teachers must come strictly before".
+For example: "rotting_oranges uses bfs.multi_source, but its teacher comes later in the same topic".
 
 - `python server.py --check` runs it and fails on any error. Warnings are printed with a count
   ("212 problems not yet audited").
@@ -215,8 +218,7 @@ When the check reports a problem, fix it with the first of these that fits:
    the point of the problem.
 
 Expect roughly 40–70 new basic problems in all. The audit gives the real number. For the pilot
-topic, Graph traversal, it's four: multi-source BFS, border flood fill, BFS over a richer state,
-and BFS over a built graph.
+topic, Graph traversal, the pilot audit found five, plus one re-ranked problem (see Part 1).
 
 ## How it fits the other phases
 
@@ -240,11 +242,16 @@ and BFS over a built graph.
 - the API fields;
 - the box, the chips, the lock, the banner and the topic list;
 - Graph traversal fully audited and fixed. That means its techniques in the registry, every problem
-  tagged, and the four new basic problems written with tests and solutions.
+  tagged, and its gaps fixed. The pilot audit found that multi-source BFS is already taught by the
+  guided problem `distance_to_exit`. Five techniques get new easy problems: graph traversal from
+  edges or node links, searching back from the targets, BFS with generated neighbours, BFS over a
+  richer state, and rebuilding a path from parents. `num_islands` is re-ranked to easy so it can
+  teach counting connected regions. `shortest_path_all_keys` holds its keys in a set, not a
+  bitmask, so it no longer depends on Bit tricks (topic 25).
 
 **Tests:**
 - `tests/test_coverage.py` builds small fake courses. Each one tests a single rule: unknown id, no
-  teacher or two teachers, a teacher of the wrong kind, a teacher of the same rank, a teacher in a
+  teacher or two teachers, a teacher of the wrong kind, a teacher later in the same topic, a teacher in a
   later topic, a cross-topic teacher in an earlier topic (allowed), a teacher with a bad chain, the
   same id taught and used, and an unaudited problem giving a warning only.
 - A real-course test: zero errors across the course, and zero warnings in Graph traversal.
@@ -281,8 +288,8 @@ When the last stage is done, rule 6 turns strict: the unit test requires zero un
   first.
 - On any problem, the "Uses" row shows every technique it relies on, and each unlearned one links
   to its teacher.
-- Graph traversal (Part 1) has basic problems for multi-source BFS, border flood fill, BFS over a
-  richer state and BFS over a built graph, each before the problems that need it.
+- Graph traversal (Part 1) has a basic problem for every technique its problems use, each before
+  the problems that need it.
 
 ## Left out
 
@@ -292,8 +299,8 @@ When the last stage is done, rule 6 turns strict: the unit test requires zero un
   covers jumping ahead.
 - **Several teachers per technique** (an easy and a walkthrough). One teacher keeps the rules
   simple. Walkthroughs can point at the teacher.
-- **Explicit ordering within a difficulty** (an `ORDER` field). The strict-rank rule avoids it: if
-  two same-rank problems need ordering, the teacher becomes basic or the user moves up a rank.
+- **An explicit ordering field** (an `ORDER` list). Sorting by teaching dependencies gives the
+  order automatically.
 
 ## References
 
