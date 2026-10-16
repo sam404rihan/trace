@@ -131,7 +131,9 @@ TEACHES = ["bfs.multi_source"]     # this is the basic problem for these techniq
 USES = ["bfs.grid"]                # other techniques this problem needs, each taught before it
 ```
 
-- Every problem gets `USES`, which may be empty.
+- Every problem gets `USES`, which may be empty. It lists every technique the problem uses
+  directly, including basic ones like grid neighbours, not just the newest one. That way the
+  "Uses" row shows everything the problem relies on.
 - A problem with neither field counts as **not yet audited**.
 - Basic problems also get `TEACHES`.
 - The server reads both fields in `parse_problem`, the way it reads `TESTS` and `STEPS`.

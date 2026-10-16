@@ -108,6 +108,21 @@ class GraphTraversalPilot(unittest.TestCase):
         for name in ("reachable_nodes", "count_enclosed", "fewest_steps", "key_then_exit", "route_to_exit", "num_islands"):
             self.assertEqual(self.problems[name]["difficulty"], "easy", name)
 
+    def test_uses_lists_every_technique_used_directly(self):
+        expected = {
+            "rotting_oranges": {"bfs.multi_source", "bfs.shortest", "grid.neighbors"},
+            "max_area_island": {"graph.components", "dfs.flood_fill", "grid.neighbors"},
+            "pacific_atlantic": {"flood.from_targets", "dfs.flood_fill", "grid.neighbors"},
+            "surrounded_regions": {"flood.from_targets", "dfs.flood_fill", "grid.neighbors"},
+            "word_ladder": {"bfs.implicit", "bfs.shortest"},
+            "shortest_path_all_keys": {"bfs.state", "bfs.shortest", "grid.neighbors"},
+            "solve_maze": {"bfs.path", "bfs.shortest", "grid.neighbors"},
+            "num_islands": {"dfs.flood_fill", "grid.neighbors"},
+            "count_enclosed": {"dfs.flood_fill", "grid.neighbors"},
+        }
+        for name, uses in expected.items():
+            self.assertEqual(set(self.problems[name]["uses"]), uses, name)
+
     def test_bus_routes_has_its_group_technique(self):
         self.assertIn("graph.groups", self.problems["bus_routes"]["uses"])
         self.assertEqual(self.problems["club_hops"]["teaches"], ["graph.groups"])

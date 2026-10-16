@@ -1,6 +1,8 @@
 """Every technique a problem may rely on. Each one is taught by exactly one basic problem (the one
 that lists it in TEACHES), earlier in the course than any problem that lists it in USES.
-`python server.py --check coverage` enforces this. Explanations: 2-4 sentences, inline `code` allowed."""
+`python server.py --check coverage` enforces this. Explanations: 2-4 sentences, inline `code` allowed.
+A problem's USES lists every technique it uses directly, not just the newest one, so its Uses row
+shows everything it relies on."""
 
 TECHNIQUES = {
     "grid.neighbors": {
