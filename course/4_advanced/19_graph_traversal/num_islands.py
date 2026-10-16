@@ -1,5 +1,5 @@
 """
-Number of Islands                                                  [medium] · graphs
+Number of Islands                                                  [easy] · graphs
 
 `grid` is a 2D map of 1s (land) and 0s (water). An island is a group of land
 cells connected horizontally or vertically (not diagonally). Count the islands.
@@ -19,6 +19,9 @@ Hint:     Scan every cell. When you find unvisited land, that's a new island —
 def num_islands(grid: list[list[int]]) -> int:
     raise NotImplementedError  # replace this line with your solution
 
+
+TEACHES = ["graph.components"]
+USES = ["dfs.flood_fill"]
 
 TESTS = [
     (([[1, 1, 1, 1, 0],

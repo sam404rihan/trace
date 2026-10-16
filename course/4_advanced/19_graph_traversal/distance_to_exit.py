@@ -52,6 +52,9 @@ def _big():
 
 _GRID, _DIST = _big()
 
+TEACHES = ["bfs.shortest", "bfs.multi_source"]
+USES = ["grid.neighbors"]
+
 STEPS = [
     {
         "title": "One exit",

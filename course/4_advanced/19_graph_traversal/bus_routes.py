@@ -62,6 +62,8 @@ def _cases():
     return out
 
 
+USES = ["graph.adjacency", "bfs.shortest"]
+
 TESTS = [
     (([[1, 2, 7], [3, 6, 7]], 1, 6), 2),
     (([[7, 12], [4, 5, 15], [6], [15, 19], [9, 12, 13]], 15, 12), -1),

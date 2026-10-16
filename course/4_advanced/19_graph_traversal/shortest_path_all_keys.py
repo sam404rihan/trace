@@ -21,9 +21,9 @@ Example:
 
 Aim for:  O(rows * cols * 2^keys): BFS over (row, col, keys held).
 Hint:     A plain BFS on cells fails, because you may need to come back to a cell after picking
-          up a key. So make the state (r, c, mask) where bit i of mask = holding key i. Picking up
-          a key sets its bit. A lock is passable when its bit is set. Stop when mask has every
-          key's bit.
+          up a key. So make the state (r, c, keys), where keys is a frozenset of the keys you
+          hold. Picking up a key adds it. A lock is passable when its lowercase letter is in
+          keys. Stop when you hold every key. (A bitmask works too, if you know bit tricks.)
 """
 
 
@@ -80,6 +80,8 @@ def _cases():
     out.append(((g,), _ref(g)))
     return out
 
+
+USES = ["bfs.state"]
 
 TESTS = [
     ((["@.a..", "###.#", "b.A.B"],), 8),

@@ -89,5 +89,30 @@ class RealCourse(unittest.TestCase):
         self.assertEqual(errors, [])
 
 
+class GraphTraversalPilot(unittest.TestCase):
+    def setUp(self):
+        self.topics, self.problems = server.load_course()
+        self.topic = next(t for t in self.topics if t["id"] == "19_graph_traversal")
+
+    def test_every_problem_is_audited(self):
+        self.assertEqual([n for n in self.topic["items"] if not self.problems[n]["audited"]], [])
+
+    def test_teachers_come_before_their_users(self):
+        items = self.topic["items"]
+        for teacher, user in (("flood_fill", "count_enclosed"), ("flood_fill", "num_islands"),
+                              ("num_islands", "max_area_island"), ("count_enclosed", "pacific_atlantic"),
+                              ("key_then_exit", "shortest_path_all_keys"), ("route_to_exit", "solve_maze")):
+            self.assertLess(items.index(teacher), items.index(user), (teacher, user))
+
+    def test_new_basics_are_easy(self):
+        for name in ("reachable_nodes", "count_enclosed", "fewest_steps", "key_then_exit", "route_to_exit", "num_islands"):
+            self.assertEqual(self.problems[name]["difficulty"], "easy", name)
+
+    def test_every_plan_item_exists(self):
+        plans = server.load_plans()["plans"]
+        missing = [n for pl in plans for s in pl["sections"] for n in s["items"] if n not in self.problems]
+        self.assertEqual(missing, [])
+
+
 if __name__ == "__main__":
     unittest.main()

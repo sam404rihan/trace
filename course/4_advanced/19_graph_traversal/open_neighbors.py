@@ -22,6 +22,9 @@ def open_neighbors(grid: list[str], r: int, c: int) -> list[tuple[int, int]]:
     raise NotImplementedError  # replace this line with your solution
 
 
+TEACHES = ["grid.neighbors"]
+USES = []
+
 TESTS = [
     ((["..#", ".#.", "..."], 1, 0), [(0, 0), (2, 0)]),
     ((["..#", ".#.", "..."], 0, 0), [(1, 0), (0, 1)]),

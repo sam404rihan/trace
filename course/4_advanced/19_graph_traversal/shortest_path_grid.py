@@ -20,6 +20,8 @@ def shortest_path_grid(grid: list[list[int]]) -> int:
     raise NotImplementedError  # replace this line with your solution
 
 
+USES = ["bfs.shortest", "grid.neighbors"]
+
 TESTS = [
     (([[0, 0, 0], [1, 1, 0], [1, 1, 0]],), 4),
     (([[0, 1], [1, 0]],), -1),

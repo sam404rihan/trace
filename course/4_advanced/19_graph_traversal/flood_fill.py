@@ -23,6 +23,9 @@ def flood_fill(image: list[list[int]], sr: int, sc: int, color: int) -> list[lis
     raise NotImplementedError  # replace this line with your solution
 
 
+TEACHES = ["dfs.flood_fill"]
+USES = ["grid.neighbors"]
+
 TESTS = [
     (([[1, 1, 1], [1, 1, 0], [1, 0, 1]], 1, 1, 2), [[2, 2, 2], [2, 2, 0], [2, 0, 1]]),
     (([[0, 0, 0], [0, 0, 0]], 0, 0, 0), [[0, 0, 0], [0, 0, 0]]),

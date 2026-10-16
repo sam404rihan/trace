@@ -92,4 +92,6 @@ _MAZES = [
     _big(),
 ]
 
+USES = ["bfs.path"]
+
 TESTS = [((m,), _describe(m)) for m in _MAZES]
