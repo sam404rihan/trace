@@ -255,7 +255,7 @@ topic, Graph traversal, the pilot audit found five, plus one re-ranked problem (
   later topic, a cross-topic teacher in an earlier topic (allowed), a teacher with a bad chain, the
   same id taught and used, and an unaudited problem giving a warning only.
 - A real-course test: zero errors across the course, and zero warnings in Graph traversal.
-- `--check` passes, including the four new problems' solutions and starters.
+- `--check` passes, including the five new problems' solutions and starters.
 - Browser checks (headless, as in Phase 1):
   - the box on a teaching problem;
   - chips with ✓ and without;
