@@ -157,7 +157,7 @@
     return null;
   }
   function isUnlocked(topic, name) {
-    if (solved(name) || S.progress.unlocked.includes(name)) return true;
+    if (solved(name) || S.progress.unlocked.includes(name) || placedOut(topic)) return true;
     return blocker(topic, name) == null;
   }
 
@@ -245,6 +245,7 @@
   }
 
   async function viewStart() {
+    S.startShown = true;                         // redirect a first visit here once per session, never in a loop
     document.title = "Where are you starting? | Trace";
     crumbs({ label: "Topics", href: "#/" }, { label: "Where are you starting?" });
     const host = h("div", { class: "start-page", "aria-busy": "true" }, sk("sk-title"), sk("sk-line", "width:70%"));
@@ -1114,7 +1115,7 @@
       if (kind === "d") return viewDrill(a, b);
       if (kind === "w") return await viewWalkthrough(a);
       if (kind === "start") return await viewStart();
-      if (!kind && firstVisit()) { history.replaceState(null, "", "#/start"); return await viewStart(); }
+      if (!kind && !S.startShown && firstVisit()) { history.replaceState(null, "", "#/start"); return await viewStart(); }
       return viewHome();
     } catch (err) {
       console.error(err);
