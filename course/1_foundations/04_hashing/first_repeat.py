@@ -16,6 +16,9 @@ def first_repeat(items: list):
     raise NotImplementedError  # replace this line with your solution
 
 
+TEACHES = ["hash.seen_set"]
+USES = []
+
 TESTS = [
     (([3, 1, 4, 1, 3],), 1),
     (([1, 2, 3],), None),

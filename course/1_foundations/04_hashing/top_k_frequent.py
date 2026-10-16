@@ -22,6 +22,8 @@ def CHECK(got, expected):
     return sorted(got) == sorted(expected)
 
 
+USES = []
+
 TESTS = [
     (([1, 1, 1, 2, 2, 3], 2), [1, 2]),
     (([1], 1), [1]),

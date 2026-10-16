@@ -59,6 +59,30 @@ TECHNIQUES = {
                    "you know about everything before i, and one pass right to left for everything after it. "
                    "Combine the two at each i: two O(n) passes instead of searching both ways from every index.",
     },
+    "hash.seen_set": {
+        "name": "Seen set",
+        "explain": "Walk once with an empty set. For each item, first ask `if x in seen`, and only then "
+                   "`seen.add(x)`. The set answers \"have I met this before?\" in O(1), so a repeat or a loop "
+                   "shows up the moment it happens.",
+    },
+    "hash.run_starts": {
+        "name": "Starting runs at their first number",
+        "explain": "To measure runs of consecutive numbers, put them in a set and only start counting at an x whose "
+                   "x - 1 is missing: that x begins a run. Walk up x + 1, x + 2, ... while they're in the set. Each "
+                   "number is looked at about twice, so it's O(n) without sorting.",
+    },
+    "hash.complement": {
+        "name": "Complement lookup",
+        "explain": "When two values must add up to a target, x's partner is `target - x`. Keep a dict of the values "
+                   "you've passed (value → index) and look the partner up before you add x, so x can't pair with "
+                   "itself. One pass instead of trying every pair.",
+    },
+    "hash.group_key": {
+        "name": "Grouping by a computed key",
+        "explain": "When items belong together because they share something you can compute (first and last letter, "
+                   "sorted letters, `r - c` for a diagonal), use that as a dict key: "
+                   "`groups.setdefault(key(x), []).append(x)`. The skill is choosing the key.",
+    },
     "grid.neighbors": {
         "name": "Grid neighbours",
         "explain": "A cell (r, c) has up to four neighbours: (r - 1, c), (r + 1, c), (r, c - 1) and (r, c + 1). "

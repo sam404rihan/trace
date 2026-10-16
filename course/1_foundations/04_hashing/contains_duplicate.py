@@ -17,6 +17,8 @@ def contains_duplicate(nums: list[int]) -> bool:
     raise NotImplementedError  # replace this line with your solution
 
 
+USES = ["hash.seen_set"]
+
 TESTS = [
     (([1, 2, 3, 1],), True),
     (([1, 2, 3, 4],), False),

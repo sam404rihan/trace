@@ -18,6 +18,9 @@ def two_sum(nums: list[int], target: int) -> list[int]:
     raise NotImplementedError  # replace this line with your solution
 
 
+TEACHES = ["hash.complement"]
+USES = []
+
 TESTS = [
     (([2, 7, 11, 15], 9), [0, 1]),
     (([3, 2, 4], 6), [1, 2]),

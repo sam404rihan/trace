@@ -6,8 +6,11 @@ def is_happy(n: int) -> bool:
             total += d * d
         return total
 
-    # Floyd's cycle detection: the sequence either hits 1 or loops, and fast catches slow in a loop.
-    slow, fast = n, step(n)
-    while fast != 1 and slow != fast:
-        slow, fast = step(slow), step(step(fast))
-    return fast == 1
+    seen = set()                        # a number we've met before means we're going round a loop
+    while n != 1 and n not in seen:
+        seen.add(n)
+        n = step(n)
+    return n == 1
+
+    # No set needed (Linked lists topic): Floyd's fast and slow pointers. Move slow one step and
+    # fast two; the number is happy if fast reaches 1, and loops if fast catches up with slow.

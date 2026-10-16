@@ -27,5 +27,7 @@ def _brute(n):
     return n == 1
 
 
+USES = ["hash.seen_set"]
+
 TESTS = [((n,), _brute(n)) for n in (19, 2, 1, 7, 4, 116, 100, 1111111, 999_999_999)] + \
         [((n,), _brute(n)) for n in range(20, 40)]

@@ -17,6 +17,8 @@ def valid_anagram(s: str, t: str) -> bool:
     raise NotImplementedError  # replace this line with your solution
 
 
+USES = []
+
 TESTS = [
     (("anagram", "nagaram"), True),
     (("rat", "car"), False),

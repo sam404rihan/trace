@@ -47,6 +47,8 @@ class WordIndex:
 
 CLASS = "WordIndex"
 
+USES = ["hash.set_lookup"]
+
 TESTS = [
     ([("WordIndex",), ("add", 1, "The quick brown fox"), ("add", 2, "A quick blue hare"),
       ("search", "quick"), ("search_all", ["quick", "fox"]), ("remove", 1), ("search", "quick")],

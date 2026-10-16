@@ -189,6 +189,22 @@ class Stage1Audit(unittest.TestCase):
                           "detect_squares": ["hash.set_lookup"], "first_missing_positive": []})
         self.assertEqual(self.problems["distance_to_char"]["difficulty"], "easy")
 
+    def test_topic_04(self):
+        self.assert_audited("04_hashing")
+        self.assert_teaches({"first_repeat": ["hash.seen_set"], "longest_consecutive": ["hash.run_starts"],
+                             "two_sum": ["hash.complement"], "group_by_ends": ["hash.group_key"]})
+        self.assert_uses({"contains_duplicate": ["hash.seen_set"], "is_happy": ["hash.seen_set"],
+                          "is_valid_sudoku": ["hash.seen_set"], "group_anagrams": ["hash.group_key"],
+                          "longest_consecutive": ["hash.set_lookup"],
+                          "grid_illumination": ["hash.group_key", "hash.set_lookup"], "max_equal_freq": []})
+        self.assertEqual(self.problems["group_by_ends"]["difficulty"], "easy")
+        self.assertEqual(self.problems["grid_illumination"]["difficulty"], "hard")
+
+    def test_every_stage_1_topic_keeps_two_hard_problems(self):
+        for topic_id in STAGE_1:
+            hards = [n for n in self.items(topic_id) if self.problems[n]["difficulty"] == "hard"]
+            self.assertGreaterEqual(len(hards), 2, (topic_id, hards))
+
     def test_tags_stay_out_of_starters(self):
         leaks = [n for n, p in self.problems.items() if "USES" in p["starter"] or "TEACHES" in p["starter"]]
         self.assertEqual(leaks, [])

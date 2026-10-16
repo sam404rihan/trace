@@ -25,6 +25,8 @@ def CHECK(got, expected):
     return normalize(got) == normalize(expected)
 
 
+USES = ["hash.group_key"]
+
 TESTS = [
     ((["eat", "tea", "tan", "ate", "nat", "bat"],), [["bat"], ["nat", "tan"], ["ate", "eat", "tea"]]),
     (([""],), [[""]]),

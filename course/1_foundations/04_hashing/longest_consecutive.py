@@ -34,6 +34,9 @@ def _big():
 
 _NUMS, _BEST = _big()
 
+TEACHES = ["hash.run_starts"]
+USES = ["hash.set_lookup"]
+
 STEPS = [
     {
         "title": "Make it work",

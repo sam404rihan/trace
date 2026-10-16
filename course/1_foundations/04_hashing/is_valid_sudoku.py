@@ -46,6 +46,8 @@ def _cases():
     return out
 
 
+USES = ["hash.seen_set"]
+
 TESTS = [
     ((_OK,), True),
     ((["539.7...."] + _OK[1:],), False),                       # a second 9 in the top-left box only

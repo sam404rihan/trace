@@ -35,6 +35,8 @@ def encode_decode(strs: list[str]) -> list[str]:
     return decode(a)
 
 
+USES = []
+
 TESTS = [
     ((["lint", "code", "", "4#a"],), ["lint", "code", "", "4#a"]),
     (([],), []),
