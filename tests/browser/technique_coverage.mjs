@@ -60,7 +60,7 @@ if (planned) {
 // The topic page lists the techniques in teaching order, with ticks for learned ones.
 await p.reload(BASE + "/#/t/19_graph_traversal");
 const list = await p.eval(`[...document.querySelectorAll(".tech-list .item")].map(a => (a.classList.contains("solved") ? "✓" : "") + a.querySelector(".t").textContent)`);
-check("topic lists 10 techniques", list.length === 10, list.join(" | "));
+check("topic lists 11 techniques", list.length === 11, list.join(" | "));
 check("learned techniques are ticked", list[0] === "✓Grid neighbours" && list.includes("✓Flood fill") && list.includes("Rebuilding the path"), list.join(" | "));
 
 // The banner, through the helper with a technique taught in another topic.

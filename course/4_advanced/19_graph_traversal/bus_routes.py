@@ -62,7 +62,7 @@ def _cases():
     return out
 
 
-USES = ["graph.adjacency", "bfs.shortest"]
+USES = ["graph.groups", "graph.adjacency", "bfs.shortest"]
 
 TESTS = [
     (([[1, 2, 7], [3, 6, 7]], 1, 6), 2),

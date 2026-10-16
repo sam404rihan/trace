@@ -36,6 +36,12 @@ TECHNIQUES = {
                    "(a, b), add b to a's list and a to b's. Then BFS or DFS with a `seen` set. The same walk works "
                    "when nodes link to their neighbours directly, like `node.neighbors`.",
     },
+    "graph.groups": {
+        "name": "BFS over groups",
+        "explain": "When nodes belong to groups (stops and buses, people and clubs), index each node to its groups and "
+                   "let a whole group count as one step. Mark a group used the first time you expand it, so its "
+                   "members are scanned once, not once per member.",
+    },
     "flood.from_targets": {
         "name": "Searching back from the targets",
         "explain": 'Instead of asking "can this cell reach the edge?" once per cell, search once FROM the targets '

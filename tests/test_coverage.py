@@ -108,6 +108,12 @@ class GraphTraversalPilot(unittest.TestCase):
         for name in ("reachable_nodes", "count_enclosed", "fewest_steps", "key_then_exit", "route_to_exit", "num_islands"):
             self.assertEqual(self.problems[name]["difficulty"], "easy", name)
 
+    def test_bus_routes_has_its_group_technique(self):
+        self.assertIn("graph.groups", self.problems["bus_routes"]["uses"])
+        self.assertEqual(self.problems["club_hops"]["teaches"], ["graph.groups"])
+        items = self.topic["items"]
+        self.assertLess(items.index("club_hops"), items.index("bus_routes"))
+
     def test_every_plan_item_exists(self):
         plans = server.load_plans()["plans"]
         missing = [n for pl in plans for s in pl["sections"] for n in s["items"] if n not in self.problems]
