@@ -5,5 +5,6 @@ built-in WebSocket) and Chrome; set `CHROME` if it isn't at the default Windows 
 starts Trace on an empty workspace with a fresh browser profile:
 
     bash tests/browser/fresh.sh 8170 technique_coverage.mjs
+    bash tests/browser/fresh.sh 8171 stage_1.mjs
 
 These aren't part of `python -m unittest`; run them when you change a screen.
