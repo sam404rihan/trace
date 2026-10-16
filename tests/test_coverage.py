@@ -216,6 +216,18 @@ class Stage1Audit(unittest.TestCase):
             hards = [n for n in self.items(topic_id) if self.problems[n]["difficulty"] == "hard"]
             self.assertGreaterEqual(len(hards), 2, (topic_id, hards))
 
+    def cases_of(self, name):
+        return server.load_module(next(server.COURSE.glob(f"*/*/{name}.py")))["TESTS"]
+
+    def test_teacher_big_tests_reject_the_naive_solution(self):
+        # Solving a teacher marks its technique learned, so its big test must time out without it.
+        # Searching every c from every index is O(n * copies of c): many copies must be present.
+        self.assertTrue(any(len(s) >= 100_000 and s.count(c) >= 10_000
+                            for (s, c), _ in self.cases_of("distance_to_char")))
+        # Counting each distinct value with nums.count is O(n * distinct values).
+        self.assertTrue(any(len(nums) >= 100_000 and len(set(nums)) >= 10_000
+                            for (nums,), _ in self.cases_of("equal_pairs")))
+
     def test_tags_stay_out_of_starters(self):
         leaks = [n for n, p in self.problems.items() if "USES" in p["starter"] or "TEACHES" in p["starter"]]
         self.assertEqual(leaks, [])
