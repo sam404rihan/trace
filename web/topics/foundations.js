@@ -58,7 +58,7 @@
   ];
 
   T.topic({
-    id: "python-costs", n: 1, stage: STAGE,
+    id: "python-costs", n: 2, stage: STAGE,
     title: "What Python operations cost",
     idea: "Most slow solutions aren't slow on paper. They hide an O(n) step inside a loop: a search through a list, a pop from the front, a string rebuilt every time.",
     signals: "Any time you write a loop, ask what each line inside it costs.",
@@ -125,7 +125,7 @@
   ];
 
   T.topic({
-    id: "big-o", n: 2, stage: STAGE,
+    id: "big-o", n: 1, stage: STAGE,
     title: "Big-O in practice",
     idea: "Big-O asks one question: when the input gets 10× bigger, how much more work is there? Count how often the innermost line runs and drop the constants.",
     signals: "Before you code, read the input limit. It usually tells you which complexity the problem expects.",

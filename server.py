@@ -560,6 +560,7 @@ class CourseCache:
                     "id": topic_dir.name, "n": number,
                     "title": (lesson and lesson["title"]) or folder_label(topic_dir.name),
                     "stage": folder_label(stage_dir.name),
+                    "stage_n": int(re.match(r"^(\d+)", stage_dir.name).group(1)),
                     "lesson": lesson,
                     "walkthrough": walkthrough,
                     "items": [p["name"] for p in found],

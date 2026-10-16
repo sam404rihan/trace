@@ -18,7 +18,7 @@ Example:
 
 Aim for:  the last test has 200,000 lines from 20,000 different IPs, so you need
           about O(n log n) or better.
-Hint:     Count with a dict (or Counter), then sort the distinct IPs by (-count, ip)
+Hint:     Count with a dict, then sort the distinct IPs by (-count, ip)
           and slice the first k. heapq.nsmallest(k, ...) also works.
 """
 

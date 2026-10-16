@@ -14,7 +14,7 @@ Example:
 
 Aim for:  O(n).
 Hint:     Rearrange: j - i == nums[j] - nums[i]  is the same as  nums[i] - i == nums[j] - j.
-          So count the GOOD pairs instead: group indices by nums[k] - k with a Counter.
+          So count the GOOD pairs instead: count how many indices share each nums[k] - k, in a dict.
           A group of size c has c * (c - 1) // 2 good pairs. Bad = all pairs - good pairs.
 """
 
