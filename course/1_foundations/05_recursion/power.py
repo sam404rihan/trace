@@ -18,6 +18,8 @@ def power(x: int, n: int) -> int:
     raise NotImplementedError  # replace this line with your solution
 
 
+USES = ["recursion.trust"]
+
 TESTS = [
     ((2, 10), 1024),
     ((3, 0), 1),

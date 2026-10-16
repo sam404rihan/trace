@@ -38,6 +38,8 @@ _PROJECT = {
     ],
 }
 
+USES = ["recursion.trust"]
+
 TESTS = [
     (({"name": "root", "files": {"x.py": 5}, "folders": [{"name": "img", "files": {"a.png": 100}, "folders": []}]},),
      ["root/ (105)", "  img/ (100)", "    a.png (100)", "  x.py (5)"]),

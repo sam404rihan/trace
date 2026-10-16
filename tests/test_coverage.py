@@ -200,6 +200,17 @@ class Stage1Audit(unittest.TestCase):
         self.assertEqual(self.problems["group_by_ends"]["difficulty"], "easy")
         self.assertEqual(self.problems["grid_illumination"]["difficulty"], "hard")
 
+    def test_topic_05(self):
+        self.assert_audited("05_recursion")
+        self.assert_teaches({"digit_sum": ["recursion.trust"], "count_paths": ["recursion.memo"],
+                             "min_max_expr": ["recursion.parse"]})
+        self.assert_uses({"scramble_string": ["recursion.memo", "recursion.trust"],
+                          "calculate": ["recursion.parse", "recursion.trust"],
+                          "count_of_atoms": ["recursion.parse", "recursion.trust"],
+                          "flatten_list": ["recursion.trust"], "power": ["recursion.trust"],
+                          "render_folders": ["recursion.trust"], "min_max_expr": ["recursion.trust"]})
+        self.assertEqual(self.problems["min_max_expr"]["difficulty"], "easy")
+
     def test_every_stage_1_topic_keeps_two_hard_problems(self):
         for topic_id in STAGE_1:
             hards = [n for n in self.items(topic_id) if self.problems[n]["difficulty"] == "hard"]

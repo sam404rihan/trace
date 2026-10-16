@@ -17,6 +17,9 @@ def count_paths(rows: int, cols: int) -> int:
     raise NotImplementedError  # replace this line with your solution
 
 
+TEACHES = ["recursion.memo"]
+USES = ["recursion.trust"]
+
 STEPS = [
     {
         "title": "Recurse",

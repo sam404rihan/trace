@@ -52,6 +52,8 @@ def _cases():
     return out
 
 
+USES = ["recursion.parse", "recursion.trust"]
+
 TESTS = [
     (("1 + 1",), 2),
     ((" 2-1 + 2 ",), 3),

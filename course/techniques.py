@@ -83,6 +83,24 @@ TECHNIQUES = {
                    "sorted letters, `r - c` for a diagonal), use that as a dict key: "
                    "`groups.setdefault(key(x), []).append(x)`. The skill is choosing the key.",
     },
+    "recursion.trust": {
+        "name": "Base case and a smaller call",
+        "explain": "Answer the smallest input directly: that's the base case. For anything bigger, call the function "
+                   "on a smaller piece, trust it to be right, and build your answer from it. Every call must move "
+                   "toward the base case.",
+    },
+    "recursion.memo": {
+        "name": "Memoisation",
+        "explain": "When a recursive function is called again and again with the same arguments, remember each "
+                   "answer: put `@cache` above it, or keep a dict. Each distinct call is then worked out once, which "
+                   "can turn exponential time into the number of distinct calls.",
+    },
+    "recursion.parse": {
+        "name": "Parsing with recursion",
+        "explain": "Write `parse(i)` that reads the piece of text starting at index i and returns (its value, the "
+                   "index just after it). When it meets an opening bracket, it calls itself for the inside and "
+                   "carries on from the index that call returns.",
+    },
     "grid.neighbors": {
         "name": "Grid neighbours",
         "explain": "A cell (r, c) has up to four neighbours: (r - 1, c), (r + 1, c), (r, c - 1) and (r, c + 1). "

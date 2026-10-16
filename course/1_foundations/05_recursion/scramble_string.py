@@ -66,6 +66,8 @@ def _cases():
     return out
 
 
+USES = ["recursion.memo", "recursion.trust"]
+
 TESTS = [
     (("great", "rgeat"), True),
     (("abcde", "caebd"), False),

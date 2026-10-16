@@ -17,6 +17,8 @@ def flatten_list(nested: list) -> list[int]:
     raise NotImplementedError  # replace this line with your solution
 
 
+USES = ["recursion.trust"]
+
 TESTS = [
     (([1, [2, [3, [4]], 5]],), [1, 2, 3, 4, 5]),
     (([],), []),

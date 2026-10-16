@@ -17,6 +17,9 @@ def digit_sum(n: int) -> int:
     raise NotImplementedError  # replace this line with your solution
 
 
+TEACHES = ["recursion.trust"]
+USES = []
+
 TESTS = [
     ((4096,), 19),
     ((7,), 7),
