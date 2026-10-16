@@ -133,6 +133,15 @@
     return !T.topics.some((dt) => dt.drills.some((d) => T.DrillProgress.rec(dt, d).runs > 0));
   }
   const placedOut = (topic) => (S.progress.placement?.placed_out || []).includes(topic.id);
+  T.reachedTopics = () => {
+    const out = new Set(S.progress.placement?.placed_out || []);
+    for (const topic of S.topics) {
+      const dt = drillTopic(topic);
+      if ((dt && dt.drills.some((d) => T.DrillProgress.rec(dt, d).runs > 0)) || wtGot(topic) > 0
+          || topic.items.some((n) => (pstate(n).passed || 0) > 0)) out.add(topic.id);
+    }
+    return out;
+  };
 
   // Ladder rule: snippet → guided → all solo problems open together → build after two solos.
   function blocker(topic, name) {
@@ -273,6 +282,7 @@
       st.topics.push(topic);
     }
     const review = T.topics.find((d) => d.n === 99);
+    const spot = review && T.spotStatus ? T.spotStatus() : null;
     app.replaceChildren(h("div", { class: "page" },
       h("h1", {}, "Learn it in your head, then in code."),
       h("p", { class: "lede" }, "Every topic starts with a short drill where you run the algorithm by hand. Then you climb: a three-line snippet, a guided problem, problems on your own, and a small program you build yourself."),
@@ -306,10 +316,15 @@
       ]),
       review ? [
         h("h2", { class: "section-title" }, "Review"),
-        h("div", { class: "topic-list" }, h("a", { class: "topic-row", href: `#/d/${review.id}/${review.drills[0].id}` },
-          h("span", { class: "num" }, "★"),
-          h("span", { class: "name" }, review.title, h("span", { class: "sub" }, "Read a problem, name the technique. Mixes every topic.")),
-          h("span", { class: "ladder-bar" }, T.pips(T.DrillProgress.rec(review, review.drills[0]).clean)))),
+        h("div", { class: "topic-list" }, spot && !spot.ready
+          ? h("div", { class: "topic-row disabled" },
+            h("span", { class: "num" }, "★"),
+            h("span", { class: "name" }, review.title, h("span", { class: "sub" }, `Opens after four pattern topics (${spot.have} of ${spot.need}).`)),
+            h("span"))
+          : h("a", { class: "topic-row", href: `#/d/${review.id}/${review.drills[0].id}` },
+            h("span", { class: "num" }, "★"),
+            h("span", { class: "name" }, review.title, h("span", { class: "sub" }, "Read a problem, name the technique. Mixes the topics you've started.")),
+            h("span", { class: "ladder-bar" }, T.pips(T.DrillProgress.rec(review, review.drills[0]).clean)))),
       ] : null,
       h("p", { class: "home-foot" },
         S.progress.placement ? h("a", { class: "link", href: "#/start" }, "Retake the starting check") : null,
@@ -524,6 +539,12 @@
     const course = S.topics.find((t) => t.n === dt.n);
     document.title = `${dt.title}: ${drill.name} | Trace`;
     crumbs({ label: "Topics", href: "#/" }, course ? { label: topicTitle(course), href: `#/t/${course.id}` } : { label: "Review" }, { label: drill.name });
+    if (dt.n === 99 && T.spotStatus && !T.spotStatus().ready) {
+      app.replaceChildren(h("div", { class: "page" }, h("h1", {}, dt.title),
+        h("p", { class: "lede" }, `This mixes the techniques you've started, so it opens after four pattern topics. You've started ${T.spotStatus().have} so far.`),
+        h("p", { style: "margin-top:24px" }, h("a", { class: "btn", href: "#/" }, "Back to the topics"))));
+      return;
+    }
     const tabs = h("div", { class: "drill-tabs", role: "tablist" });
     const renderTabs = () => tabs.replaceChildren(...dt.drills.map((d) =>
       h("a", { class: "drill-tab", role: "tab", href: `#/d/${dt.id}/${d.id}`, "aria-selected": String(d === drill) }, d.name, T.pips(T.DrillProgress.rec(dt, d).clean))));

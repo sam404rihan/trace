@@ -698,3 +698,5 @@ button, .crumbs, .tabs, .stepper, .ws-bar, .drill-tabs, .badge, .console-bar, .r
 .howto ol { margin: 8px 0 0; padding-left: 20px; color: var(--ink-2); font-size: 14.5px; }
 .howto li { margin: 3px 0; }
 .howto-link { display: inline-block; margin-top: 12px; font-size: 13.5px; }
+.topic-row.disabled { cursor: default; color: var(--ink-3); }
+.topic-row.disabled:hover { background: none; }

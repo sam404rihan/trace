@@ -49,22 +49,40 @@
     ["Design a structure that returns the median as numbers stream in.", "heap", "Two heaps: a max-heap for the low half and a min-heap for the high half."],
   ];
   const ALL = Object.keys(P);
+  const TOPIC_OF = {
+    hash: "04_hashing", two: "06_two_pointers", window: "07_sliding_window", prefix: "08_prefix_sums",
+    bs: "09_binary_search", bsAns: "09_binary_search", sort: "10_sorting_and_intervals", greedy: "11_greedy",
+    stack: "12_stacks", stackPlain: "12_stacks", deque: "13_queues_and_deques", fastslow: "14_linked_lists",
+    heap: "17_heaps", trie: "18_tries", bfs: "19_graph_traversal", dfs: "19_graph_traversal",
+    topo: "20_topological_sort_and_union_find", uf: "20_topological_sort_and_union_find",
+    dijkstra: "21_weighted_graphs", back: "22_backtracking", dp: "23_dynamic_programming_1d", bits: "25_bit_tricks",
+  };
+  const NEED = 4;   // pattern topics: enough for a right answer and three wrong ones you've met
+  const reachedKeys = () => {
+    const seen = T.reachedTopics ? T.reachedTopics() : null;
+    return seen ? ALL.filter((k) => seen.has(TOPIC_OF[k])) : ALL;
+  };
+  T.spotStatus = () => {
+    const have = new Set(reachedKeys().map((k) => TOPIC_OF[k])).size;
+    return { ready: have >= NEED, have: Math.min(have, NEED), need: NEED };
+  };
 
   T.topic({
     id: "spot-pattern", n: 99, stage: "Review",
     title: "Spot the pattern",
     idea: "In an interview, the hard part is recognising which tool the problem wants. The wording almost always gives it away: sorted, contiguous, minimum such that, every possible, dependencies.",
-    signals: "Use this after a few topics are solid, and come back to it often. It mixes everything.",
+    signals: "It mixes the pattern topics you've started, so it grows as you go. Come back to it often.",
     invariant: "Read the constraints and the shape of the answer before you think about code.",
     drills: [
       {
         id: "spot", name: "Name it",
         blurb: "Read the problem and pick the technique you'd reach for first.",
         *play(ctx) {
-          const qs = T.sample(Q, 8);
+          const keys = reachedKeys();
+          const qs = T.sample(Q.filter(([, ans]) => keys.includes(ans)), 8);
           for (const [i, [text, ans, why]] of qs.entries()) {
             ctx.draw(V.label(`Problem ${i + 1} of ${qs.length}`), h("p", { class: "line", style: "font-size:19px;font-weight:600;max-width:60ch" }, text));
-            const opts = T.shuffle([ans, ...T.sample(ALL.filter((k) => k !== ans && P[k] !== P[ans]), 3)]);
+            const opts = T.shuffle([ans, ...T.sample(keys.filter((k) => k !== ans && P[k] !== P[ans]), 3)]);
             yield T.choose("Which pattern?", opts.map((k) => [k, P[k]]), ans, (v) => `Not ${P[v].toLowerCase()}. ${why}`, why);
           }
           return { summary: "If you missed some, go back to those topics. Recognising the pattern comes from having run it by hand." };
