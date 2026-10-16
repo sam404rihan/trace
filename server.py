@@ -510,6 +510,13 @@ def ladder_order(found):
     return sorted(found, key=lambda p: (p["rank"], d(p["name"]), p["title"].lower()))
 
 
+def problem_summary(p):
+    """What /api/course sends about one problem. Malformed tags go out as [] (--check reports them),
+    so a typo while editing never breaks the page."""
+    return {k: p[k] for k in ("name", "title", "kind", "difficulty", "tests", "topic_id")} \
+        | {"steps": len(p["steps"]), "uses": _tag_list(p["uses"]), "teaches": _tag_list(p["teaches"])}
+
+
 def techniques_payload(problems, techniques):
     teacher = {t: name for name, p in problems.items() for t in _tag_list(p.get("teaches"))}
     return {tid: {**info, "teacher": teacher.get(tid)} for tid, info in techniques.items()}
@@ -948,8 +955,7 @@ class Handler(BaseHTTPRequestHandler):
                             "has_lesson": bool(t["lesson"]), "has_walkthrough": bool(t["walkthrough"]),
                             "walkthrough_layers": len(t["walkthrough"]["layers"]) if t["walkthrough"] else 0}
                            for t in topics],
-                "problems": {n: {k: p[k] for k in ("name", "title", "kind", "difficulty", "tests", "topic_id", "uses", "teaches")}
-                             | {"steps": len(p["steps"])} for n, p in problems.items()},
+                "problems": {n: problem_summary(p) for n, p in problems.items()},
                 "progress": load_progress(),
                 "plans": load_plans(),
                 "techniques": techniques_payload(problems, load_techniques_safely(TECHNIQUES_FILE)),

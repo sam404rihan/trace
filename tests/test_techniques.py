@@ -112,6 +112,21 @@ class LadderOrder(unittest.TestCase):
         self.assertEqual([p["name"] for p in server.ladder_order(found)], ["a", "b"])
 
 
+class Summary(unittest.TestCase):
+    BASE = {"name": "p", "title": "P", "kind": "solo", "difficulty": "easy", "tests": 1, "topic_id": "t", "steps": []}
+
+    def test_malformed_tags_reach_the_browser_as_empty_lists(self):
+        import json
+        for bad in ({"bfs.shortest"}, "bfs.shortest", 5, ["ok", 3]):
+            s = server.problem_summary({**self.BASE, "uses": bad, "teaches": bad})
+            self.assertEqual((s["uses"], s["teaches"]), ([], []), bad)
+            json.dumps(s)
+
+    def test_good_tags_pass_through(self):
+        s = server.problem_summary({**self.BASE, "uses": ["a.b"], "teaches": ["c.d"]})
+        self.assertEqual((s["uses"], s["teaches"]), (["a.b"], ["c.d"]))
+
+
 class Payload(unittest.TestCase):
     def test_teacher_names(self):
         techniques = {"t.x": {"name": "X", "explain": "x"}, "t.y": {"name": "Y", "explain": "y"}}
