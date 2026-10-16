@@ -165,6 +165,19 @@ class Stage1Audit(unittest.TestCase):
                                ("submatrix_sum_target", "08_prefix_sums"), ("concat_all_words", "07_sliding_window")):
             self.assertEqual(self.problems[name]["topic_id"], topic_id, name)
 
+    def test_topics_01_and_02(self):
+        self.assert_audited("01_big_o_in_practice")
+        self.assert_audited("02_python_toolkit")
+        self.assert_teaches({"common_count": ["hash.set_lookup"], "max_profit": ["scan.best_so_far"],
+                             "best_sightseeing_pair": ["pairs.split_by_index"], "equal_pairs": ["hash.count_pairs"]})
+        self.assert_uses({"common_elements": ["hash.set_lookup"], "best_sightseeing_pair": ["scan.best_so_far"],
+                          "count_bad_pairs": ["hash.count_pairs", "pairs.split_by_index"],
+                          "second_largest": ["scan.best_so_far"], "sum_pair_distances": [], "word_frequencies": []})
+        for name in ("max_profit", "best_sightseeing_pair", "equal_pairs"):
+            self.assertEqual(self.problems[name]["difficulty"], "easy", name)
+        items = self.items("01_big_o_in_practice")
+        self.assertLess(items.index("max_profit"), items.index("best_sightseeing_pair"))
+
     def test_tags_stay_out_of_starters(self):
         leaks = [n for n, p in self.problems.items() if "USES" in p["starter"] or "TEACHES" in p["starter"]]
         self.assertEqual(leaks, [])

@@ -16,6 +16,8 @@ def common_elements(a: list[int], b: list[int]) -> list[int]:
     raise NotImplementedError  # replace this line with your solution
 
 
+USES = ["hash.set_lookup"]
+
 TESTS = [
     (([1, 2, 2, 1], [2, 2]), [2]),
     (([4, 9, 5], [9, 4, 9, 8, 4]), [4, 9]),

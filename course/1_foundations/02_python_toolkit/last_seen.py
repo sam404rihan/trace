@@ -17,6 +17,8 @@ def last_seen(items: list) -> dict:
     raise NotImplementedError  # replace this line with your solution
 
 
+USES = []
+
 TESTS = [
     ((["a", "b", "a"],), {"a": 2, "b": 1}),
     (([5, 5, 5],), {5: 2}),

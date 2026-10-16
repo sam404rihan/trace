@@ -21,6 +21,8 @@ def number_to_words(num: int) -> str:
     raise NotImplementedError  # replace this line with your solution
 
 
+USES = []
+
 TESTS = [
     ((0,), "Zero"),
     ((5,), "Five"),

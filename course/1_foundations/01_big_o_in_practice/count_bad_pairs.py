@@ -50,6 +50,8 @@ def _cases():
     return out
 
 
+USES = ["hash.count_pairs", "pairs.split_by_index"]
+
 TESTS = [
     (([4, 1, 3, 3],), 5),
     (([1, 2, 3, 4, 5],), 0),

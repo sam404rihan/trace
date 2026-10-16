@@ -35,6 +35,8 @@ def expense_report(lines: list[str]) -> dict:
     raise NotImplementedError  # replace this line with your solution
 
 
+USES = []
+
 TESTS = [
     ((["2024-03-01,food,10", "2024-03-01,Travel,5.5", "oops"],),
      {"total": 15.5, "by_category": [("food", 10.0), ("travel", 5.5)], "busiest_day": "2024-03-01", "skipped": 1}),

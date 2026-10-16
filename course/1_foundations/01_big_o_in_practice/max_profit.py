@@ -16,6 +16,9 @@ def max_profit(prices: list[int]) -> int:
     raise NotImplementedError  # replace this line with your solution
 
 
+TEACHES = ["scan.best_so_far"]
+USES = []
+
 TESTS = [
     (([7, 1, 5, 3, 6, 4],), 5),
     (([7, 6, 4, 3, 1],), 0),

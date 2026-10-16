@@ -18,6 +18,8 @@ def second_largest(nums: list[int]) -> int | None:
     raise NotImplementedError  # replace this line with your solution
 
 
+USES = ["scan.best_so_far"]
+
 TESTS = [
     (([3, 1, 4, 1, 5],), 4),
     (([7, 7, 7],), None),

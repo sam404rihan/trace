@@ -5,6 +5,30 @@ A problem's USES lists every technique it uses directly, not just the newest one
 shows everything it relies on."""
 
 TECHNIQUES = {
+    "hash.set_lookup": {
+        "name": "Set for fast lookups",
+        "explain": "`x in some_list` scans the whole list, but `x in some_set` is one hash lookup. When a loop keeps "
+                   "asking \"is x in there?\", build a set (or dict) once before the loop and the inner search "
+                   "disappears: O(n * m) becomes O(n + m).",
+    },
+    "scan.best_so_far": {
+        "name": "Best so far",
+        "explain": "To find the best pair i < j, walk j once and remember the best i you've passed: the smallest "
+                   "price, the largest value. Each j only needs that one number, so every pair is checked in O(n) "
+                   "instead of O(n²).",
+    },
+    "pairs.split_by_index": {
+        "name": "Separating i from j",
+        "explain": "Rewrite a pair's score or condition so one part uses only i and the other only j: "
+                   "`values[i] + values[j] + i - j` is `(values[i] + i) + (values[j] - j)`. Then each index has "
+                   "its own number, and best so far or a dict of counts does the rest.",
+    },
+    "hash.count_pairs": {
+        "name": "Counting pairs with a dict",
+        "explain": "To count pairs i < j with equal values, walk once with a dict of how many times each value has "
+                   "appeared so far. A new x pairs with every earlier x, so add `seen[x]` to the answer, then "
+                   "increase `seen[x]`. One pass instead of checking every pair.",
+    },
     "grid.neighbors": {
         "name": "Grid neighbours",
         "explain": "A cell (r, c) has up to four neighbours: (r - 1, c), (r + 1, c), (r, c - 1) and (r, c + 1). "

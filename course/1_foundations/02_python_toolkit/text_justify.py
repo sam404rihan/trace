@@ -62,6 +62,8 @@ def _cases():
     return out
 
 
+USES = []
+
 TESTS = [
     ((["This", "is", "an", "example", "of", "text", "justification."], 16),
      ["This    is    an", "example  of text", "justification.  "]),

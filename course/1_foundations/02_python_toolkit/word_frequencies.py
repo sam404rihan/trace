@@ -35,6 +35,8 @@ def _book():
 
 _BOOK = _book()
 
+USES = []
+
 STEPS = [
     {
         "title": "Count the words",

@@ -27,6 +27,9 @@ def _big():
 
 _A, _B, _ANS = _big()
 
+TEACHES = ["hash.set_lookup"]
+USES = []
+
 STEPS = [
     {
         "title": "Make it work",

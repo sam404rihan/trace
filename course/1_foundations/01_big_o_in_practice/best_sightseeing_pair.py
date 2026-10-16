@@ -1,5 +1,5 @@
 """
-Best Sightseeing Pair                                                         [hard]
+Best Sightseeing Pair                                                         [easy]
 
 values[i] is how good viewpoint i is. Visiting viewpoints i < j scores
 values[i] + values[j] + i - j: the walk between them costs one point per step.
@@ -45,6 +45,9 @@ def _cases():
     out.append(((big,), _fast(big)))
     return out
 
+
+TEACHES = ["pairs.split_by_index"]
+USES = ["scan.best_so_far"]
 
 TESTS = [
     (([8, 1, 5, 2, 6],), 11),

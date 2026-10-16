@@ -20,6 +20,8 @@ def halvings(n: int) -> int:
     raise NotImplementedError  # replace this line with your solution
 
 
+USES = []
+
 TESTS = [
     ((8,), 3),
     ((9,), 3),

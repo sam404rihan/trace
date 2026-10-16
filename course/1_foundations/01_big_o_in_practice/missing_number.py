@@ -21,6 +21,8 @@ def missing_number(nums: list[int]) -> int:
 BIG = list(range(200_001))
 BIG.remove(123_456)
 
+USES = []
+
 TESTS = [
     (([3, 0, 1],), 2),
     (([0, 1],), 2),

@@ -56,6 +56,8 @@ def _cases():
     return out
 
 
+USES = []
+
 TESTS = [
     ((["ABC", "ACB", "ABC", "ACB", "ACB"],), "ACB"),
     ((["WXYZ", "XYZW"],), "XWYZ"),

@@ -18,6 +18,8 @@ def reverse_words(s: str) -> str:
     raise NotImplementedError  # replace this line with your solution
 
 
+USES = []
+
 TESTS = [
     (("the sky is blue",), "blue is sky the"),
     (("  hello   world  ",), "world hello"),
