@@ -28,6 +28,8 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
+from technique_coverage import check_coverage
+
 FROZEN = getattr(sys, "frozen", False)        # running as the packaged desktop app (Trace.exe)
 ROOT = Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parent))
 COURSE = ROOT / "course"                # course/<stage>/<NN_topic>/{lesson.py, problems...}
@@ -1165,6 +1167,20 @@ def check(only=None):
             failures += bool(bad)
             print(f"  {'FAIL' if bad else 'ok  '} {label:<50} {len(questions):>2} questions")
             for line in bad:
+                print("        ", line)
+    if not only or any(o in "coverage" for o in only):
+        label = "technique coverage"
+        try:
+            techniques = parse_techniques(TECHNIQUES_FILE)
+        except ValueError as exc:
+            failures += 1
+            print(f"  FAIL {label:<50} {exc}")
+        else:
+            errors, warnings = check_coverage(topics, problems, techniques)
+            failures += bool(errors)
+            print(f"  {'FAIL' if errors else 'ok  '} {label:<50} {len(techniques):>2} techniques, "
+                  f"{len(warnings)} problem(s) not audited yet")
+            for line in errors:
                 print("        ", line)
     print("\nAll good." if not failures else f"\n{failures} problem(s).")
     return 1 if failures else 0
