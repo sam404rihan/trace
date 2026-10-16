@@ -195,7 +195,15 @@ TOPICS = {
             "output": True,
         },
         {
-            "question": "What happens if you delete the `if n == 0` check from `f`?",
+            "question": "What happens if you remove the base case (both the `if n == 0:` and `return 0` lines)?",
+            "code": """
+                def f(n):
+                    if n == 0:
+                        return 0
+                    return n + f(n - 1)
+
+                print(f(4))
+            """,
             "options": ["It returns 0", "It calls itself until Python stops it with a RecursionError",
                         "It returns n", "It runs once and stops"],
             "answer": 1,

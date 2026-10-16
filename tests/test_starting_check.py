@@ -67,6 +67,16 @@ class ParseStartingCheck(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "06_b question 2"):
             self.parse(GOOD.replace('"06_b": [Q, Q]', '"06_b": [Q, dict(Q, output=True)]'))
 
+    def test_python_errors_in_the_file_become_value_errors(self):
+        with self.assertRaisesRegex(ValueError, "starting_check.py"):
+            self.parse(GOOD + "\nTOPICS = {oops\n")
+        with self.assertRaisesRegex(ValueError, "starting_check.py"):
+            self.parse(GOOD + "\nREADY = undefined_name\n")
+
+    def test_code_must_be_text(self):
+        with self.assertRaisesRegex(ValueError, "06_b question 1"):
+            self.parse(GOOD.replace('"06_b": [Q, Q]', '"06_b": [dict(Q, code=42), Q]'))
+
     def test_missing_file(self):
         with tempfile.TemporaryDirectory() as tmp:
             with self.assertRaises(FileNotFoundError):
@@ -149,6 +159,11 @@ class RealFile(unittest.TestCase):
         self.assertEqual(len(check["ready"]), 6)
         self.assertEqual(len(check["topics"]), 25)
         self.assertEqual(check["topics"][0]["id"], "01_big_o_in_practice")
+
+    def test_questions_about_a_function_show_its_code(self):
+        check = server.parse_starting_check(server.STARTING_CHECK, server.load_course()[0])
+        recursion = next(t for t in check["topics"] if t["id"] == "05_recursion")
+        self.assertIn("def f(n):", recursion["questions"][1]["code"])
 
 
 if __name__ == "__main__":

@@ -410,6 +410,8 @@ def _check_question(q, where):
         raise ValueError(f"{where}: needs a question, 2-5 options, an answer index into them, and an explanation")
     if q.get("output") and not q.get("code"):
         raise ValueError(f"{where}: an output question needs code")
+    if not isinstance(q.get("code") or "", str):
+        raise ValueError(f"{where}: code must be text")
     return {"question": q["question"], "options": [str(o) for o in options], "answer": answer,
             "explain": q["explain"], "code": textwrap.dedent(q.get("code") or "").strip("\n"),
             "output": bool(q.get("output"))}
@@ -418,7 +420,12 @@ def _check_question(q, where):
 def parse_starting_check(path, topics):
     """starting_check.py: READY (one Python question per skill) and TOPICS (two questions for every
     Stage 1-4 topic, the more telling one first). Raises FileNotFoundError if the file is missing."""
-    module = load_module(path)
+    try:
+        module = load_module(path)
+    except FileNotFoundError:
+        raise
+    except Exception as exc:  # noqa: BLE001 - a typo in course content is reported, never fatal
+        raise ValueError(f"{path.name}: {type(exc).__name__}: {exc}") from exc
     ready, asked = module.get("READY"), module.get("TOPICS")
     skills = sorted(str(q.get("skill")) if isinstance(q, dict) else "" for q in ready) if isinstance(ready, list) else []
     if skills != sorted(SKILLS):
