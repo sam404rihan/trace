@@ -120,6 +120,18 @@
   const wtGot = (topic) => (S.progress.walkthroughs || {})[topic.id] || 0;
   const wtDone = (topic) => topic.has_walkthrough && wtGot(topic) >= topic.walkthrough_layers;
   const kindLabel = (p) => (p.kind === "solo" ? p.difficulty[0].toUpperCase() + p.difficulty.slice(1) : p.kind[0].toUpperCase() + p.kind.slice(1));
+  function firstStep(topic) {
+    const dt = drillTopic(topic);
+    if (dt) return `#/d/${dt.id}/${dt.drills[0].id}`;
+    if (topic.has_walkthrough) return `#/w/${topic.id}`;
+    return topic.items.length ? `#/p/${topic.items[0]}` : `#/t/${topic.id}`;
+  }
+  // Nothing done yet and no starting check taken: the first visit, which opens "Where are you starting?".
+  function firstVisit() {
+    const p = S.progress;
+    if (p.placement || Object.keys(p.problems || {}).length || (p.unlocked || []).length || Object.keys(p.walkthroughs || {}).length) return false;
+    return !T.topics.some((dt) => dt.drills.some((d) => T.DrillProgress.rec(dt, d).runs > 0));
+  }
 
   // Ladder rule: snippet → guided → all solo problems open together → build after two solos.
   function blocker(topic, name) {
@@ -219,6 +231,31 @@
     kids.push(h("span", { class: "gap" }));
     topic.items.forEach((n) => kids.push(h("i", { class: solved(n) ? "on" : pstate(n).passed ? "part" : "", title: S.problems[n].title })));
     return h("span", { class: "ladder-bar", "aria-hidden": "true" }, kids);
+  }
+
+  async function viewStart() {
+    document.title = "Where are you starting? | Trace";
+    crumbs({ label: "Topics", href: "#/" }, { label: "Where are you starting?" });
+    const host = h("div", { class: "start-page", "aria-busy": "true" }, sk("sk-title"), sk("sk-line", "width:70%"));
+    app.replaceChildren(host);
+    let check;
+    try {
+      check = await api("/api/starting-check");
+    } catch (err) {
+      host.removeAttribute("aria-busy");
+      host.replaceChildren(h("h1", {}, "The starting check isn't available"), h("p", { class: "lede" }, err.message),
+        h("div", { class: "start-actions" }, h("a", { class: "btn primary", href: "#/" }, "Go to the topics")));
+      return;
+    }
+    if (!host.isConnected) return;               // you navigated away while it loaded
+    host.removeAttribute("aria-busy");
+    const find = (id) => S.topics.find((t) => t.id === id);
+    const m = T.mountStart(host, check, {
+      place: async (payload) => (S.progress = (await api("/api/placement", payload)).progress),
+      topicTitle: (id) => (find(id) ? topicTitle(find(id)) : id),
+      startHref: (id) => (find(id) ? firstStep(find(id)) : "#/"),
+    });
+    S.cleanup = () => m.unmount();
   }
 
   function viewHome() {
@@ -1044,6 +1081,8 @@
       if (kind === "plan") return viewPlan(a);
       if (kind === "d") return viewDrill(a, b);
       if (kind === "w") return await viewWalkthrough(a);
+      if (kind === "start") return await viewStart();
+      if (!kind && firstVisit()) { history.replaceState(null, "", "#/start"); return await viewStart(); }
       return viewHome();
     } catch (err) {
       console.error(err);
