@@ -135,5 +135,40 @@ class GraphTraversalPilot(unittest.TestCase):
         self.assertEqual(missing, [])
 
 
+STAGE_1 = ("01_big_o_in_practice", "02_python_toolkit", "03_arrays_and_strings", "04_hashing", "05_recursion")
+
+
+class Stage1Audit(unittest.TestCase):
+    """Part 2, Stage 1: topics 01-05 fully audited (docs/superpowers/plans/2026-10-16-technique-coverage-stage-1.md)."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.topics, cls.problems = server.load_course()
+        cls.by_id = {t["id"]: t for t in cls.topics}
+
+    def items(self, topic_id):
+        return self.by_id[topic_id]["items"]
+
+    def assert_audited(self, topic_id):
+        self.assertEqual([n for n in self.items(topic_id) if not self.problems[n]["audited"]], [], topic_id)
+
+    def assert_uses(self, expected):
+        for name, uses in expected.items():
+            self.assertEqual(set(self.problems[name]["uses"]), set(uses), name)
+
+    def assert_teaches(self, expected):
+        for name, teaches in expected.items():
+            self.assertEqual(self.problems[name]["teaches"], teaches, name)
+
+    def test_problems_moved_to_the_topic_of_their_last_prerequisite(self):
+        for name, topic_id in (("max_profit", "01_big_o_in_practice"), ("min_k_bit_flips", "11_greedy"),
+                               ("submatrix_sum_target", "08_prefix_sums"), ("concat_all_words", "07_sliding_window")):
+            self.assertEqual(self.problems[name]["topic_id"], topic_id, name)
+
+    def test_tags_stay_out_of_starters(self):
+        leaks = [n for n, p in self.problems.items() if "USES" in p["starter"] or "TEACHES" in p["starter"]]
+        self.assertEqual(leaks, [])
+
+
 if __name__ == "__main__":
     unittest.main()

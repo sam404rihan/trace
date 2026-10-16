@@ -47,7 +47,7 @@ audit in Part 2 confirms and completes this list.
 | `min_k_bit_flips` (03) | a queue of where flips end | 13 Queues |
 | `concat_all_words` (04) | sliding window | 07 |
 | `submatrix_sum_target` (04) | prefix sums + a dict of counts | 08 |
-| `scramble_string` (05) | memoisation | 23 DP |
+| `scramble_string` (05) | memoisation | 23 DP (fixed: `count_paths`, 05's guided problem, already teaches it) |
 | `split_array_largest_sum` (09) | a greedy feasibility check | 11 Greedy |
 | `min_meeting_rooms`, `min_interval_query` (10) | heaps | 17 |
 | `word_search_ii` (18) | grid DFS + backtracking | 19, 22 |
@@ -79,6 +79,22 @@ techniques the problem uses and which basic problem teaches each one they haven'
   Python features (a dict, a slice) are not techniques here; the toolkit topic and Stage 0 cover
   those.
 - Locks stay soft, as everywhere in Trace: "Open anyway" always works.
+
+## What counts as a technique
+
+Settled in the Stage 1 audit, for every later stage:
+
+- **A technique** is a method with a recognisable shape that changes how you solve the problem:
+  what you store, how you walk, or what you look up. Examples: a seen set, best so far, left and
+  right passes, carrying digits, memoisation.
+- **Not a technique:** using a Python tool for what it plainly does: `Counter` to count, `sorted`
+  with a key, a tuple as a dict key, slicing, `zip`, `divmod`, string methods. The toolkit topic
+  covers those.
+- A topic's snippet and guided problem register the topic's core idea when later problems rely on
+  it, like grid neighbours.
+- A medium or hard problem may keep **one insight of its own**: the step its hint gives away, such
+  as "count the opposite". It becomes a technique, with its own basic problem, only when it recurs
+  in other problems.
 
 ## Why
 

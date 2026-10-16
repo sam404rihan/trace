@@ -491,8 +491,8 @@ def _tag_list(value):
 
 
 def ladder_order(found):
-    """A topic's problems by rank. Within a rank, a problem comes after every same-topic problem that
-    teaches a technique it uses (so chains of basics read in teaching order), then by title."""
+    """A topic's problems by rank. Within a rank, a problem comes after every same-topic, same-rank
+    problem that teaches a technique it uses (so chains of basics read in teaching order), then by title."""
     teacher = {t: p["name"] for p in found for t in _tag_list(p.get("teaches"))}
     by_name = {p["name"]: p for p in found}
     depth, visiting = {}, set()
@@ -503,7 +503,8 @@ def ladder_order(found):
         if name in visiting:
             return 0                            # a cycle: the coverage check reports it
         visiting.add(name)
-        deps = [teacher[t] for t in _tag_list(by_name[name].get("uses")) if teacher.get(t) not in (None, name)]
+        deps = [teacher[t] for t in _tag_list(by_name[name].get("uses"))
+                if teacher.get(t) not in (None, name) and by_name[teacher[t]]["rank"] == by_name[name]["rank"]]
         depth[name] = 1 + max((d(t) for t in deps), default=-1)
         visiting.discard(name)
         return depth[name]

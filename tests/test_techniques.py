@@ -103,6 +103,10 @@ class LadderOrder(unittest.TestCase):
         found = [prob("c", 2, uses=["t.y"]), prob("b", 2, uses=["t.x"], teaches=["t.y"]), prob("a", 2, teaches=["t.x"])]
         self.assertEqual([p["name"] for p in server.ladder_order(found)], ["a", "b", "c"])
 
+    def test_lower_rank_teachers_do_not_reorder_a_rank(self):
+        found = [prob("b_user", 2, title="B", uses=["t.x"]), prob("a_plain", 2, title="Z"), prob("snip", 0, teaches=["t.x"])]
+        self.assertEqual([p["name"] for p in server.ladder_order(found)], ["snip", "b_user", "a_plain"])
+
     def test_cycle_does_not_hang(self):
         found = [prob("a", 2, uses=["t.y"], teaches=["t.x"]), prob("b", 2, uses=["t.x"], teaches=["t.y"])]
         self.assertEqual(sorted(p["name"] for p in server.ladder_order(found)), ["a", "b"])

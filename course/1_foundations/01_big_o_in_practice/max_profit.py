@@ -1,5 +1,5 @@
 """
-Best Time to Buy and Sell Stock                              [easy] · sliding window
+Best Time to Buy and Sell Stock                                               [easy]
 
 `prices[i]` is a stock's price on day i. Buy on one day and sell on a later
 day. Return the biggest profit you can make, or 0 if you can't profit.
