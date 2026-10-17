@@ -67,6 +67,8 @@ def _cases():
     return out
 
 
+USES = ["scan.best_so_far", "array.left_right_passes", "prefix.sums"]
+
 TESTS = [
     (([1, 2, 1, 2, 6, 7, 5, 1], 2), [0, 3, 5]),
     (([1, 2, 1, 2, 1, 2, 1, 2, 1], 2), [0, 2, 4]),

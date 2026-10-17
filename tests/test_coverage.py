@@ -278,5 +278,17 @@ class Stage2Audit(AuditBase):
             self.assertEqual(self.problems[name]["difficulty"], "easy", name)
 
 
+    def test_topic_08(self):
+        self.assert_audited("08_prefix_sums")
+        self.assert_teaches({"prefix_sums": ["prefix.sums"], "zero_sum_subarrays": ["prefix.count_dict"],
+                             "range_additions": ["prefix.difference"]})
+        self.assert_uses({"subarray_sum_equals_k": ["hash.complement", "prefix.sums", "prefix.count_dict"],
+                          "submatrix_sum_target": ["prefix.sums", "prefix.count_dict"],
+                          "min_moves_complementary": ["prefix.sums", "prefix.difference"],
+                          "max_sum_three_subarrays": ["scan.best_so_far", "array.left_right_passes", "prefix.sums"]})
+        for name in ("zero_sum_subarrays", "range_additions"):
+            self.assertEqual(self.problems[name]["difficulty"], "easy", name)
+
+
 if __name__ == "__main__":
     unittest.main()

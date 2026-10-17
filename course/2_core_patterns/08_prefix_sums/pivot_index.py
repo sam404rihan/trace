@@ -18,6 +18,8 @@ def pivot_index(nums: list[int]) -> int:
     raise NotImplementedError  # replace this line with your solution
 
 
+USES = ["prefix.sums"]
+
 TESTS = [
     (([1, 7, 3, 6, 5, 6],), 3),
     (([1, 2, 3],), -1),

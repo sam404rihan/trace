@@ -59,6 +59,8 @@ def _big():
 
 _CALLS, _OUT = _big()
 
+USES = ["prefix.sums"]
+
 TESTS = [
     ([("ScoreBoard", [3, 8, -2, 5, 7]), ("total", 1, 3), ("average", 0, 1), ("best_stretch", 2), ("first_reaching", 10)],
      [None, 11, 5.5, 12, 1]),

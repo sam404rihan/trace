@@ -18,6 +18,8 @@ def subarray_sum_equals_k(nums: list[int], k: int) -> int:
     raise NotImplementedError  # replace this line with your solution
 
 
+USES = ["hash.complement", "prefix.sums", "prefix.count_dict"]
+
 TESTS = [
     (([1, 1, 1], 2), 2),
     (([1, 2, 3], 3), 2),

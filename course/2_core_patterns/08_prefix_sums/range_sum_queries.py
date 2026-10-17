@@ -29,6 +29,8 @@ def _big():
 
 _NUMS, _QS, _ANS = _big()
 
+USES = ["prefix.sums"]
+
 STEPS = [
     {
         "title": "Make it work",

@@ -18,6 +18,8 @@ def range_sums(nums: list[int], queries: list[list[int]]) -> list[int]:
     raise NotImplementedError  # replace this line with your solution
 
 
+USES = ["prefix.sums"]
+
 TESTS = [
     (([1, 2, 3, 4, 5], [[0, 2], [1, 3], [4, 4], [0, 4]]), [6, 9, 5, 15]),
     (([-2, 0, 3, -5, 2, -1], [[0, 2], [2, 5], [0, 5]]), [1, -1, -3]),

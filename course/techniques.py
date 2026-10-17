@@ -139,6 +139,24 @@ TECHNIQUES = {
                    "left to right is good for this end too, so add `right - left + 1`. \"Exactly k\" can't be "
                    "shrunk towards this way, but \"at most k\" can, so exactly(k) = at_most(k) - at_most(k - 1).",
     },
+    "prefix.sums": {
+        "name": "Prefix sums",
+        "explain": "Build P with `P[0] = 0` and `P[k + 1] = P[k] + nums[k]`, so P[k] is the sum of the first k "
+                   "numbers. Then the sum of nums[i..j] is `P[j + 1] - P[i]`: one subtraction instead of a loop.",
+    },
+    "prefix.count_dict": {
+        "name": "Counting earlier prefix sums",
+        "explain": "nums[i:j] adds up to k exactly when P[j] - P[i] == k. So walk once with a running total and a "
+                   "dict counting the totals seen so far, starting with `{0: 1}` for the empty start, and at each "
+                   "step add how many earlier totals equal `total - k`. Unlike a sliding window, this works with "
+                   "negative numbers.",
+    },
+    "prefix.difference": {
+        "name": "Difference array",
+        "explain": "To add v to every index from l to r, touch only the ends: `diff[l] += v` and "
+                   "`diff[r + 1] -= v`. After all the updates, a running total of diff gives each index's value. "
+                   "Each update is O(1), and one pass at the end does the rest.",
+    },
     "grid.neighbors": {
         "name": "Grid neighbours",
         "explain": "A cell (r, c) has up to four neighbours: (r - 1, c), (r + 1, c), (r, c - 1) and (r, c + 1). "

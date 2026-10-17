@@ -17,6 +17,9 @@ def prefix_sums(nums: list[int]) -> list[int]:
     raise NotImplementedError  # replace this line with your solution
 
 
+TEACHES = ["prefix.sums"]
+USES = []
+
 TESTS = [
     (([3, 1, 4],), [0, 3, 4, 8]),
     (([],), [0]),

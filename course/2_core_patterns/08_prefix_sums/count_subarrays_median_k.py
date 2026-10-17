@@ -60,6 +60,8 @@ def _cases():
     return out
 
 
+USES = ["prefix.sums", "prefix.count_dict"]
+
 TESTS = [
     (([3, 2, 1, 4, 5], 4), 3),
     (([2, 3, 1], 3), 1),
