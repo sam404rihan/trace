@@ -64,5 +64,7 @@ def _cases():
     return out
 
 
+USES = ["greedy.kadane"]
+
 TESTS = [(([1, 2, 3, 4, 5], [3, 4, 5, 1, 2]), 3), (([2, 3, 4], [3, 4, 3]), -1), (([5], [4]), 0), (([0, 2], [1, 1]), 1)] + \
         [c for c in _cases() if len(_starts(*c[0])) <= 1]

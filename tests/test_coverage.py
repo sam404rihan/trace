@@ -317,5 +317,28 @@ class Stage2Audit(AuditBase):
             self.assertGreaterEqual(len(hards), 2, (topic_id, hards))
 
 
+    def test_topic_11(self):
+        self.assert_audited("11_greedy")
+        self.assert_teaches({"extend_or_restart": ["greedy.kadane"], "min_jumps": ["greedy.farthest_reach"],
+                             "min_suffix_flips": ["greedy.forced_first"]})
+        self.assert_uses({"min_k_bit_flips": ["prefix.difference", "greedy.forced_first"],
+                          "hand_of_straights": ["greedy.forced_first"], "gas_station": ["greedy.kadane"],
+                          "min_taps": ["greedy.farthest_reach"], "candy": ["array.left_right_passes"],
+                          "pick_talks": ["intervals.earliest_end"], "patching_array": []})
+        self.assertEqual(self.problems["min_suffix_flips"]["difficulty"], "easy")
+
+    def test_teacher_big_tests_reject_the_naive_solution(self):
+        # Solving a teacher marks its technique learned, so its big test must time out without it.
+        def big(name, ok):
+            self.assertTrue(any(ok(args, want) for args, want in self.cases_of(name)), name)
+        big("merge_sorted", lambda ab, w: len(ab[1]) >= 100_000 and len(ab[0]) >= 100_000)      # insort: O(n * m)
+        big("nice_subarrays", lambda a, w: len(a[0]) >= 100_000 and w >= 50_000_000)          # one step per answer
+        big("zero_sum_subarrays", lambda a, w: len(a[0]) >= 100_000)                           # every subarray
+        big("range_additions", lambda a, w: sum(r - l + 1 for l, r, _ in a[1]) >= 1_000_000_000)
+        big("min_suffix_flips", lambda a, w: len(a[0]) >= 100_000 and w >= 50_000)            # flip per press
+        big("min_subarray_len", lambda a, w: len(a[1]) >= 100_000 and w >= 10_000)            # every start
+        big("non_overlapping", lambda a, w: len(a[0]) >= 20_000)                               # O(n²) DP
+
+
 if __name__ == "__main__":
     unittest.main()

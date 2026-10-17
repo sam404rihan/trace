@@ -28,6 +28,9 @@ def _big():
 
 _NUMS, _JUMPS = _big()
 
+TEACHES = ["greedy.farthest_reach"]
+USES = []
+
 STEPS = [
     {
         "title": "Make it work",

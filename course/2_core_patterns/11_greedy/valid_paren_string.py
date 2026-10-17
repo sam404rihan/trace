@@ -52,4 +52,6 @@ def _cases():
     return out
 
 
+USES = []
+
 TESTS = [(("(*)",), True), (("(*))",), True), ((")(",), False), (("",), True), (("((*",), False), (("*)",), True)] + _cases()

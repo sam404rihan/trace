@@ -17,6 +17,8 @@ def max_subarray(nums: list[int]) -> int:
     raise NotImplementedError  # replace this line with your solution
 
 
+USES = ["greedy.kadane"]
+
 TESTS = [
     (([-2, 1, -3, 4, -1, 2, 1, -5, 4],), 6),
     (([1],), 1),

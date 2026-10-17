@@ -54,5 +54,7 @@ def _cases():
     return out
 
 
+USES = ["greedy.forced_first"]
+
 TESTS = [(([1, 2, 3, 6, 2, 3, 4, 7, 8], 3), True), (([1, 2, 3, 4, 5], 4), False), (([5], 1), True), (([1, 1, 2, 2, 3, 3], 3), True),
          (([1, 2, 4, 5], 2), True)] + _cases()

@@ -18,6 +18,9 @@ def extend_or_restart(cur: int, x: int) -> int:
     raise NotImplementedError  # replace this line with your solution
 
 
+TEACHES = ["greedy.kadane"]
+USES = []
+
 TESTS = [
     ((4, -1), 3),
     ((-3, 2), 2),

@@ -40,4 +40,6 @@ def _cases():
     return out
 
 
+USES = ["greedy.farthest_reach"]
+
 TESTS = [(("ababcbacadefegdehijhklij",), [9, 7, 8]), (("eccbbbbdec",), [10]), (("abc",), [1, 1, 1]), (("a",), [1])] + _cases()

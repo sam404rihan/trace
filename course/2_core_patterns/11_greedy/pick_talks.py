@@ -41,6 +41,8 @@ def _big():
 
 _TALKS, _PICKS = _big()
 
+USES = ["intervals.earliest_end"]
+
 TESTS = [
     (([("Keynote", 9, 12), ("Rust", 9, 10), ("Go", 10, 11), ("SQL", 11, 13)],), ["Rust", "Go", "SQL"]),
     (([("B", 1, 3), ("A", 2, 3), ("C", 3, 4)],), ["A", "C"]),

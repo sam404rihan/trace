@@ -47,6 +47,8 @@ def _cases():
     return out
 
 
+USES = ["greedy.farthest_reach"]
+
 TESTS = [
     ((5, [3, 4, 1, 1, 0, 0]), 1),
     ((3, [0, 0, 0, 0]), -1),

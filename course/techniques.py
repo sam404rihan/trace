@@ -195,6 +195,25 @@ TECHNIQUES = {
                    "after the last kept end. The interval that ends first leaves the most room for the rest, so "
                    "taking it is never a mistake.",
     },
+    "greedy.kadane": {
+        "name": "Extend or restart",
+        "explain": "Walking left to right, the best run ending at x either continues the run before it or starts "
+                   "fresh at x: `cur = max(x, cur + x)`. A run with a negative total only drags down whatever "
+                   "follows, so drop it and restart. This is Kadane's algorithm: O(n) time, O(1) space.",
+    },
+    "greedy.farthest_reach": {
+        "name": "Farthest reach",
+        "explain": "Walk left to right keeping `far`, the farthest index you can reach so far: "
+                   "`far = max(far, i + nums[i])`. If i ever passes far, you're stuck. To count jumps, treat each "
+                   "jump as a level: when i reaches the end of the current level, jump once, and the next level "
+                   "ends at far.",
+    },
+    "greedy.forced_first": {
+        "name": "The forced first move",
+        "explain": "Go left to right. Often the first thing that's still wrong can only be fixed one way: a flip "
+                   "must start there, or the smallest card must start a group. Make that forced move and carry "
+                   "on. There's no choice to search, so it's one pass.",
+    },
     "grid.neighbors": {
         "name": "Grid neighbours",
         "explain": "A cell (r, c) has up to four neighbours: (r - 1, c), (r + 1, c), (r, c - 1) and (r, c + 1). "
