@@ -72,6 +72,8 @@ def _cases():
     return out
 
 
+USES = ["bsearch.first_true", "intervals.merge"]
+
 TESTS = [
     ([("SummaryRanges",), ("add_num", 1), ("get_intervals",), ("add_num", 3), ("get_intervals",), ("add_num", 7),
       ("get_intervals",), ("add_num", 2), ("get_intervals",), ("add_num", 6), ("get_intervals",)],

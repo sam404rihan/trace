@@ -96,6 +96,8 @@ def _big():
     return ops, expect
 
 
+USES = ["bsearch.first_true", "intervals.overlap", "intervals.merge"]
+
 TESTS = [
     ([("RangeModule",), ("add_range", 10, 20), ("remove_range", 14, 16), ("query_range", 10, 14),
       ("query_range", 13, 15), ("query_range", 16, 17)],

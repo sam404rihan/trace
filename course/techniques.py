@@ -171,6 +171,30 @@ TECHNIQUES = {
                    "its own function. It's often one greedy pass, such as filling each day until the next item "
                    "won't fit.",
     },
+    "intervals.overlap": {
+        "name": "Do two intervals overlap?",
+        "explain": "[a, b] and [c, d] overlap when `a <= d and c <= b`. It's easier to see the other way round: "
+                   "they don't overlap when one ends before the other starts. Use `<` instead of `<=` when "
+                   "touching shouldn't count.",
+    },
+    "intervals.merge": {
+        "name": "Absorbing an overlap",
+        "explain": "When an interval overlaps the one you're building, swallow it: `start = min(start, s)` and "
+                   "`end = max(end, e)`. The max matters, because [1, 10] swallows [2, 3]. Intervals that don't "
+                   "overlap are copied as they are.",
+    },
+    "intervals.sort_by_start": {
+        "name": "Sort by start, then compare neighbours",
+        "explain": "Once intervals are sorted by start, each one can only overlap its neighbours. One pass then "
+                   "compares each interval with the one before it, or with the last one you kept, instead of "
+                   "every pair: O(n log n) for the sort and O(n) for the pass.",
+    },
+    "intervals.earliest_end": {
+        "name": "Earliest end first",
+        "explain": "To keep the most intervals that don't overlap, sort by END and keep each one that starts at or "
+                   "after the last kept end. The interval that ends first leaves the most room for the rest, so "
+                   "taking it is never a mistake.",
+    },
     "grid.neighbors": {
         "name": "Grid neighbours",
         "explain": "A cell (r, c) has up to four neighbours: (r - 1, c), (r + 1, c), (r, c - 1) and (r, c + 1). "

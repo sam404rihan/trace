@@ -18,6 +18,9 @@ def can_attend_meetings(intervals: list[list[int]]) -> bool:
     raise NotImplementedError  # replace this line with your solution
 
 
+TEACHES = ["intervals.sort_by_start"]
+USES = ["intervals.overlap"]
+
 TESTS = [
     (([[0, 30], [5, 10], [15, 20]],), False),
     (([[7, 10], [2, 4]],), True),

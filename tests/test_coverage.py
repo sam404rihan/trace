@@ -300,5 +300,22 @@ class Stage2Audit(AuditBase):
                           "median_two_sorted": ["bsearch.first_true"], "time_map": ["bsearch.first_true"]})
 
 
+    def test_topic_10(self):
+        self.assert_audited("10_sorting_and_intervals")
+        self.assert_teaches({"overlaps": ["intervals.overlap"], "insert_interval": ["intervals.merge"],
+                             "can_attend_meetings": ["intervals.sort_by_start"],
+                             "non_overlapping": ["intervals.earliest_end"]})
+        self.assert_uses({"merge_intervals": ["intervals.overlap", "intervals.merge", "intervals.sort_by_start"],
+                          "summary_ranges": ["bsearch.first_true", "intervals.merge"],
+                          "range_module": ["bsearch.first_true", "intervals.overlap", "intervals.merge"],
+                          "largest_number": []})
+        self.assertEqual(self.problems["non_overlapping"]["difficulty"], "easy")
+
+    def test_every_stage_2_topic_keeps_two_hard_problems(self):
+        for topic_id in STAGE_2:
+            hards = [n for n in self.items(topic_id) if self.problems[n]["difficulty"] == "hard"]
+            self.assertGreaterEqual(len(hards), 2, (topic_id, hards))
+
+
 if __name__ == "__main__":
     unittest.main()

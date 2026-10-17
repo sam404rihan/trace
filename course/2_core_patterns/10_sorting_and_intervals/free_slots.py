@@ -27,6 +27,8 @@ def free_slots(busy: list[list[list[int]]], day_start: int, day_end: int, min_le
     raise NotImplementedError  # replace this line with your solution
 
 
+USES = ["intervals.overlap", "intervals.merge", "intervals.sort_by_start"]
+
 TESTS = [
     (([[[60, 120], [300, 360]], [[90, 150], [200, 240]]], 0, 480, 30),
      [[0, 60], [150, 200], [240, 300], [360, 480]]),

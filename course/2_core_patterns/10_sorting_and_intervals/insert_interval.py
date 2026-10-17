@@ -17,6 +17,9 @@ def insert_interval(intervals: list[list[int]], new: list[int]) -> list[list[int
     raise NotImplementedError  # replace this line with your solution
 
 
+TEACHES = ["intervals.merge"]
+USES = ["intervals.overlap"]
+
 STEPS = [
     {
         "title": "Overlaps with one interval",

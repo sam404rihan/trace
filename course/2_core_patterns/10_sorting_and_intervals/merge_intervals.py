@@ -21,6 +21,8 @@ def FINISH(result):
     return [list(iv) for iv in result]  # accept tuples as well as lists
 
 
+USES = ["intervals.overlap", "intervals.merge", "intervals.sort_by_start"]
+
 TESTS = [
     (([[1, 3], [2, 6], [8, 10], [15, 18]],), [[1, 6], [8, 10], [15, 18]]),
     (([[1, 4], [4, 5]],), [[1, 5]]),

@@ -19,6 +19,8 @@ def largest_number(nums: list[int]) -> str:
     raise NotImplementedError  # replace this line with your solution
 
 
+USES = []
+
 TESTS = [
     (([10, 2],), "210"),
     (([3, 30, 34, 5, 9],), "9534330"),
