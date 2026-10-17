@@ -52,6 +52,6 @@ def _cases():
     return out
 
 
-USES = []
+USES = ["brackets.balance"]
 
 TESTS = [(("(*)",), True), (("(*))",), True), ((")(",), False), (("",), True), (("((*",), False), (("*)",), True)] + _cases()

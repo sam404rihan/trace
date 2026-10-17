@@ -259,12 +259,12 @@ class Stage2Audit(AuditBase):
 
     def test_topic_06(self):
         self.assert_audited("06_two_pointers")
-        self.assert_teaches({"pointer_step": ["pointers.opposite_ends"], "merge_sorted": ["pointers.two_sequences"]})
+        self.assert_teaches({"pointer_step": ["pointers.opposite_ends"], "is_subsequence": ["pointers.two_sequences"]})
         self.assert_uses({"remove_duplicates_sorted": ["array.write_pointer"],
                           "trap_rain_water": ["array.left_right_passes", "pointers.opposite_ends"],
                           "min_window_subsequence": ["pointers.two_sequences"],
                           "merge_logs": ["pointers.two_sequences"], "count_pairs_below": ["pointers.opposite_ends"]})
-        self.assertEqual(self.problems["merge_sorted"]["difficulty"], "easy")
+        self.assertEqual(self.problems["is_subsequence"]["difficulty"], "easy")
 
 
     def test_topic_07(self):
@@ -324,14 +324,18 @@ class Stage2Audit(AuditBase):
         self.assert_uses({"min_k_bit_flips": ["prefix.difference", "greedy.forced_first"],
                           "hand_of_straights": ["greedy.forced_first"], "gas_station": ["greedy.kadane"],
                           "min_taps": ["greedy.farthest_reach"], "candy": ["array.left_right_passes"],
-                          "pick_talks": ["intervals.earliest_end"], "patching_array": []})
+                          "pick_talks": ["intervals.earliest_end"], "patching_array": [],
+                          "valid_paren_string": ["brackets.balance"]})
+        self.assert_teaches({"min_add_parens": ["brackets.balance"]})
+        self.assertEqual(self.problems["min_add_parens"]["difficulty"], "easy")
         self.assertEqual(self.problems["min_suffix_flips"]["difficulty"], "easy")
 
     def test_teacher_big_tests_reject_the_naive_solution(self):
         # Solving a teacher marks its technique learned, so its big test must time out without it.
         def big(name, ok):
             self.assertTrue(any(ok(args, want) for args, want in self.cases_of(name)), name)
-        big("merge_sorted", lambda ab, w: len(ab[1]) >= 100_000 and len(ab[0]) >= 100_000)      # insort: O(n * m)
+        big("is_subsequence", lambda st, w: len(st[0]) >= 1_000_000 and len(st[1]) >= 400_000)  # slicing s: O(n * m)
+        big("min_add_parens", lambda a, w: a[0].startswith("(" * 100_000))                      # replace "()": O(n²)
         big("nice_subarrays", lambda a, w: len(a[0]) >= 100_000 and w >= 50_000_000)          # one step per answer
         big("zero_sum_subarrays", lambda a, w: len(a[0]) >= 100_000)                           # every subarray
         big("range_additions", lambda a, w: sum(r - l + 1 for l, r, _ in a[1]) >= 1_000_000_000)

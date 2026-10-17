@@ -208,6 +208,12 @@ TECHNIQUES = {
                    "jump as a level: when i reaches the end of the current level, jump once, and the next level "
                    "ends at far.",
     },
+    "brackets.balance": {
+        "name": "Counting open brackets",
+        "explain": "With one kind of bracket, a counter does a stack's job. Walk once keeping `open`, the number of "
+                   "\"(\" not closed yet: add 1 for \"(\" and take 1 off for \")\". If it would drop below 0, that "
+                   "\")\" has nothing to close; if it ends above 0, some \"(\" were never closed.",
+    },
     "greedy.forced_first": {
         "name": "The forced first move",
         "explain": "Go left to right. Often the first thing that's still wrong can only be fixed one way: a flip "
