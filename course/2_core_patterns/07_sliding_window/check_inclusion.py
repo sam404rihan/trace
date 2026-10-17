@@ -32,5 +32,7 @@ def _cases():
     return out
 
 
+USES = ["window.fixed"]
+
 TESTS = [(("ab", "eidbaooo"), True), (("ab", "eidboaoo"), False), (("abc", "ab"), False), (("a", "a"), True),
          (("adc", "dcda"), True)] + _cases()

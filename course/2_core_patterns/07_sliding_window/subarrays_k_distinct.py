@@ -50,6 +50,8 @@ def _cases():
     return out
 
 
+USES = ["window.variable", "window.count"]
+
 TESTS = [
     (([1, 2, 1, 2, 3], 2), 7),
     (([1, 2, 1, 3, 4], 3), 3),

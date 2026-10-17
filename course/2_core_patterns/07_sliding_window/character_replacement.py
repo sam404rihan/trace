@@ -41,4 +41,6 @@ def _cases():
     return out
 
 
+USES = ["window.variable"]
+
 TESTS = [(("ABAB", 2), 4), (("AABABBA", 1), 4), (("A", 0), 1), (("ABCDE", 0), 1), (("ABBB", 0), 3)] + _cases()

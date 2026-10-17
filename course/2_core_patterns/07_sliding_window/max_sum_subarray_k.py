@@ -18,6 +18,8 @@ def max_sum_subarray_k(nums: list[int], k: int) -> int:
     raise NotImplementedError  # replace this line with your solution
 
 
+USES = ["window.fixed"]
+
 TESTS = [
     (([2, 1, 5, 1, 3, 2], 3), 9),
     (([2, 3, 4, 1, 5], 2), 7),

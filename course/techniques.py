@@ -114,6 +114,31 @@ TECHNIQUES = {
                    "and moves one of them on, or both: merging takes the smaller, and matching a subsequence moves "
                    "j only on a match. Neither pointer ever goes back, so it's O(len(a) + len(b)).",
     },
+    "window.fixed": {
+        "name": "Fixed-size window",
+        "explain": "When a window of k items slides one step right, one item enters (`nums[right]`) and one leaves "
+                   "(`nums[right - k]`). Update the sum or the counts with just those two: O(1) per step instead "
+                   "of O(k).",
+    },
+    "window.variable": {
+        "name": "Growing and shrinking a window",
+        "explain": "Move `right` one step at a time to grow the window. Whenever it breaks the rule (too many kinds, "
+                   "too big a sum), move `left` forward until it's fine again, undoing what leaves. Each index "
+                   "enters once and leaves once, so it's O(n). For the longest good window, record its size after "
+                   "shrinking.",
+    },
+    "window.shortest": {
+        "name": "Shortest window",
+        "explain": "For the SHORTEST window that works, grow `right` until the window is good. Then, while it's "
+                   "still good, record its length and shrink from the left. The longest-window version shrinks "
+                   "while the window is broken; this one shrinks while it works.",
+    },
+    "window.count": {
+        "name": "Counting with a window",
+        "explain": "To count windows instead of finding the best one: once [left, right] is good, every start from "
+                   "left to right is good for this end too, so add `right - left + 1`. \"Exactly k\" can't be "
+                   "shrunk towards this way, but \"at most k\" can, so exactly(k) = at_most(k) - at_most(k - 1).",
+    },
     "grid.neighbors": {
         "name": "Grid neighbours",
         "explain": "A cell (r, c) has up to four neighbours: (r - 1, c), (r + 1, c), (r, c - 1) and (r, c + 1). "

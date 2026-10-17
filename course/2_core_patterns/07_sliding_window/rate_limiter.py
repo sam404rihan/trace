@@ -58,6 +58,8 @@ def _big():
 
 _CALLS, _OUT = _big()
 
+USES = ["window.variable"]
+
 TESTS = [
     ([("RateLimiter", 2, 10), ("allow", 1), ("allow", 2), ("allow", 3), ("allow", 11), ("allow", 12)],
      [None, True, True, False, True, True]),

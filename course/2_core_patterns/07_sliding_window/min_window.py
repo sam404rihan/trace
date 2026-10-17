@@ -46,5 +46,7 @@ def _cases():
     return out
 
 
+USES = ["window.variable", "window.shortest"]
+
 TESTS = [(("ADOBECODEBANC", "ABC"), "BANC"), (("a", "a"), "a"), (("a", "aa"), ""), (("ab", "b"), "b"),
          (("aaflslflsldkalskaaa", "aaa"), "aaa")] + _cases()

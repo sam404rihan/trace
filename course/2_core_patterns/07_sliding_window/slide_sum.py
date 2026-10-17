@@ -19,6 +19,9 @@ def slide_sum(window_sum: int, nums: list[int], right: int, k: int) -> int:
     raise NotImplementedError  # replace this line with your solution
 
 
+TEACHES = ["window.fixed"]
+USES = []
+
 TESTS = [
     ((8, [2, 1, 5, 1, 3], 3, 3), 7),
     ((7, [2, 1, 5, 1, 3], 4, 3), 9),

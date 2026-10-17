@@ -267,5 +267,16 @@ class Stage2Audit(AuditBase):
         self.assertEqual(self.problems["merge_sorted"]["difficulty"], "easy")
 
 
+    def test_topic_07(self):
+        self.assert_audited("07_sliding_window")
+        self.assert_teaches({"slide_sum": ["window.fixed"], "longest_k_distinct": ["window.variable"],
+                             "min_subarray_len": ["window.shortest"], "nice_subarrays": ["window.count"]})
+        self.assert_uses({"check_inclusion": ["window.fixed"], "min_window": ["window.variable", "window.shortest"],
+                          "subarrays_k_distinct": ["window.variable", "window.count"],
+                          "concat_all_words": ["window.variable"], "rate_limiter": ["window.variable"]})
+        for name in ("min_subarray_len", "nice_subarrays"):
+            self.assertEqual(self.problems[name]["difficulty"], "easy", name)
+
+
 if __name__ == "__main__":
     unittest.main()

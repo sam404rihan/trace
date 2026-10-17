@@ -17,6 +17,8 @@ def longest_unique_substring(s: str) -> int:
     raise NotImplementedError  # replace this line with your solution
 
 
+USES = ["window.variable"]
+
 TESTS = [
     (("abcabcbb",), 3),
     (("bbbbb",), 1),

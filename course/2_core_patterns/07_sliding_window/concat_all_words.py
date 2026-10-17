@@ -71,6 +71,8 @@ def _cases():
     return out
 
 
+USES = ["window.variable"]
+
 TESTS = [
     (("barfoothefoobarman", ["foo", "bar"]), [0, 9]),
     (("wordgoodgoodgoodbestword", ["word", "good", "best", "word"]), []),

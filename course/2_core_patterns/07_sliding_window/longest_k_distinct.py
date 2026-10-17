@@ -34,6 +34,9 @@ def _big():
 
 _S, _K, _BEST = _big()
 
+TEACHES = ["window.variable"]
+USES = []
+
 STEPS = [
     {
         "title": "Make it work",
