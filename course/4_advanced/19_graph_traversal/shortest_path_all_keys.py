@@ -81,7 +81,7 @@ def _cases():
     return out
 
 
-USES = ["bfs.state", "bfs.shortest", "grid.neighbors"]
+USES = ["grid.neighbors", "bfs.shortest", "bfs.state"]
 
 TESTS = [
     ((["@.a..", "###.#", "b.A.B"],), 8),

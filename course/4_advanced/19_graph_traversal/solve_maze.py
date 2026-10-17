@@ -92,6 +92,6 @@ _MAZES = [
     _big(),
 ]
 
-USES = ["bfs.path", "bfs.shortest", "grid.neighbors"]
+USES = ["grid.neighbors", "bfs.shortest", "bfs.path"]
 
 TESTS = [((m,), _describe(m)) for m in _MAZES]

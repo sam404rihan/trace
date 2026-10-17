@@ -24,7 +24,7 @@ def route_to_exit(grid: list[str]) -> list[tuple[int, int]]:
 
 
 TEACHES = ["bfs.path"]
-USES = ["bfs.shortest", "grid.neighbors"]
+USES = ["grid.neighbors", "bfs.shortest"]
 
 TESTS = [
     ((["S.E"],), [(0, 0), (0, 1), (0, 2)]),

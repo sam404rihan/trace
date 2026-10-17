@@ -52,7 +52,7 @@ def _cases():
     return out
 
 
-USES = ["flood.from_targets", "dfs.flood_fill", "grid.neighbors"]
+USES = ["grid.neighbors", "dfs.flood_fill", "flood.from_targets"]
 
 TESTS = [((["XXXX", "XOOX", "XXOX", "XOXX"],), ["XXXX", "XXXX", "XXXX", "XOXX"]), ((["X"],), ["X"]), ((["O"],), ["O"]),
          ((["OOO", "OXO", "OOO"],), ["OOO", "OXO", "OOO"])] + _cases()

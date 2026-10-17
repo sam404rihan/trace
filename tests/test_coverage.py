@@ -88,6 +88,14 @@ class RealCourse(unittest.TestCase):
         errors, _ = check_coverage(topics, problems, server.parse_techniques(server.TECHNIQUES_FILE))
         self.assertEqual(errors, [])
 
+    def test_uses_are_in_teaching_order(self):
+        # The in-topic lock names the first unsolved teacher in USES, so USES follows course order.
+        topics, problems = server.load_course()
+        pos = {n: i for i, n in enumerate(n for t in topics for n in t["items"])}
+        teacher = {t: n for n, p in problems.items() for t in p["teaches"]}
+        wrong = [n for n, p in problems.items() if p["uses"] != sorted(p["uses"], key=lambda t: pos[teacher[t]])]
+        self.assertEqual(wrong, [])
+
 
 class GraphTraversalPilot(unittest.TestCase):
     def setUp(self):
@@ -138,8 +146,8 @@ class GraphTraversalPilot(unittest.TestCase):
 STAGE_1 = ("01_big_o_in_practice", "02_python_toolkit", "03_arrays_and_strings", "04_hashing", "05_recursion")
 
 
-class Stage1Audit(unittest.TestCase):
-    """Part 2, Stage 1: topics 01-05 fully audited (docs/superpowers/plans/2026-10-16-technique-coverage-stage-1.md)."""
+class AuditBase(unittest.TestCase):
+    """Helpers shared by the stage audits. Has no tests of its own."""
 
     @classmethod
     def setUpClass(cls):
@@ -159,6 +167,13 @@ class Stage1Audit(unittest.TestCase):
     def assert_teaches(self, expected):
         for name, teaches in expected.items():
             self.assertEqual(self.problems[name]["teaches"], teaches, name)
+
+    def cases_of(self, name):
+        return server.load_module(next(server.COURSE.glob(f"*/*/{name}.py")))["TESTS"]
+
+
+class Stage1Audit(AuditBase):
+    """Part 2, Stage 1: topics 01-05 fully audited (docs/superpowers/plans/2026-10-16-technique-coverage-stage-1.md)."""
 
     def test_problems_moved_to_the_topic_of_their_last_prerequisite(self):
         for name, topic_id in (("max_profit", "01_big_o_in_practice"), ("min_k_bit_flips", "11_greedy"),
@@ -216,9 +231,6 @@ class Stage1Audit(unittest.TestCase):
             hards = [n for n in self.items(topic_id) if self.problems[n]["difficulty"] == "hard"]
             self.assertGreaterEqual(len(hards), 2, (topic_id, hards))
 
-    def cases_of(self, name):
-        return server.load_module(next(server.COURSE.glob(f"*/*/{name}.py")))["TESTS"]
-
     def test_teacher_big_tests_reject_the_naive_solution(self):
         # Solving a teacher marks its technique learned, so its big test must time out without it.
         # Searching every c from every index is O(n * copies of c): many copies must be present.
@@ -232,6 +244,18 @@ class Stage1Audit(unittest.TestCase):
         leaks = [n for n, p in self.problems.items() if "USES" in p["starter"] or "TEACHES" in p["starter"]]
         self.assertEqual(leaks, [])
 
+
+
+STAGE_2 = ("06_two_pointers", "07_sliding_window", "08_prefix_sums", "09_binary_search",
+           "10_sorting_and_intervals", "11_greedy")
+
+
+class Stage2Audit(AuditBase):
+    """Part 2, Stage 2: topics 06-11 fully audited (docs/superpowers/plans/2026-10-17-technique-coverage-stage-2.md)."""
+
+    def test_problems_moved_to_the_topic_of_their_last_prerequisite(self):
+        for name in ("min_meeting_rooms", "min_interval_query"):
+            self.assertEqual(self.problems[name]["topic_id"], "17_heaps", name)
 
 if __name__ == "__main__":
     unittest.main()

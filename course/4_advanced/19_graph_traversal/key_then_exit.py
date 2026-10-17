@@ -25,7 +25,7 @@ def key_then_exit(grid: list[str]) -> int:
 
 
 TEACHES = ["bfs.state"]
-USES = ["bfs.shortest", "grid.neighbors"]
+USES = ["grid.neighbors", "bfs.shortest"]
 
 TESTS = [
     ((["@.E"],), 2),

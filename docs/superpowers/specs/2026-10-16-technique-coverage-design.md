@@ -25,7 +25,7 @@ audit in Part 2 confirms and completes this list.
 | | flood fill from the border inward | `pacific_atlantic`, `surrounded_regions` |
 | | BFS whose state is more than a cell, e.g. (cell, keys held) | `shortest_path_all_keys` |
 | | BFS over a graph you build first (word patterns, buses) | `word_ladder`, `bus_routes` |
-| 07 Sliding window | "exactly k" = at-most-k minus at-most-(k − 1) | `subarrays_k_distinct` |
+| 07 Sliding window | "exactly k" = at-most-k minus at-most-(k − 1) | `subarrays_k_distinct` (fixed: the new `nice_subarrays` teaches it) |
 | 14 Linked lists | finding where a cycle starts (`has_cycle` only detects one) | `find_duplicate` |
 | 17 Heaps | two heaps for the median | `median_finder`, `sliding_window_median` |
 | | lazy deletion | `sliding_window_median`, `skyline`, `task_scheduler` |
@@ -44,12 +44,12 @@ audit in Part 2 confirms and completes this list.
 
 | Problem (topic) | Needs | Taught in |
 |---|---|---|
-| `min_k_bit_flips` (03) | a queue of where flips end | 13 Queues |
-| `concat_all_words` (04) | sliding window | 07 |
-| `submatrix_sum_target` (04) | prefix sums + a dict of counts | 08 |
+| `min_k_bit_flips` (03) | the forced first flip, and a difference array for where flips end | 08 and 11 (fixed: moved to 11) |
+| `concat_all_words` (04) | sliding window | 07 (fixed: moved there) |
+| `submatrix_sum_target` (04) | prefix sums + a dict of counts | 08 (fixed: moved there) |
 | `scramble_string` (05) | memoisation | 23 DP (fixed: `count_paths`, 05's guided problem, already teaches it) |
-| `split_array_largest_sum` (09) | a greedy feasibility check | 11 Greedy |
-| `min_meeting_rooms`, `min_interval_query` (10) | heaps | 17 |
+| `split_array_largest_sum` (09) | a greedy feasibility check | 11 Greedy (fixed: `ship_capacity`, 09's guided problem, already teaches the same check) |
+| `min_meeting_rooms`, `min_interval_query` (10) | heaps | 17 (fixed: moved there) |
 | `word_search_ii` (18) | grid DFS + backtracking | 19, 22 |
 | `concatenated_words` (18) | DP | 23 |
 | `shortest_path_all_keys` (19) | bitmasks | 25 |
@@ -150,6 +150,8 @@ USES = ["bfs.grid"]                # other techniques this problem needs, each t
 - Every problem gets `USES`, which may be empty. It lists every technique the problem uses
   directly, including basic ones like grid neighbours, not just the newest one. That way the
   "Uses" row shows everything the problem relies on.
+- `USES` lists techniques in teaching order, the order their teachers come in the course, so the
+  lock names the first basic problem to do.
 - A problem with neither field counts as **not yet audited**.
 - Basic problems also get `TEACHES`.
 - The server reads both fields in `parse_problem`, the way it reads `TESTS` and `STEPS`.

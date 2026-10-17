@@ -70,7 +70,7 @@ def _cases():
     return out
 
 
-USES = ["hash.group_key", "hash.set_lookup"]
+USES = ["hash.set_lookup", "hash.group_key"]
 
 TESTS = [
     ((5, [[0, 0], [4, 4]], [[1, 1], [1, 0]]), [1, 0]),

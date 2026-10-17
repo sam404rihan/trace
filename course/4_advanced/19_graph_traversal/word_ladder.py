@@ -48,7 +48,7 @@ def _cases():
     return out
 
 
-USES = ["bfs.implicit", "bfs.shortest"]
+USES = ["bfs.shortest", "bfs.implicit"]
 
 TESTS = [(("hit", "cog", ["hot", "dot", "dog", "lot", "log", "cog"]), 5),
          (("hit", "cog", ["hot", "dot", "dog", "lot", "log"]), 0), (("a", "c", ["a", "b", "c"]), 2),

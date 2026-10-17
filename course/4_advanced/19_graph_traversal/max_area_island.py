@@ -48,7 +48,7 @@ def _cases():
     return out
 
 
-USES = ["graph.components", "dfs.flood_fill", "grid.neighbors"]
+USES = ["grid.neighbors", "dfs.flood_fill", "graph.components"]
 
 TESTS = [(([[1, 1, 0], [0, 1, 0], [0, 0, 1]],), 3), (([[0, 0, 0]],), 0), (([[1]],), 1),
          (([[1, 0, 1], [0, 1, 0], [1, 0, 1]],), 1)] + _cases()

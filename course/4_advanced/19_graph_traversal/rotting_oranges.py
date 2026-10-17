@@ -21,7 +21,7 @@ def rotting_oranges(grid: list[list[int]]) -> int:
     raise NotImplementedError  # replace this line with your solution
 
 
-USES = ["bfs.multi_source", "bfs.shortest", "grid.neighbors"]
+USES = ["grid.neighbors", "bfs.multi_source", "bfs.shortest"]
 
 TESTS = [
     (([[2, 1, 1], [1, 1, 0], [0, 1, 1]],), 4),

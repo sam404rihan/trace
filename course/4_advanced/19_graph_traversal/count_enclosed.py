@@ -22,7 +22,7 @@ def count_enclosed(grid: list[str]) -> int:
 
 
 TEACHES = ["flood.from_targets"]
-USES = ["dfs.flood_fill", "grid.neighbors"]
+USES = ["grid.neighbors", "dfs.flood_fill"]
 
 TESTS = [
     ((["#####", "#..##", "#####"],), 2),

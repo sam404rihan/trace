@@ -56,7 +56,7 @@ def _cases():
     return [((f,), _ref(f)) for f in (_random_formula(rng, 3) for _ in range(10))]
 
 
-USES = ["recursion.parse", "recursion.trust"]
+USES = ["recursion.trust", "recursion.parse"]
 
 TESTS = [
     (("H2O",), "H2O"),

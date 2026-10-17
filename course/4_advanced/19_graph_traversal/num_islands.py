@@ -21,7 +21,7 @@ def num_islands(grid: list[list[int]]) -> int:
 
 
 TEACHES = ["graph.components"]
-USES = ["dfs.flood_fill", "grid.neighbors"]
+USES = ["grid.neighbors", "dfs.flood_fill"]
 
 TESTS = [
     (([[1, 1, 1, 1, 0],
