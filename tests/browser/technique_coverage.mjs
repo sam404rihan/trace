@@ -44,9 +44,10 @@ check("solved problems stay open", !(await p.eval(`!!document.querySelector(".re
 check("solve flood_fill", await solve(p, "flood_fill"));
 await p.reload(BASE + "/#/p/count_enclosed");
 check("problem opens once its teacher is solved", await isOpen(p));
-check("Uses chip shows as known", (await text(p, ".tech-chip.known")).includes("Flood fill"));
+const floodChip = `[...document.querySelectorAll(".tech-chip")].find(b => b.textContent.includes("Flood fill"))`;
+check("Uses chip shows as known", await p.eval(`${floodChip}?.classList.contains("known") || false`));
 check("teaching box for the new technique", (await text(p, ".tech-new h4")) === "New technique: Searching back from the targets");
-await p.eval(`document.querySelector(".tech-chip").click()`); await sleep(200);
+await p.eval(`${floodChip}.click()`); await sleep(200);
 check("chip opens its explanation and teacher link", (await text(p, ".tech-detail")).includes("Learned in Flood Fill"));
 
 // Plan mode: no lock, chips still show what's missing.
