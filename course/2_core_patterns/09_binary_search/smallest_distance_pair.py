@@ -59,6 +59,8 @@ def _cases():
     return out
 
 
+USES = ["window.variable", "window.count", "bsearch.first_true", "bsearch.on_answer"]
+
 TESTS = [
     (([1, 3, 1], 1), 0),
     (([1, 6, 1], 3), 5),

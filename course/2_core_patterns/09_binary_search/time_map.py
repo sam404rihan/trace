@@ -73,6 +73,8 @@ def _big():
 
 _CALLS, _OUT = _big()
 
+USES = ["bsearch.first_true"]
+
 TESTS = [
     ([("TimeMap",), ("set", "theme", "light", 1), ("set", "theme", "dark", 4),
       ("get", "theme", 3), ("get", "theme", 4), ("get", "theme", 0), ("get", "font", 5)],

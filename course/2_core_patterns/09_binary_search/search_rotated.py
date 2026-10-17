@@ -18,6 +18,8 @@ def search_rotated(nums: list[int], target: int) -> int:
     raise NotImplementedError  # replace this line with your solution
 
 
+USES = ["bsearch.first_true"]
+
 TESTS = [
     (([4, 5, 6, 7, 0, 1, 2], 0), 4),
     (([4, 5, 6, 7, 0, 1, 2], 3), -1),

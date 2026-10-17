@@ -67,6 +67,8 @@ def _cases():
     return out
 
 
+USES = ["bsearch.first_true", "bsearch.on_answer"]
+
 TESTS = [
     (([7, 2, 5, 10, 8], 2), 18),
     (([1, 2, 3, 4, 5], 2), 9),

@@ -32,4 +32,6 @@ def _cases():
 
 
 M = [[1, 3, 5, 7], [10, 11, 16, 20], [23, 30, 34, 60]]
+USES = ["bsearch.first_true"]
+
 TESTS = [((M, 3), True), ((M, 13), False), ((M, 60), True), ((M, 0), False), (([[1]], 1), True)] + _cases()

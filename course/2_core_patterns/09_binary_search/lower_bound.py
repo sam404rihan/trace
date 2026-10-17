@@ -23,6 +23,9 @@ def lower_bound(nums: list[int], x: int) -> int:
     raise NotImplementedError  # replace this line with your solution
 
 
+TEACHES = ["bsearch.first_true"]
+USES = []
+
 TESTS = [
     (([1, 3, 3, 5], 3), 1),
     (([1, 3, 3, 5], 4), 3),

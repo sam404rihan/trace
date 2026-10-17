@@ -290,5 +290,15 @@ class Stage2Audit(AuditBase):
             self.assertEqual(self.problems[name]["difficulty"], "easy", name)
 
 
+    def test_topic_09(self):
+        self.assert_audited("09_binary_search")
+        self.assert_teaches({"lower_bound": ["bsearch.first_true"], "ship_capacity": ["bsearch.on_answer"]})
+        self.assert_uses({"split_array_largest_sum": ["bsearch.first_true", "bsearch.on_answer"],
+                          "smallest_distance_pair": ["window.variable", "window.count", "bsearch.first_true",
+                                                     "bsearch.on_answer"],
+                          "sqrt_floor": ["bsearch.first_true", "bsearch.on_answer"],
+                          "median_two_sorted": ["bsearch.first_true"], "time_map": ["bsearch.first_true"]})
+
+
 if __name__ == "__main__":
     unittest.main()

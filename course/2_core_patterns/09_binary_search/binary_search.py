@@ -19,6 +19,8 @@ def binary_search(nums: list[int], target: int) -> int:
     raise NotImplementedError  # replace this line with your solution
 
 
+USES = ["bsearch.first_true"]
+
 TESTS = [
     (([-1, 0, 3, 5, 9, 12], 9), 4),
     (([-1, 0, 3, 5, 9, 12], 2), -1),

@@ -18,6 +18,8 @@ def sqrt_floor(x: int) -> int:
     raise NotImplementedError  # replace this line with your solution
 
 
+USES = ["bsearch.first_true", "bsearch.on_answer"]
+
 TESTS = [
     ((4,), 2),
     ((8,), 2),

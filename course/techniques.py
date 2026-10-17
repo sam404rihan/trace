@@ -157,6 +157,20 @@ TECHNIQUES = {
                    "`diff[r + 1] -= v`. After all the updates, a running total of diff gives each index's value. "
                    "Each update is O(1), and one pass at the end does the rest.",
     },
+    "bsearch.first_true": {
+        "name": "Binary search for the first yes",
+        "explain": "Binary search keeps a range that must hold the answer and halves it each step, so it's O(log n). "
+                   "The most reusable form finds the first index where a yes/no question turns yes, such as the "
+                   "first `nums[i] >= x`: `lo, hi = 0, len(nums)`, then while lo < hi, set `hi = mid` on yes and "
+                   "`lo = mid + 1` on no.",
+    },
+    "bsearch.on_answer": {
+        "name": "Binary search on the answer",
+        "explain": "When the answer is a number and \"does c work?\" flips from no to yes once as c grows, binary "
+                   "search over c itself, between the smallest and the largest possible answer. Write the check as "
+                   "its own function. It's often one greedy pass, such as filling each day until the next item "
+                   "won't fit.",
+    },
     "grid.neighbors": {
         "name": "Grid neighbours",
         "explain": "A cell (r, c) has up to four neighbours: (r - 1, c), (r + 1, c), (r, c - 1) and (r, c + 1). "

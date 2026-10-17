@@ -20,6 +20,8 @@ def min_eating_speed(piles: list[int], h: int) -> int:
     raise NotImplementedError  # replace this line with your solution
 
 
+USES = ["bsearch.first_true", "bsearch.on_answer"]
+
 TESTS = [
     (([3, 6, 7, 11], 8), 4),
     (([30, 11, 23, 4, 20], 5), 30),

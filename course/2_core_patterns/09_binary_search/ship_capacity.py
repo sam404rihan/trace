@@ -44,6 +44,9 @@ def _big():
 
 _W, _D, _CAP = _big()
 
+TEACHES = ["bsearch.on_answer"]
+USES = ["bsearch.first_true"]
+
 STEPS = [
     {
         "title": "Can this capacity work?",

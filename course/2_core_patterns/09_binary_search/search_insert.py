@@ -17,6 +17,8 @@ def search_insert(nums: list[int], target: int) -> int:
     raise NotImplementedError  # replace this line with your solution
 
 
+USES = ["bsearch.first_true"]
+
 TESTS = [
     (([1, 3, 5, 6], 5), 2),
     (([1, 3, 5, 6], 2), 1),
