@@ -101,6 +101,19 @@ TECHNIQUES = {
                    "index just after it). When it meets an opening bracket, it calls itself for the inside and "
                    "carries on from the index that call returns.",
     },
+    "pointers.opposite_ends": {
+        "name": "Pointers at both ends",
+        "explain": "Put `left` at the start and `right` at the end, and move them towards each other. On a sorted "
+                   "list, a pair sum that's too small means nums[left] can't work with anything left, so move left "
+                   "up; too big means move right down. Each step rules out one item for good: O(n) instead of "
+                   "trying every pair.",
+    },
+    "pointers.two_sequences": {
+        "name": "One pointer per list",
+        "explain": "To walk two sequences together, keep an index into each. Each step compares `a[i]` with `b[j]` "
+                   "and moves one of them on, or both: merging takes the smaller, and matching a subsequence moves "
+                   "j only on a match. Neither pointer ever goes back, so it's O(len(a) + len(b)).",
+    },
     "grid.neighbors": {
         "name": "Grid neighbours",
         "explain": "A cell (r, c) has up to four neighbours: (r - 1, c), (r + 1, c), (r, c - 1) and (r, c + 1). "

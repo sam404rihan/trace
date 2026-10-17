@@ -63,6 +63,8 @@ def _cases():
     return out
 
 
+USES = ["pointers.two_sequences"]
+
 TESTS = [
     (([1, 2, 3, 10, 4, 2, 3, 5],), 3),
     (([5, 4, 3, 2, 1],), 4),

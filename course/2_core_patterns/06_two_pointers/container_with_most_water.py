@@ -18,6 +18,8 @@ def container_with_most_water(height: list[int]) -> int:
     raise NotImplementedError  # replace this line with your solution
 
 
+USES = ["pointers.opposite_ends"]
+
 TESTS = [
     (([1, 8, 6, 2, 5, 4, 8, 3, 7],), 49),
     (([1, 1],), 1),

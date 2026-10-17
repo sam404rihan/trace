@@ -49,6 +49,8 @@ def _cases():
     return out
 
 
+USES = ["pointers.two_sequences"]
+
 TESTS = [
     (("abcdebdde", "bde"), "bcde"),
     (("jmeqksfrsdcmsiwvaovztaqenprpvnbstl", "u"), ""),

@@ -21,6 +21,9 @@ def pointer_step(nums: list[int], left: int, right: int, target: int) -> tuple[i
     raise NotImplementedError  # replace this line with your solution
 
 
+TEACHES = ["pointers.opposite_ends"]
+USES = []
+
 TESTS = [
     (([1, 3, 5, 8], 0, 3, 7), (0, 2)),
     (([1, 3, 5, 8], 0, 3, 11), (1, 3)),

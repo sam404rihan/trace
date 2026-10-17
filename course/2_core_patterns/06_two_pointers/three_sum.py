@@ -24,6 +24,8 @@ def CHECK(got, expected):
     return normalize(got) == normalize(expected)
 
 
+USES = ["pointers.opposite_ends"]
+
 TESTS = [
     (([-1, 0, 1, 2, -1, -4],), [[-1, -1, 2], [-1, 0, 1]]),
     (([0, 1, 1],), []),

@@ -46,6 +46,8 @@ def _big():
 
 _A, _B, _OUT = _big()
 
+USES = ["pointers.two_sequences"]
+
 TESTS = [
     ((["09:00:01 boot", "09:00:05 ready"], ["09:00:01 boot", "09:00:03 disk ok"]),
      ["09:00:01 boot", "09:00:03 disk ok", "09:00:05 ready"]),

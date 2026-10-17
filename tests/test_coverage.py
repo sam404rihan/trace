@@ -257,5 +257,15 @@ class Stage2Audit(AuditBase):
         for name in ("min_meeting_rooms", "min_interval_query"):
             self.assertEqual(self.problems[name]["topic_id"], "17_heaps", name)
 
+    def test_topic_06(self):
+        self.assert_audited("06_two_pointers")
+        self.assert_teaches({"pointer_step": ["pointers.opposite_ends"], "merge_sorted": ["pointers.two_sequences"]})
+        self.assert_uses({"remove_duplicates_sorted": ["array.write_pointer"],
+                          "trap_rain_water": ["array.left_right_passes", "pointers.opposite_ends"],
+                          "min_window_subsequence": ["pointers.two_sequences"],
+                          "merge_logs": ["pointers.two_sequences"], "count_pairs_below": ["pointers.opposite_ends"]})
+        self.assertEqual(self.problems["merge_sorted"]["difficulty"], "easy")
+
+
 if __name__ == "__main__":
     unittest.main()

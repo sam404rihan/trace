@@ -32,6 +32,8 @@ def _big():
 
 _NUMS, _T, _ANS = _big()
 
+USES = ["pointers.opposite_ends"]
+
 STEPS = [
     {
         "title": "Make it work",

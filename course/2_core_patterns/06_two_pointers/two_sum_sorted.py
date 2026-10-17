@@ -17,6 +17,8 @@ def two_sum_sorted(nums: list[int], target: int) -> list[int]:
     raise NotImplementedError  # replace this line with your solution
 
 
+USES = ["pointers.opposite_ends"]
+
 TESTS = [
     (([2, 7, 11, 15], 9), [0, 1]),
     (([2, 3, 4], 6), [0, 2]),

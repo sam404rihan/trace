@@ -18,6 +18,8 @@ def valid_palindrome(s: str) -> bool:
     raise NotImplementedError  # replace this line with your solution
 
 
+USES = ["pointers.opposite_ends"]
+
 TESTS = [
     (("A man, a plan, a canal: Panama",), True),
     (("race a car",), False),
