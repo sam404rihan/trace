@@ -71,6 +71,8 @@ def _big():
 
 _CALLS, _OUT = _big()
 
+USES = ["list.recency"]
+
 TESTS = [
     ([("LRUCache", 2), ("put", "a", 1), ("put", "b", 2), ("get", "a"), ("put", "c", 3), ("get", "b"), ("keys",)],
      [None, None, None, 1, None, -1, ["a", "c"]]),

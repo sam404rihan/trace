@@ -25,6 +25,8 @@ def PREPARE(values, pos):
     return (build_list(values, cycle_to=pos),)
 
 
+USES = ["list.fast_slow"]
+
 TESTS = [
     (([3, 2, 0, -4], 1), True),
     (([1, 2], 0), True),

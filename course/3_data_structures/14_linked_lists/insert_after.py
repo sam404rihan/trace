@@ -27,6 +27,8 @@ def PREPARE(values, i, val):
 
 FINISH = to_list
 
+USES = []
+
 TESTS = [
     (([1, 2, 3], 0, 9), [1, 9, 2, 3]),
     (([1, 2, 3], 2, 9), [1, 2, 3, 9]),

@@ -238,6 +238,36 @@ TECHNIQUES = {
                    "back. Before adding a new index, pop smaller values off the back: they can never be the max "
                    "again. Pop the front once it slides out of the window. The front is always the window's max.",
     },
+    "list.reverse": {
+        "name": "Reversing links",
+        "explain": "Walk the list with `prev`, `curr` and `nxt`: save `nxt = curr.next`, point `curr.next` back at "
+                   "`prev`, then step both forward. When curr falls off the end, prev is the new head. Save the next "
+                   "node before you overwrite the link, or the rest of the list is lost.",
+    },
+    "list.dummy": {
+        "name": "Dummy head node",
+        "explain": "Put a throwaway node in front of the head: `dummy = ListNode(0, head)`. Now every real node, the "
+                   "first one included, has a node before it, so inserting or removing at the head needs no special "
+                   "case. Return `dummy.next` at the end.",
+    },
+    "list.fast_slow": {
+        "name": "Fast and slow pointers",
+        "explain": "Move `slow` one node and `fast` two nodes per step. When fast reaches the end, slow is in the "
+                   "middle. If the list loops, fast laps slow and they land on the same node. One pass, O(1) extra "
+                   "space.",
+    },
+    "list.recency": {
+        "name": "Recency order: dict plus linked list",
+        "explain": "To keep keys ordered by when they were last used, pair a dict with a doubly linked list: the dict "
+                   "finds a key's node in O(1), and the list moves it to the newest end or drops the oldest in O(1). "
+                   "`collections.OrderedDict` is exactly this: `move_to_end(key)` and `popitem(last=False)`.",
+    },
+    "list.cycle_start": {
+        "name": "Finding where a cycle starts",
+        "explain": "Once fast and slow have met inside the loop, put one pointer back at the head and move both one "
+                   "step at a time. They meet exactly where the loop begins: the head is as far from the loop's "
+                   "start as the meeting point is, going round.",
+    },
     "grid.neighbors": {
         "name": "Grid neighbours",
         "explain": "A cell (r, c) has up to four neighbours: (r - 1, c), (r + 1, c), (r, c - 1) and (r, c + 1). "

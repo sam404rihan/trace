@@ -127,6 +127,8 @@ def _cases():
     return out
 
 
+USES = ["list.recency"]
+
 TESTS = [
     ([("LFUCache", 2), ("put", 1, 1), ("put", 2, 2), ("get", 1), ("put", 3, 3), ("get", 2), ("get", 3),
       ("put", 4, 4), ("get", 1), ("get", 3), ("get", 4)],

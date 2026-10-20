@@ -26,6 +26,9 @@ def PREPARE(values):
 
 FINISH = to_list
 
+TEACHES = ["list.fast_slow"]
+USES = []
+
 TESTS = [
     (([1, 2, 3, 4, 5],), [3, 4, 5]),
     (([1, 2, 3, 4, 5, 6],), [4, 5, 6]),

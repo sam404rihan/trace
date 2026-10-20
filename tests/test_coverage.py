@@ -373,5 +373,16 @@ class Stage3Audit(AuditBase):
         self.assertEqual(self.problems["sliding_window_max"]["difficulty"], "easy")
 
 
+    def test_topic_14(self):
+        self.assert_audited("14_linked_lists")
+        self.assert_teaches({"reverse_between": ["list.reverse", "list.dummy"], "middle_node": ["list.fast_slow"],
+                             "recently_used": ["list.recency"], "cycle_start": ["list.cycle_start"]})
+        self.assert_uses({"find_duplicate": ["list.fast_slow", "list.cycle_start"], "lfu_cache": ["list.recency"],
+                          "merge_two_lists": ["pointers.two_sequences", "list.dummy"],
+                          "sort_list": ["recursion.trust", "pointers.two_sequences", "list.dummy", "list.fast_slow"]})
+        for name in ("recently_used", "cycle_start"):
+            self.assertEqual(self.problems[name]["difficulty"], "easy", name)
+
+
 if __name__ == "__main__":
     unittest.main()

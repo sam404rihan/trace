@@ -25,6 +25,8 @@ def PREPARE(values, n):
 
 FINISH = to_list
 
+USES = ["list.dummy"]
+
 TESTS = [
     (([1, 2, 3, 4, 5], 2), [1, 2, 3, 5]),
     (([1], 1), []),

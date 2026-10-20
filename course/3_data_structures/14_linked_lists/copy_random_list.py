@@ -62,4 +62,6 @@ _CASES = [
     [],
     [[5, 0]],
 ]
+USES = []
+
 TESTS = [((c,), c) for c in _CASES]

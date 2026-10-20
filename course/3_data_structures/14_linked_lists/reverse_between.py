@@ -23,6 +23,9 @@ def PREPARE(values, left, right):
 
 FINISH = to_list
 
+TEACHES = ["list.reverse", "list.dummy"]
+USES = []
+
 STEPS = [
     {
         "title": "Reverse everything",

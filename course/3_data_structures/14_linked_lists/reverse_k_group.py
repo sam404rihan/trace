@@ -38,6 +38,8 @@ def _ref(v, k):
     return out
 
 
+USES = ["list.reverse", "list.dummy"]
+
 TESTS = [((v, k), _ref(v, k)) for v, k in (([1, 2, 3, 4, 5], 2), ([1, 2, 3, 4, 5], 3), ([1, 2, 3, 4, 5], 1),
                                            ([1, 2, 3, 4, 5], 5), ([1, 2], 3), ([], 2), (list(range(20)), 4),
                                            (list(range(23)), 6))]

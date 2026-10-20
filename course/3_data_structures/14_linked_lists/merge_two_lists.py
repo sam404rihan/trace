@@ -23,6 +23,8 @@ def PREPARE(a, b):
 
 FINISH = to_list
 
+USES = ["pointers.two_sequences", "list.dummy"]
+
 TESTS = [
     (([1, 2, 4], [1, 3, 4]), [1, 1, 2, 3, 4, 4]),
     (([], []), []),

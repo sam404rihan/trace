@@ -36,4 +36,6 @@ def _ref(v):
     return out
 
 
+USES = ["pointers.two_sequences", "list.reverse", "list.fast_slow"]
+
 TESTS = [((v,), _ref(v)) for v in ([1, 2, 3, 4], [1, 2, 3, 4, 5], [1], [], [1, 2], list(range(1, 12)), [7, 7, 8, 8, 9])]
