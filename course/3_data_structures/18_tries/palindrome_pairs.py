@@ -56,6 +56,8 @@ def _cases():
     return out
 
 
+USES = ["hash.complement"]
+
 TESTS = [
     ((["abcd", "dcba", "lls", "s", "sssll"],), [[0, 1], [1, 0], [2, 4], [3, 2]]),
     ((["bat", "tab", "cat"],), [[0, 1], [1, 0]]),

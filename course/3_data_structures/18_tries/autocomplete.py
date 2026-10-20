@@ -31,6 +31,8 @@ def _big():
 
 _WORDS, _QUERIES, _OUT = _big()
 
+USES = ["bsearch.first_true"]
+
 STEPS = [
     {
         "title": "Make it work",

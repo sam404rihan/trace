@@ -18,6 +18,8 @@ def replace_words(roots: list[str], sentence: str) -> str:
     raise NotImplementedError  # replace this line with your solution
 
 
+USES = ["trie.walk"]
+
 TESTS = [
     ((["cat", "bat", "rat"], "the cattle was rattled by the battery"), "the cat was rat by the bat"),
     ((["a", "b", "c"], "aadsfasf absbs bbab cadsfafs"), "a a b c"),

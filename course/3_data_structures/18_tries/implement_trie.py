@@ -58,6 +58,8 @@ def _cases():
     return out
 
 
+USES = ["trie.walk"]
+
 TESTS = [([("Trie",), ("insert", "apple"), ("search", "apple"), ("search", "app"), ("starts_with", "app"),
            ("insert", "app"), ("search", "app")],
           [None, None, True, False, True, None, True]),

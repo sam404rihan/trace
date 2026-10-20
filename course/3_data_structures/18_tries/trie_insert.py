@@ -20,6 +20,9 @@ def trie_insert(root: dict, word: str) -> dict:
     raise NotImplementedError  # replace this line with your solution
 
 
+TEACHES = ["trie.walk"]
+USES = []
+
 TESTS = [
     (({}, "hi"), {"h": {"i": {"$": True}}}),
     (({"h": {"i": {"$": True}}}, "he"), {"h": {"i": {"$": True}, "e": {"$": True}}}),

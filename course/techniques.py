@@ -333,6 +333,18 @@ TECHNIQUES = {
                    "together with where it came from: `(value, which_list, position)`. Pop the smallest, then push "
                    "the next item from the same list. The heap holds at most one item per list.",
     },
+    "trie.walk": {
+        "name": "Walking a trie",
+        "explain": "A trie stores words letter by letter in nested dicts: `node = node.setdefault(ch, {})` for each "
+                   "letter, then mark the end, for example `node[\"$\"] = True`. Words that share a prefix share its "
+                   "path, so looking up a word or a prefix takes O(its length).",
+    },
+    "trie.counts": {
+        "name": "Counting words through a trie node",
+        "explain": "Keep a count in every trie node and add 1 to it on each node a new word passes through. The number "
+                   "of words that start with a prefix is then the count at the prefix's last node: walk down and read "
+                   "it, O(length of the prefix).",
+    },
     "grid.neighbors": {
         "name": "Grid neighbours",
         "explain": "A cell (r, c) has up to four neighbours: (r - 1, c), (r + 1, c), (r, c - 1) and (r, c + 1). "

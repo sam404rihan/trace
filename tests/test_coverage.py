@@ -417,5 +417,32 @@ class Stage3Audit(AuditBase):
         self.assertEqual(self.problems["merge_k_sorted"]["difficulty"], "medium")
 
 
+    def test_topic_18(self):
+        self.assert_audited("18_tries")
+        self.assert_teaches({"trie_insert": ["trie.walk"], "count_prefixes": ["trie.counts"]})
+        self.assert_uses({"word_dictionary": ["recursion.trust", "trie.walk", "trie.counts"],
+                          "stream_matches": ["trie.walk"], "palindrome_pairs": ["hash.complement"],
+                          "autocomplete": ["bsearch.first_true"]})
+        self.assertEqual(self.problems["count_prefixes"]["difficulty"], "easy")
+        self.assertEqual(self.problems["stream_matches"]["difficulty"], "hard")
+
+    def test_every_stage_3_topic_keeps_two_hard_problems(self):
+        for topic_id in STAGE_3:
+            hards = [n for n in self.items(topic_id) if self.problems[n]["difficulty"] == "hard"]
+            self.assertGreaterEqual(len(hards), 2, (topic_id, hards))
+
+    def test_teacher_big_tests_reject_the_naive_solution(self):
+        # Solving a teacher marks its technique learned, so its big test must time out without it.
+        def big(name, ok):
+            self.assertTrue(any(ok(args, want) for args, want in self.cases_of(name)), name)
+        big("daily_temperatures", lambda a, w: len(a[0]) >= 100_000 and w.count(0) >= 50_000)   # look ahead: O(n²)
+        big("sliding_window_max", lambda a, w: len(a[0]) >= 100_000 and a[1] >= 50_000)          # max(): O(n * k)
+        big("recently_used", lambda ops, w: len(ops) >= 200_000)                                 # list.remove: O(n)
+        big("median_finder", lambda ops, w: len(ops) >= 150_000)                                 # insort: O(n)
+        big("max_bag", lambda ops, w: len(ops) >= 300_000)                                       # max() or insort: O(n)
+        big("k_smallest_sums", lambda a, w: min(len(a[0]), len(a[1]), a[2]) >= 100_000)          # k * k sums
+        big("count_prefixes", lambda a, w: len(a[0]) >= 20_000 and len(a[1]) >= 20_000)          # scan every word
+
+
 if __name__ == "__main__":
     unittest.main()
