@@ -232,6 +232,12 @@ TECHNIQUES = {
                    "pop until it isn't: each popped index has just found its next bigger value, the new one. Every "
                    "index is pushed and popped once, so the scan is O(n). Flip the comparison for the next smaller.",
     },
+    "deque.monotonic": {
+        "name": "Monotonic deque",
+        "explain": "For the maximum of a sliding window, keep a deque of indexes whose values go down from front to "
+                   "back. Before adding a new index, pop smaller values off the back: they can never be the max "
+                   "again. Pop the front once it slides out of the window. The front is always the window's max.",
+    },
     "grid.neighbors": {
         "name": "Grid neighbours",
         "explain": "A cell (r, c) has up to four neighbours: (r - 1, c), (r + 1, c), (r, c - 1) and (r, c + 1). "

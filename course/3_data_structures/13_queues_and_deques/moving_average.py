@@ -30,6 +30,8 @@ def _big():
 
 _STREAM, _K, _OUT = _big()
 
+USES = ["window.fixed"]
+
 STEPS = [
     {
         "title": "Make it work",

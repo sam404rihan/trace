@@ -364,5 +364,14 @@ class Stage3Audit(AuditBase):
         self.assertEqual(self.problems["daily_temperatures"]["difficulty"], "easy")
 
 
+    def test_topic_13(self):
+        self.assert_audited("13_queues_and_deques")
+        self.assert_teaches({"sliding_window_max": ["deque.monotonic"]})
+        self.assert_uses({"max_value_of_equation": ["pairs.split_by_index", "window.variable", "deque.monotonic"],
+                          "shortest_subarray_at_least_k": ["prefix.sums", "deque.monotonic"],
+                          "expire_old": ["window.variable"], "ticket_queue": ["hash.set_lookup"]})
+        self.assertEqual(self.problems["sliding_window_max"]["difficulty"], "easy")
+
+
 if __name__ == "__main__":
     unittest.main()

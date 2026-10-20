@@ -22,6 +22,8 @@ def PREPARE(times, now, window):
     return deque(times), now, window
 
 
+USES = ["window.variable"]
+
 TESTS = [
     (([1, 4, 7, 9], 10, 5), 2),
     (([1, 2, 3], 3, 10), 3),

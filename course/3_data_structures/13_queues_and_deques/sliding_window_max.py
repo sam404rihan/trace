@@ -1,5 +1,5 @@
 """
-Sliding Window Maximum                                                        [hard]
+Sliding Window Maximum                                                        [easy]
 
 A window of size k slides across `nums` one step at a time. Return the
 maximum of each window.
@@ -18,6 +18,9 @@ Hint:     Monotonic deque of INDEXES with decreasing values. Pop smaller
 def sliding_window_max(nums: list[int], k: int) -> list[int]:
     raise NotImplementedError  # replace this line with your solution
 
+
+TEACHES = ["deque.monotonic"]
+USES = ["window.fixed", "stack.monotonic"]
 
 TESTS = [
     (([1, 3, -1, -3, 5, 3, 6, 7], 3), [3, 3, 5, 5, 6, 7]),

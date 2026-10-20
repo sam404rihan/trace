@@ -57,6 +57,8 @@ def _cases():
     return out
 
 
+USES = ["pairs.split_by_index", "window.variable", "deque.monotonic"]
+
 TESTS = [
     (([[1, 3], [2, 0], [5, 10], [6, -10]], 1), 4),
     (([[0, 0], [3, 0], [9, 2]], 3), 3),

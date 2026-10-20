@@ -69,6 +69,8 @@ def _big():
 
 _CALLS, _OUT = _big()
 
+USES = ["hash.set_lookup"]
+
 TESTS = [
     ([("TicketQueue",), ("join", "ana"), ("join", "ben"), ("vip", "cy"), ("serve",), ("position", "ben"),
       ("leave", "ana"), ("serve",), ("serve",)],

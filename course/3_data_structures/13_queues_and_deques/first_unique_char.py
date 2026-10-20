@@ -18,6 +18,8 @@ def first_unique_char(s: str) -> int:
     raise NotImplementedError  # replace this line with your solution
 
 
+USES = []
+
 TESTS = [
     (("leetcode",), 0),
     (("loveleetcode",), 2),

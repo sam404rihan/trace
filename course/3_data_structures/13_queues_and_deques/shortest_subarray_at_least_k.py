@@ -65,6 +65,8 @@ def _cases():
     return out
 
 
+USES = ["prefix.sums", "deque.monotonic"]
+
 TESTS = [
     (([1], 1), 1),
     (([1, 2], 4), -1),
