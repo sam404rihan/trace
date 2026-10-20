@@ -268,6 +268,30 @@ TECHNIQUES = {
                    "step at a time. They meet exactly where the loop begins: the head is as far from the loop's "
                    "start as the meeting point is, going round.",
     },
+    "tree.recursion": {
+        "name": "Tree recursion",
+        "explain": "Answer for an empty tree (None) directly. For a real node, call the function on `node.left` and "
+                   "`node.right`, trust both answers, and combine them with the node's own value: "
+                   "`1 + count(node.left) + count(node.right)`. Most tree problems are this template.",
+    },
+    "tree.bfs_levels": {
+        "name": "Level-by-level BFS",
+        "explain": "Put the root in a deque. At the start of each round, `len(queue)` is the number of nodes on the "
+                   "current level: pop exactly that many, handle them, and push their children. Each round is one "
+                   "level, top to bottom.",
+    },
+    "tree.return_and_record": {
+        "name": "Return one thing, record another",
+        "explain": "Sometimes the parent needs one value (a height) but the answer is another (the longest path "
+                   "through some node). Have the helper return what the parent needs and update a `best` variable "
+                   "on the side, with `nonlocal`. One walk does both.",
+    },
+    "tree.carry_down": {
+        "name": "Passing values down a path",
+        "explain": "When a node's answer depends on what's above it (the sum so far, the biggest value above it, the "
+                   "range it must fit in), pass that as an extra argument on the way down: "
+                   "`walk(child, total + node.val)`. Each node then knows its whole path in O(1).",
+    },
     "grid.neighbors": {
         "name": "Grid neighbours",
         "explain": "A cell (r, c) has up to four neighbours: (r - 1, c), (r + 1, c), (r, c - 1) and (r, c + 1). "

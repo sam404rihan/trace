@@ -25,6 +25,8 @@ def PREPARE(values):
     return (build_tree(values),)
 
 
+USES = ["tree.bfs_levels"]
+
 TESTS = [
     (([3, 9, 20, None, None, 15, 7],), [[3], [9, 20], [15, 7]]),
     (([1],), [[1]]),

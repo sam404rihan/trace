@@ -24,6 +24,9 @@ def PREPARE(values):
     return (build_tree(values),)
 
 
+TEACHES = ["tree.bfs_levels"]
+USES = []
+
 STEPS = [
     {
         "title": "Full trees",

@@ -28,6 +28,9 @@ def PREPARE(values, target):
     return (build_tree(values), target)
 
 
+TEACHES = ["tree.carry_down"]
+USES = ["tree.recursion"]
+
 TESTS = [
     (([5, 4, 8, 11, None, 13, 4, 7, 2, None, None, None, 1], 22), True),
     (([1, 2, 3], 5), False),

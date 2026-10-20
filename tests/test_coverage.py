@@ -384,5 +384,15 @@ class Stage3Audit(AuditBase):
             self.assertEqual(self.problems[name]["difficulty"], "easy", name)
 
 
+    def test_topic_15(self):
+        self.assert_audited("15_trees")
+        self.assert_teaches({"count_nodes": ["tree.recursion"], "right_side_view": ["tree.bfs_levels"],
+                             "diameter_of_tree": ["tree.return_and_record"], "has_path_sum": ["tree.carry_down"]})
+        self.assert_uses({"max_path_sum": ["tree.return_and_record"], "min_cameras": ["tree.return_and_record"],
+                          "good_nodes": ["tree.carry_down"], "serialize_tree": ["recursion.parse", "tree.recursion"],
+                          "level_order": ["tree.bfs_levels"]})
+        self.assertEqual(self.problems["diameter_of_tree"]["difficulty"], "easy")
+
+
 if __name__ == "__main__":
     unittest.main()

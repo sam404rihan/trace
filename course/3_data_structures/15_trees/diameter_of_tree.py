@@ -1,5 +1,5 @@
 r"""
-Diameter of Binary Tree                                                     [medium]
+Diameter of Binary Tree                                                       [easy]
 
 Return the number of EDGES on the longest path between any two nodes.
 The path doesn't have to go through the root.
@@ -26,6 +26,9 @@ def diameter_of_tree(root: TreeNode | None) -> int:
 def PREPARE(values):
     return (build_tree(values),)
 
+
+TEACHES = ["tree.return_and_record"]
+USES = ["tree.recursion"]
 
 TESTS = [
     (([1, 2, 3, 4, 5],), 3),

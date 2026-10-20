@@ -27,6 +27,8 @@ def PREPARE(values):
 
 FINISH = tree_to_list
 
+USES = ["tree.recursion"]
+
 TESTS = [
     (([4, 2, 7, 1, 3, 6, 9],), [4, 7, 2, 9, 6, 3, 1]),
     (([2, 1, 3],), [2, 3, 1]),

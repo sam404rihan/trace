@@ -22,6 +22,8 @@ def PREPARE(a, b):
     return (build_tree(a), build_tree(b))
 
 
+USES = ["tree.recursion"]
+
 TESTS = [
     (([1, 2, 3], [1, 2, 3]), True),
     (([1, 2], [1, None, 2]), False),

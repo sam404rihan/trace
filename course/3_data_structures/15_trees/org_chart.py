@@ -26,6 +26,8 @@ def org_chart(pairs: list[tuple[str, str]]) -> list[str]:
     raise NotImplementedError  # replace this line with your solution
 
 
+USES = ["hash.group_key", "tree.recursion"]
+
 TESTS = [
     (([("Ada", "Bo"), ("Ada", "Cy"), ("Bo", "Di")],), ["Ada (3)", "  Bo (1)", "    Di", "  Cy"]),
     (([("Zoe", "Amy")],), ["Zoe (1)", "  Amy"]),

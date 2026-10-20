@@ -82,6 +82,8 @@ def _cases():
     return [((vals,), _brute(vals)) for vals in (_random_tree_values(rng, rng.randint(1, 13)) for _ in range(10))]
 
 
+USES = ["tree.return_and_record"]
+
 TESTS = [
     (([0, 0, None, 0, 0],), 1),
     (([0, 0, None, 0, None, 0, None, None, 0],), 2),

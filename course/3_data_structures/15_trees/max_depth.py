@@ -28,6 +28,8 @@ def PREPARE(values):
     return (build_tree(values),)
 
 
+USES = ["tree.recursion"]
+
 TESTS = [
     (([3, 9, 20, None, None, 15, 7],), 3),
     (([1, None, 2],), 2),

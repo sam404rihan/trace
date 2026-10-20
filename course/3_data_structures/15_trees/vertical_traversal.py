@@ -73,6 +73,8 @@ def _cases():
     return [((vals,), _ref(vals)) for vals in (_random_tree_values(rng, rng.randint(1, 14)) for _ in range(10))]
 
 
+USES = ["tree.carry_down"]
+
 TESTS = [
     (([3, 9, 20, None, None, 15, 7],), [[9], [3, 15], [20], [7]]),
     (([1, 2, 3, 4, 5, 6, 7],), [[4], [2], [1, 5, 6], [3], [7]]),

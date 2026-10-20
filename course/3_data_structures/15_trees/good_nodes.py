@@ -55,4 +55,6 @@ def _cases():
     return [((v,), _brute(build_tree(v))) for v in (_random_tree_values(rng, rng.randint(1, 15), -5, 10) for _ in range(10))]
 
 
+USES = ["tree.carry_down"]
+
 TESTS = [(([3, 1, 4, 3, None, 1, 5],), 4), (([3, 3, None, 4, 2],), 3), (([1],), 1), (([],), 0)] + _cases()

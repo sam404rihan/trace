@@ -24,6 +24,9 @@ def PREPARE(values):
     return (build_tree(values),)
 
 
+TEACHES = ["tree.recursion"]
+USES = ["recursion.trust"]
+
 TESTS = [
     (([1, 2, 3, None, 4],), 4),
     (([],), 0),

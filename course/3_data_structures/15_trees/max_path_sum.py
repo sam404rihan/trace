@@ -74,5 +74,7 @@ def _cases():
     return [((v,), _brute(v)) for v in (_random_tree_values(rng, rng.randint(1, 12), -10, 10) for _ in range(10))]
 
 
+USES = ["tree.return_and_record"]
+
 TESTS = [(([1, 2, 3],), 6), (([-10, 9, 20, None, None, 15, 7],), 42), (([-3],), -3), (([2, -1],), 2),
          (([-2, -1, -3],), -1)] + _cases()

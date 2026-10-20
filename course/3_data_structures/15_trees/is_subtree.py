@@ -64,5 +64,7 @@ def _cases():
     return out
 
 
+USES = ["tree.recursion"]
+
 TESTS = [(([3, 4, 5, 1, 2], [4, 1, 2]), True), (([3, 4, 5, 1, 2, None, None, None, None, 0], [4, 1, 2]), False),
          (([1, 1], [1]), True), (([12], [2]), False), (([2, 2, None, 2], [2, 2]), True)] + _cases()
