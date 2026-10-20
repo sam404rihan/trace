@@ -26,6 +26,9 @@ def PREPARE(values, val):
 
 FINISH = tree_to_list
 
+TEACHES = ["bst.walk_down"]
+USES = []
+
 TESTS = [
     (([4, 2, 7, 1, 3], 5), [4, 2, 7, 1, 3, 5]),
     (([4, 2, 7, 1, 3], 0), [4, 2, 7, 1, 3, None, None, 0]),

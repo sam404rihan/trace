@@ -28,6 +28,8 @@ def PREPARE(values):
     return (build_tree(values),)
 
 
+USES = ["tree.carry_down"]
+
 TESTS = [
     (([2, 1, 3],), True),
     (([5, 1, 4, None, None, 3, 6],), False),

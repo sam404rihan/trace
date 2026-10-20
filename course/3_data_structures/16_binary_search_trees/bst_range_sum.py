@@ -30,6 +30,8 @@ def _chain(n):
 
 _CHAIN = _chain(30_000)
 
+USES = ["bst.walk_down"]
+
 STEPS = [
     {
         "title": "Visit everything",

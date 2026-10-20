@@ -81,6 +81,8 @@ def _big():
 
 _CALLS, _OUT = _big()
 
+USES = ["bst.walk_down", "tree.inorder"]
+
 TESTS = [
     ([("TreeSet",), ("add", 50), ("add", 30), ("add", 70), ("add", 60), ("contains", 60), ("floor", 65),
       ("ceiling", 65), ("floor", 10), ("to_list",), ("size",)],

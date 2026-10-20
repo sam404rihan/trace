@@ -76,6 +76,8 @@ def _cases():
     return out
 
 
+USES = ["tree.inorder"]
+
 TESTS = [
     (([1, 3, None, None, 2],), [3, 1, None, None, 2]),
     (([3, 1, 4, None, None, 2],), [2, 1, 4, None, None, 3]),

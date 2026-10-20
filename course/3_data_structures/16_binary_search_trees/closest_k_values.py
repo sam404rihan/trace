@@ -64,6 +64,8 @@ def _cases():
     return out
 
 
+USES = ["window.fixed", "tree.inorder"]
+
 TESTS = [
     (([4, 2, 5, 1, 3], 3.714286, 2), [3, 4]),
     (([4, 2, 5, 1, 3], 0.2, 3), [1, 2, 3]),

@@ -292,6 +292,18 @@ TECHNIQUES = {
                    "range it must fit in), pass that as an extra argument on the way down: "
                    "`walk(child, total + node.val)`. Each node then knows its whole path in O(1).",
     },
+    "bst.walk_down": {
+        "name": "Walking down a BST",
+        "explain": "In a binary search tree everything smaller sits to the left and everything bigger to the right. "
+                   "So searching, inserting and many queries walk one path from the root: left if the target is "
+                   "smaller, right if bigger. That's O(height), and whole subtrees get skipped.",
+    },
+    "tree.inorder": {
+        "name": "In-order traversal",
+        "explain": "Visit the left subtree, then the node, then the right subtree. On a binary search tree that gives "
+                   "the values in increasing order. With your own stack: go left as far as you can, pushing nodes; "
+                   "pop one, visit it, then do the same from its right child. You can stop early.",
+    },
     "grid.neighbors": {
         "name": "Grid neighbours",
         "explain": "A cell (r, c) has up to four neighbours: (r - 1, c), (r + 1, c), (r, c - 1) and (r, c + 1). "

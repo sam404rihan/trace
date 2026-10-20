@@ -25,6 +25,8 @@ def PREPARE(values, k):
     return (build_tree(values), k)
 
 
+USES = ["tree.inorder"]
+
 TESTS = [
     (([3, 1, 4, None, 2], 1), 1),
     (([5, 3, 6, 2, 4, None, None, 1], 3), 3),

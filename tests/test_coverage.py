@@ -394,5 +394,14 @@ class Stage3Audit(AuditBase):
         self.assertEqual(self.problems["diameter_of_tree"]["difficulty"], "easy")
 
 
+    def test_topic_16(self):
+        self.assert_audited("16_binary_search_trees")
+        self.assert_teaches({"bst_insert": ["bst.walk_down"], "inorder_traversal": ["tree.inorder"]})
+        self.assert_uses({"kth_smallest_bst": ["tree.inorder"], "closest_k_values": ["window.fixed", "tree.inorder"],
+                          "max_sum_bst": ["tree.return_and_record"], "is_valid_bst": ["tree.carry_down"],
+                          "tree_set": ["bst.walk_down", "tree.inorder"]})
+        self.assertEqual(self.problems["inorder_traversal"]["difficulty"], "easy")
+
+
 if __name__ == "__main__":
     unittest.main()

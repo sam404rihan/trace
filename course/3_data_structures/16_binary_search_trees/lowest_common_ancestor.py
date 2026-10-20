@@ -28,6 +28,8 @@ def PREPARE(values, p, q):
     return (build_tree(values), p, q)
 
 
+USES = ["bst.walk_down"]
+
 TESTS = [
     (([6, 2, 8, 0, 4, 7, 9, None, None, 3, 5], 2, 8), 6),
     (([6, 2, 8, 0, 4, 7, 9, None, None, 3, 5], 2, 4), 2),
