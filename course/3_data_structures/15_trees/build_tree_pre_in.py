@@ -61,7 +61,7 @@ def _cases():
     return out
 
 
-USES = ["tree.recursion"]
+USES = ["tree.recursion", "tree.inorder"]
 
 TESTS = [(([3, 9, 20, 15, 7], [9, 3, 15, 20, 7]), [3, 9, 20, None, None, 15, 7]), (([-1], [-1]), [-1]),
          (([], []), []), (([1, 2, 3], [3, 2, 1]), [1, 2, None, 3])] + _cases()

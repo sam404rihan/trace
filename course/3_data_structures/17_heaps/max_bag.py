@@ -16,9 +16,9 @@ Example:
     b.remove(9)
     b.max()       ->  5
 
-Aim for:  O(log n) per call. The last test makes 300,000 calls on a bag of up to
-          150,000 numbers: max() over a list, or keeping a sorted list, is O(n) per
-          call and times out.
+Aim for:  O(log n) per call. The big tests make up to 390,000 calls on a bag of up to
+          150,000 numbers: max() over a list, a sorted list, or rescanning for a new max
+          each time the max is removed is O(n) per call and times out.
 Hint:     A heap can't delete from the middle, so don't. Keep a max-heap (push -x)
           and a Counter of numbers waiting to be removed: remove(x) just counts x.
           In max(), pop the top while it's waiting to be removed (counting it off),
@@ -78,6 +78,17 @@ def _big():
     return ops, res
 
 
+def _falling():
+    import random
+    values = list(range(150_000))
+    random.Random(1706).shuffle(values)
+    ops, res = [("MaxBag",)] + [("add", x) for x in values], [None] * 150_001
+    for top in range(149_999, 29_999, -1):      # remove the max, then ask for the new one
+        ops += [("remove", top), ("max",)]
+        res += [None, top - 1]
+    return ops, res
+
+
 TEACHES = ["heap.lazy_delete"]
 USES = ["heap.max_negate"]
 
@@ -89,4 +100,5 @@ TESTS = [
       ("max",)],
      [None, None, None, None, None, 7, None, 1, None, 2]),
     _big(),
+    _falling(),
 ]

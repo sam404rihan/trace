@@ -1,5 +1,5 @@
 """
-Largest Rectangle in Histogram                                                  [hard]
+Largest Rectangle in Histogram                                                [easy]
 
 Bars of width 1 have the given heights. Return the area of the largest
 rectangle that fits entirely inside the histogram.
@@ -8,7 +8,7 @@ Example:
     largest_rectangle([2, 1, 5, 6, 2, 3])  ->  10       the bars 5 and 6, height 5, width 2
     largest_rectangle([2, 4])              ->  4
 
-Aim for:  O(n) with a monotonic stack. The last test has 200,000 bars.
+Aim for:  O(n) with a monotonic stack. The big tests have up to 200,000 bars.
 Hint:     Keep a stack of indexes with increasing heights. When a lower bar arrives, pop: the popped
           bar's rectangle can't extend past this point, and it extends left to just after the bar
           now on top of the stack. width = i - stack[-1] - 1 (or i if the stack is empty).
@@ -51,7 +51,8 @@ def _cases():
     return out
 
 
+TEACHES = ["stack.span"]
 USES = ["stack.monotonic"]
 
 TESTS = [(([2, 1, 5, 6, 2, 3],), 10), (([2, 4],), 4), (([1],), 1), (([0, 0],), 0), (([3, 3, 3],), 9),
-         (([6, 2, 5, 4, 5, 1, 6],), 12)] + _cases()
+         (([6, 2, 5, 4, 5, 1, 6],), 12)] + _cases() + [((list(range(1, 100_001)),), 2_500_050_000)]

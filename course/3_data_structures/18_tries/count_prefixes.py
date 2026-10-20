@@ -1,5 +1,5 @@
 """
-Count Words With Prefix                                                       [easy]
+Count Words With Prefix                                                     [medium]
 
 For each string in `prefixes`, count how many words in `words` start with it.
 Return the counts in the same order. (The empty prefix matches every word.)
@@ -30,7 +30,6 @@ def _big():
     return (words, prefixes), [counts.get(p, 0) for p in prefixes]
 
 
-TEACHES = ["trie.counts"]
 USES = ["trie.walk"]
 
 TESTS = [

@@ -358,10 +358,12 @@ class Stage3Audit(AuditBase):
 
     def test_topic_12(self):
         self.assert_audited("12_stacks")
-        self.assert_teaches({"bracket_step": ["stack.lifo"], "daily_temperatures": ["stack.monotonic"]})
+        self.assert_teaches({"bracket_step": ["stack.lifo"], "daily_temperatures": ["stack.monotonic"],
+                             "largest_rectangle": ["stack.span"]})
         self.assert_uses({"car_fleet": ["scan.best_so_far"], "largest_rectangle": ["stack.monotonic"],
-                          "maximal_rectangle": ["stack.monotonic"], "text_editor": ["stack.lifo"]})
-        self.assertEqual(self.problems["daily_temperatures"]["difficulty"], "easy")
+                          "maximal_rectangle": ["stack.monotonic", "stack.span"], "text_editor": ["stack.lifo"]})
+        for name in ("daily_temperatures", "largest_rectangle"):
+            self.assertEqual(self.problems[name]["difficulty"], "easy", name)
 
 
     def test_topic_13(self):
@@ -390,8 +392,9 @@ class Stage3Audit(AuditBase):
                              "diameter_of_tree": ["tree.return_and_record"], "has_path_sum": ["tree.carry_down"]})
         self.assert_uses({"max_path_sum": ["tree.return_and_record"], "min_cameras": ["tree.return_and_record"],
                           "good_nodes": ["tree.carry_down"], "serialize_tree": ["recursion.parse", "tree.recursion"],
-                          "level_order": ["tree.bfs_levels"]})
+                          "level_order": ["tree.bfs_levels"], "build_tree_pre_in": ["tree.recursion", "tree.inorder"]})
         self.assertEqual(self.problems["diameter_of_tree"]["difficulty"], "easy")
+        self.assertEqual(self.problems["inorder_traversal"]["topic_id"], "15_trees")
 
 
     def test_topic_16(self):
@@ -419,11 +422,11 @@ class Stage3Audit(AuditBase):
 
     def test_topic_18(self):
         self.assert_audited("18_tries")
-        self.assert_teaches({"trie_insert": ["trie.walk"], "count_prefixes": ["trie.counts"]})
-        self.assert_uses({"word_dictionary": ["recursion.trust", "trie.walk", "trie.counts"],
+        self.assert_teaches({"trie_insert": ["trie.walk"], "count_prefixes": []})
+        self.assert_uses({"word_dictionary": ["recursion.trust", "trie.walk"], "count_prefixes": ["trie.walk"],
                           "stream_matches": ["trie.walk"], "palindrome_pairs": ["hash.complement"],
                           "autocomplete": ["bsearch.first_true"]})
-        self.assertEqual(self.problems["count_prefixes"]["difficulty"], "easy")
+        self.assertEqual(self.problems["count_prefixes"]["difficulty"], "medium")
         self.assertEqual(self.problems["stream_matches"]["difficulty"], "hard")
 
     def test_every_stage_3_topic_keeps_two_hard_problems(self):
@@ -433,15 +436,24 @@ class Stage3Audit(AuditBase):
 
     def test_teacher_big_tests_reject_the_naive_solution(self):
         # Solving a teacher marks its technique learned, so its big test must time out without it.
+        def removes_the_max(ops):
+            gone = [op[1] for op in ops if op[0] == "remove"]
+            return len(gone) >= 100_000 and all(x > y for x, y in zip(gone, gone[1:]))
+
         def big(name, ok):
             self.assertTrue(any(ok(args, want) for args, want in self.cases_of(name)), name)
         big("daily_temperatures", lambda a, w: len(a[0]) >= 100_000 and w.count(0) >= 50_000)   # look ahead: O(n²)
+        big("daily_temperatures", lambda a, w: len(a[0]) >= 100_000 and w[0] == len(a[0]) - 1)  # ...even skipping hopeless days
         big("sliding_window_max", lambda a, w: len(a[0]) >= 100_000 and a[1] >= 50_000)          # max(): O(n * k)
+        big("sliding_window_max", lambda a, w: len(a[0]) >= 100_000 and a[1] >= 50_000
+            and all(x > y for x, y in zip(a[0], a[0][1:])))                                       # cached max: rescans
+        big("largest_rectangle", lambda a, w: len(a[0]) >= 100_000
+            and all(x < y for x, y in zip(a[0], a[0][1:])))                                       # widen each bar: O(n²)
         big("recently_used", lambda ops, w: len(ops) >= 200_000)                                 # list.remove: O(n)
-        big("median_finder", lambda ops, w: len(ops) >= 150_000)                                 # insort: O(n)
+        big("median_finder", lambda ops, w: sum(op[0] == "add_num" for op in ops) >= 250_000)    # insort: O(n)
         big("max_bag", lambda ops, w: len(ops) >= 300_000)                                       # max() or insort: O(n)
+        big("max_bag", lambda ops, w: removes_the_max(ops))                                      # cached max: rescans
         big("k_smallest_sums", lambda a, w: min(len(a[0]), len(a[1]), a[2]) >= 100_000)          # k * k sums
-        big("count_prefixes", lambda a, w: len(a[0]) >= 20_000 and len(a[1]) >= 20_000)          # scan every word
 
 
 if __name__ == "__main__":

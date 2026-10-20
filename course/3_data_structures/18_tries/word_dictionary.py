@@ -76,7 +76,7 @@ def _big():
 
 _CALLS, _OUT = _big()
 
-USES = ["recursion.trust", "trie.walk", "trie.counts"]
+USES = ["recursion.trust", "trie.walk"]
 
 TESTS = [
     ([("WordDictionary",), ("add", "bad"), ("add", "dad"), ("add", "mad"), ("add", "bake"), ("search", "bad"),

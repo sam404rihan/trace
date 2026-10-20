@@ -36,21 +36,24 @@ CLASS = "MedianFinder"
 
 
 def _cases():
-    import bisect as _b
+    import heapq
     import random
     rng = random.Random(74)
     out = []
-    for size in (40, 150_000):
-        ops, seen, res = [("MedianFinder",)], [], [None]
-        for _ in range(size):
-            if seen and rng.random() < 0.4:
+    for adds in (25, 250_000):          # insort into a list is O(n) per add: too slow for 250,000
+        ops, res, low, high, n = [("MedianFinder",)], [None], [], [], 0
+        while n < adds:
+            if n and rng.random() < 0.1:
                 ops.append(("find_median",))
-                n = len(seen)
-                res.append(float(seen[n // 2]) if n % 2 else (seen[n // 2 - 1] + seen[n // 2]) / 2)
+                res.append(float(-low[0]) if len(low) > len(high) else (-low[0] + high[0]) / 2)
             else:
                 x = rng.randint(-10**5, 10**5)
+                n += 1
+                heapq.heappush(low, -x)
+                heapq.heappush(high, -heapq.heappop(low))
+                if len(high) > len(low):
+                    heapq.heappush(low, -heapq.heappop(high))
                 ops.append(("add_num", x))
-                _b.insort(seen, x)
                 res.append(None)
         out.append((ops, res))
     return out

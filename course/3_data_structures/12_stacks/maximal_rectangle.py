@@ -67,7 +67,7 @@ def _cases():
     return out
 
 
-USES = ["stack.monotonic"]
+USES = ["stack.monotonic", "stack.span"]
 
 TESTS = [
     ((["10100", "10111", "11111", "10010"],), 6),

@@ -232,6 +232,12 @@ TECHNIQUES = {
                    "pop until it isn't: each popped index has just found its next bigger value, the new one. Every "
                    "index is pushed and popped once, so the scan is O(n). Flip the comparison for the next smaller.",
     },
+    "stack.span": {
+        "name": "Span between lower bars",
+        "explain": "In a stack of indexes with rising heights, when bar i pops bar j, i is the first bar to j's right "
+                   "that is lower, and the index left on top of the stack is the last lower bar to its left. So bar "
+                   "j's full height spans the gap between them: width `i - stack[-1] - 1`, or `i` if the stack is empty.",
+    },
     "deque.monotonic": {
         "name": "Monotonic deque",
         "explain": "For the maximum of a sliding window, keep a deque of indexes whose values go down from front to "
@@ -292,17 +298,18 @@ TECHNIQUES = {
                    "range it must fit in), pass that as an extra argument on the way down: "
                    "`walk(child, total + node.val)`. Each node then knows its whole path in O(1).",
     },
+    "tree.inorder": {
+        "name": "In-order traversal",
+        "explain": "Visit the left subtree, then the node, then the right subtree (pre-order visits the node first, "
+                   "post-order last). On a binary search tree in-order gives the values in increasing order. With "
+                   "your own stack: go left as far as you can, pushing nodes; pop one, visit it, then do the same "
+                   "from its right child.",
+    },
     "bst.walk_down": {
         "name": "Walking down a BST",
         "explain": "In a binary search tree everything smaller sits to the left and everything bigger to the right. "
                    "So searching, inserting and many queries walk one path from the root: left if the target is "
                    "smaller, right if bigger. That's O(height), and whole subtrees get skipped.",
-    },
-    "tree.inorder": {
-        "name": "In-order traversal",
-        "explain": "Visit the left subtree, then the node, then the right subtree. On a binary search tree that gives "
-                   "the values in increasing order. With your own stack: go left as far as you can, pushing nodes; "
-                   "pop one, visit it, then do the same from its right child. You can stop early.",
     },
     "heap.top_k": {
         "name": "Keeping the k largest",
@@ -338,12 +345,6 @@ TECHNIQUES = {
         "explain": "A trie stores words letter by letter in nested dicts: `node = node.setdefault(ch, {})` for each "
                    "letter, then mark the end, for example `node[\"$\"] = True`. Words that share a prefix share its "
                    "path, so looking up a word or a prefix takes O(its length).",
-    },
-    "trie.counts": {
-        "name": "Counting words through a trie node",
-        "explain": "Keep a count in every trie node and add 1 to it on each node a new word passes through. The number "
-                   "of words that start with a prefix is then the count at the prefix's last node: walk down and read "
-                   "it, O(length of the prefix).",
     },
     "grid.neighbors": {
         "name": "Grid neighbours",
