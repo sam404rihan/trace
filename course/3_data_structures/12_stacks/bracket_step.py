@@ -21,6 +21,9 @@ def bracket_step(stack: list[str], ch: str) -> list[str] | None:
     raise NotImplementedError  # replace this line with your solution
 
 
+TEACHES = ["stack.lifo"]
+USES = []
+
 TESTS = [
     ((["(", "["], "]"), ["("]),
     ((["("], "]"), None),

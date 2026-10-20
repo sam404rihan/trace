@@ -58,6 +58,8 @@ def _cases():
     return out
 
 
+USES = ["stack.lifo"]
+
 TESTS = [
     (("(()",), 2),
     ((")()())",), 4),

@@ -356,5 +356,13 @@ class Stage3Audit(AuditBase):
             self.assertEqual(self.problems[name]["topic_id"], topic_id, name)
 
 
+    def test_topic_12(self):
+        self.assert_audited("12_stacks")
+        self.assert_teaches({"bracket_step": ["stack.lifo"], "daily_temperatures": ["stack.monotonic"]})
+        self.assert_uses({"car_fleet": ["scan.best_so_far"], "largest_rectangle": ["stack.monotonic"],
+                          "maximal_rectangle": ["stack.monotonic"], "text_editor": ["stack.lifo"]})
+        self.assertEqual(self.problems["daily_temperatures"]["difficulty"], "easy")
+
+
 if __name__ == "__main__":
     unittest.main()

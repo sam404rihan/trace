@@ -18,6 +18,8 @@ def valid_parentheses(s: str) -> bool:
     raise NotImplementedError  # replace this line with your solution
 
 
+USES = ["stack.lifo"]
+
 TESTS = [
     (("()",), True),
     (("()[]{}",), True),

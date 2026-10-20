@@ -21,6 +21,8 @@ def car_fleet(target: int, position: list[int], speed: list[int]) -> int:
     raise NotImplementedError  # replace this line with your solution
 
 
+USES = ["scan.best_so_far"]
+
 TESTS = [
     ((12, [10, 8, 0, 5, 3], [2, 4, 1, 1, 3]), 3),
     ((10, [3], [3]), 1),

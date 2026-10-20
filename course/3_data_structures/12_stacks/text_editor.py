@@ -49,6 +49,8 @@ class TextEditor:
 
 CLASS = "TextEditor"
 
+USES = ["stack.lifo"]
+
 TESTS = [
     ([("TextEditor",), ("type", "hello"), ("type", " world"), ("delete", 6), ("text",), ("undo",), ("text",),
       ("redo",), ("text",)],

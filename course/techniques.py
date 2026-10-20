@@ -220,6 +220,18 @@ TECHNIQUES = {
                    "must start there, or the smallest card must start a group. Make that forced move and carry "
                    "on. There's no choice to search, so it's one pass.",
     },
+    "stack.lifo": {
+        "name": "Stack: last in, first out",
+        "explain": "A Python list is a stack: `append` puts an item on top and `pop` takes the top off, both O(1). "
+                   "Use one whenever the most recent unfinished thing must be dealt with first: the last opened "
+                   "bracket, the folder you just went into, the last edit to undo.",
+    },
+    "stack.monotonic": {
+        "name": "Monotonic stack",
+        "explain": "Keep a stack of indexes whose values only go down. When a new value is bigger than the top, "
+                   "pop until it isn't: each popped index has just found its next bigger value, the new one. Every "
+                   "index is pushed and popped once, so the scan is O(n). Flip the comparison for the next smaller.",
+    },
     "grid.neighbors": {
         "name": "Grid neighbours",
         "explain": "A cell (r, c) has up to four neighbours: (r - 1, c), (r + 1, c), (r, c - 1) and (r, c + 1). "

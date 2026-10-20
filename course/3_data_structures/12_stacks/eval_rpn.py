@@ -19,6 +19,8 @@ def eval_rpn(tokens: list[str]) -> int:
     raise NotImplementedError  # replace this line with your solution
 
 
+USES = ["stack.lifo"]
+
 TESTS = [
     ((["2", "1", "+", "3", "*"],), 9),
     ((["4", "13", "5", "/", "+"],), 6),

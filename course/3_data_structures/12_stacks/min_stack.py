@@ -62,6 +62,8 @@ def _cases():
     return out
 
 
+USES = ["stack.lifo"]
+
 TESTS = [
     ([("MinStack",), ("push", -2), ("push", 0), ("push", -3), ("get_min",), ("pop",), ("top",), ("get_min",)],
      [None, None, None, None, -3, None, 0, -2]),

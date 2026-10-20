@@ -19,6 +19,8 @@ def simplify_path(path: str) -> str:
     raise NotImplementedError  # replace this line with your solution
 
 
+USES = ["stack.lifo"]
+
 STEPS = [
     {
         "title": "Names and ..",
