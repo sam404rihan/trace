@@ -47,6 +47,8 @@ def _cases():
     return out
 
 
+USES = ["heap.top_k"]
+
 TESTS = [([("KthLargest", 3, [4, 5, 8, 2]), ("add", 3), ("add", 5), ("add", 10), ("add", 9), ("add", 4)],
           [None, 4, 5, 5, 8, 8]),
          ([("KthLargest", 1, []), ("add", -3), ("add", -2), ("add", -4)], [None, -3, -2, -2])] + _cases()

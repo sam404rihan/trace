@@ -73,6 +73,8 @@ def _big():
 
 _CALLS, _OUT = _big()
 
+USES = ["heap.max_negate", "heap.lazy_delete"]
+
 TESTS = [
     ([("TaskScheduler",), ("add", "backup", 1), ("add", "deploy", 5), ("add", "email", 5), ("peek",), ("next",),
       ("next",), ("size",), ("cancel", "backup"), ("next",)],

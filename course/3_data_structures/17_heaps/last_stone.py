@@ -32,6 +32,9 @@ def _big():
 
 _STONES, _LAST = _big()
 
+TEACHES = ["heap.max_negate"]
+USES = []
+
 STEPS = [
     {
         "title": "Make it work",

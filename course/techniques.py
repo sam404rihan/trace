@@ -304,6 +304,35 @@ TECHNIQUES = {
                    "the values in increasing order. With your own stack: go left as far as you can, pushing nodes; "
                    "pop one, visit it, then do the same from its right child. You can stop early.",
     },
+    "heap.top_k": {
+        "name": "Keeping the k largest",
+        "explain": "To track the k largest values, keep a MIN-heap of at most k of them: push each new value, and pop "
+                   "when the heap grows past k. The smallest of the k largest, the kth largest, sits on top at "
+                   "`heap[0]`. O(log k) per value.",
+    },
+    "heap.max_negate": {
+        "name": "Max-heap by negating",
+        "explain": "`heapq` only ever gives you the smallest item. To get the largest, push `-x` and negate again when "
+                   "you pop. With tuples, negate the field that should come out biggest first: `(-priority, ...)`.",
+    },
+    "heap.two_heaps": {
+        "name": "Two heaps for the median",
+        "explain": "Keep the smaller half of the numbers in a max-heap and the larger half in a min-heap, with every "
+                   "value in the first no bigger than every value in the second, and the first one the same size or "
+                   "one bigger. The median is the first heap's top, or the average of both tops.",
+    },
+    "heap.lazy_delete": {
+        "name": "Lazy deletion",
+        "explain": "A heap can't remove an item from the middle. Instead, mark it as gone (count it in a dict, or keep "
+                   "a set of live entries) and leave it where it is. Whenever you look at the top, pop marked items "
+                   "first. Each item is still pushed once and popped once.",
+    },
+    "heap.k_way_merge": {
+        "name": "Merging sorted lists with a heap",
+        "explain": "To take the smallest items from many sorted lists, put each list's first item in a min-heap "
+                   "together with where it came from: `(value, which_list, position)`. Pop the smallest, then push "
+                   "the next item from the same list. The heap holds at most one item per list.",
+    },
     "grid.neighbors": {
         "name": "Grid neighbours",
         "explain": "A cell (r, c) has up to four neighbours: (r - 1, c), (r + 1, c), (r, c - 1) and (r, c + 1). "

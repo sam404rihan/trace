@@ -21,6 +21,9 @@ def push_keep_k(heap: list[int], x: int, k: int) -> int | None:
     raise NotImplementedError  # replace this line with your solution
 
 
+TEACHES = ["heap.top_k"]
+USES = []
+
 TESTS = [
     (([4, 9, 6], 7, 3), 6),
     (([4, 9, 6], 1, 3), 4),

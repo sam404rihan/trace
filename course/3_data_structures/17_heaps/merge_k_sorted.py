@@ -1,5 +1,5 @@
 """
-Merge K Sorted Lists                                                          [hard]
+Merge K Sorted Lists                                                        [medium]
 
 `lists` holds k lists, each sorted in ascending order. Merge them into one
 sorted list.
@@ -18,6 +18,8 @@ Hint:     Put the first item of each list in a min-heap as (value, list_index,
 def merge_k_sorted(lists: list[list[int]]) -> list[int]:
     raise NotImplementedError  # replace this line with your solution
 
+
+USES = ["heap.k_way_merge"]
 
 TESTS = [
     (([[1, 4, 5], [1, 3, 4], [2, 6]],), [1, 1, 2, 3, 4, 4, 5, 6]),

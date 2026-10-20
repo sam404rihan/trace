@@ -86,6 +86,8 @@ def _cases():
     return out
 
 
+USES = ["heap.max_negate", "heap.k_way_merge"]
+
 TESTS = [([("Twitter",), ("post_tweet", 1, 5), ("get_news_feed", 1), ("follow", 1, 2), ("post_tweet", 2, 6),
            ("get_news_feed", 1), ("unfollow", 1, 2), ("get_news_feed", 1)],
           [None, None, [5], None, None, [6, 5], None, [5]]),

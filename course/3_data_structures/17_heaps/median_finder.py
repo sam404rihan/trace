@@ -1,5 +1,5 @@
 """
-Find Median from Data Stream                                                    [hard]
+Find Median from Data Stream                                                  [easy]
 
 Numbers arrive one at a time. Build a class:
 
@@ -55,6 +55,9 @@ def _cases():
         out.append((ops, res))
     return out
 
+
+TEACHES = ["heap.two_heaps"]
+USES = ["heap.max_negate"]
 
 TESTS = [([("MedianFinder",), ("add_num", 1), ("add_num", 2), ("find_median",), ("add_num", 3), ("find_median",)],
           [None, None, None, 1.5, None, 2.0]),

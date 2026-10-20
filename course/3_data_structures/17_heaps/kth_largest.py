@@ -18,6 +18,8 @@ def kth_largest(nums: list[int], k: int) -> int:
     raise NotImplementedError  # replace this line with your solution
 
 
+USES = ["heap.top_k"]
+
 TESTS = [
     (([3, 2, 1, 5, 6, 4], 2), 5),
     (([3, 2, 3, 1, 2, 4, 5, 5, 6], 4), 4),

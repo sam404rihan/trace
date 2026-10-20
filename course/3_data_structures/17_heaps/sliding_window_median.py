@@ -49,6 +49,8 @@ def _cases():
     return out
 
 
+USES = ["window.fixed", "heap.max_negate", "heap.two_heaps", "heap.lazy_delete"]
+
 TESTS = [
     (([1, 3, -1, -3, 5, 3, 6, 7], 3), [1.0, -1.0, -1.0, 3.0, 5.0, 6.0]),
     (([1, 2, 3, 4], 2), [1.5, 2.5, 3.5]),

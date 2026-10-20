@@ -403,5 +403,19 @@ class Stage3Audit(AuditBase):
         self.assertEqual(self.problems["inorder_traversal"]["difficulty"], "easy")
 
 
+    def test_topic_17(self):
+        self.assert_audited("17_heaps")
+        self.assert_teaches({"push_keep_k": ["heap.top_k"], "last_stone": ["heap.max_negate"],
+                             "median_finder": ["heap.two_heaps"], "max_bag": ["heap.lazy_delete"],
+                             "k_smallest_sums": ["heap.k_way_merge"]})
+        self.assert_uses({"sliding_window_median": ["window.fixed", "heap.max_negate", "heap.two_heaps", "heap.lazy_delete"],
+                          "skyline": ["heap.max_negate", "heap.lazy_delete"],
+                          "min_interval_query": ["intervals.sort_by_start", "heap.lazy_delete"],
+                          "twitter": ["heap.max_negate", "heap.k_way_merge"], "merge_k_sorted": ["heap.k_way_merge"]})
+        for name in ("median_finder", "max_bag", "k_smallest_sums"):
+            self.assertEqual(self.problems[name]["difficulty"], "easy", name)
+        self.assertEqual(self.problems["merge_k_sorted"]["difficulty"], "medium")
+
+
 if __name__ == "__main__":
     unittest.main()
