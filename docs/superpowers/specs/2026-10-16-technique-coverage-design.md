@@ -26,9 +26,9 @@ audit in Part 2 confirms and completes this list.
 | | BFS whose state is more than a cell, e.g. (cell, keys held) | `shortest_path_all_keys` |
 | | BFS over a graph you build first (word patterns, buses) | `word_ladder`, `bus_routes` |
 | 07 Sliding window | "exactly k" = at-most-k minus at-most-(k − 1) | `subarrays_k_distinct` (fixed: the new `nice_subarrays` teaches it) |
-| 14 Linked lists | finding where a cycle starts (`has_cycle` only detects one) | `find_duplicate` |
-| 17 Heaps | two heaps for the median | `median_finder`, `sliding_window_median` |
-| | lazy deletion | `sliding_window_median`, `skyline`, `task_scheduler` |
+| 14 Linked lists | finding where a cycle starts (`has_cycle` only detects one) | `find_duplicate` (fixed: the new `cycle_start` teaches it) |
+| 17 Heaps | two heaps for the median | `median_finder`, `sliding_window_median` (fixed: `median_finder`, now easy, teaches it) |
+| | lazy deletion | `sliding_window_median`, `skyline`, `task_scheduler` (fixed: the new `max_bag` teaches it) |
 | 21 Weighted graphs | Prim's minimum spanning tree | `min_cost_connect_points` |
 | | Dijkstra on the worst step of a path ("bottleneck") | `swim_rising_water` |
 | | Euler path (Hierholzer) | `reconstruct_itinerary` |
@@ -50,15 +50,16 @@ audit in Part 2 confirms and completes this list.
 | `scramble_string` (05) | memoisation | 23 DP (fixed: `count_paths`, 05's guided problem, already teaches it) |
 | `split_array_largest_sum` (09) | a greedy feasibility check | 11 Greedy (fixed: `ship_capacity`, 09's guided problem, already teaches the same check) |
 | `min_meeting_rooms`, `min_interval_query` (10) | heaps | 17 (fixed: moved there) |
-| `word_search_ii` (18) | grid DFS + backtracking | 19, 22 |
-| `concatenated_words` (18) | DP | 23 |
+| `word_search_ii` (18) | grid DFS + backtracking | 19, 22 (fixed: moved there) |
+| `concatenated_words` (18) | DP | 23 (fixed: moved there) |
 | `shortest_path_all_keys` (19) | bitmasks | 25 |
 | `largest_factor_component` (20) | prime factorisation | 30 Number theory |
 
 **3. Basic versions sorted after their users.** Problems of the same difficulty are ordered by
 title, which is arbitrary for teaching. In Queues, the monotonic-deque problem
 `sliding_window_max` (hard) comes after `max_value_of_equation` and `shortest_subarray_at_least_k`,
-which both rely on it.
+which both rely on it. Fixed in Stage 3: `sliding_window_max` is now the easy problem that teaches the
+monotonic deque.
 
 ## Goal
 
@@ -162,6 +163,9 @@ USES = ["bfs.grid"]                # other techniques this problem needs, each t
 - Built around the one technique, with small inputs.
 - The statement shows a **"New technique: <name>"** box above it, with the registry's explanation.
 - Its hint and reference solution use the technique in its plainest form.
+- Its big test times out for the naive solution a learner without the technique would write. The
+  exceptions are techniques that save only space, or whose naive version is slow only on inputs
+  too deep to test; each stage plan lists them.
 
 ### The coverage rules
 

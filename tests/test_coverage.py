@@ -344,5 +344,17 @@ class Stage2Audit(AuditBase):
         big("non_overlapping", lambda a, w: len(a[0]) >= 20_000)                               # O(n²) DP
 
 
+STAGE_3 = ("12_stacks", "13_queues_and_deques", "14_linked_lists", "15_trees", "16_binary_search_trees",
+           "17_heaps", "18_tries")
+
+
+class Stage3Audit(AuditBase):
+    """Part 2, Stage 3: topics 12-18 fully audited (docs/superpowers/plans/2026-10-20-technique-coverage-stage-3.md)."""
+
+    def test_problems_moved_to_the_topic_of_their_last_prerequisite(self):
+        for name, topic_id in (("word_search_ii", "22_backtracking"), ("concatenated_words", "23_dynamic_programming_1d")):
+            self.assertEqual(self.problems[name]["topic_id"], topic_id, name)
+
+
 if __name__ == "__main__":
     unittest.main()
