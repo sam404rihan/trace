@@ -1,5 +1,5 @@
 """
-Minimum Edge Reversals So Every Node Is Reachable                             [hard]
+Minimum Edge Reversals So Every Node Is Reachable                             [easy]
 
 n nodes are joined by n - 1 DIRECTED edges [u, v] (u → v). Ignoring
 directions, they form a tree. For every node i, find the fewest edges you'd
@@ -93,6 +93,9 @@ def _cases():
     out.append(((n, edges), _reroot(n, edges)))
     return out
 
+
+TEACHES = ["tree.reroot"]
+USES = ["tree.bfs_order"]
 
 TESTS = [
     ((4, [[2, 0], [2, 1], [1, 3]]), [1, 1, 0, 2]),

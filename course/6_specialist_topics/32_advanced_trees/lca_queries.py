@@ -1,5 +1,5 @@
 """
-Many Lowest Common Ancestors                                                  [medium]
+Many Lowest Common Ancestors                                                  [easy]
 
 A tree has n nodes; parent[v] is v's parent and parent[0] = -1. For each (u, v) in
 queries, find their lowest common ancestor: the deepest node that has both u and v in
@@ -88,5 +88,8 @@ def _cases():
     out.append(((parent, qs), [lca(u, v) for u, v in qs]))
     return out
 
+
+TEACHES = ["tree.lca"]
+USES = ["tree.lift_jump", "tree.lift_table", "tree.bfs_order"]
 
 TESTS = [(([-1, 0, 0, 1, 1, 2, 3], [(6, 4), (6, 5), (3, 6), (2, 2)]), [1, 0, 3, 2]), (([-1], [(0, 0)]), [0])] + _cases()

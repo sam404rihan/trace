@@ -115,6 +115,9 @@ def _big():
 
 _BIG = _big()
 
+TEACHES = ["tree.lift_table"]
+USES = ["tree.lift_jump"]
+
 STEPS = [
     {
         "title": "Make it work",

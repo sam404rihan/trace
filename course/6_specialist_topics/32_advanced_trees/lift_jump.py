@@ -47,4 +47,7 @@ def _cases():
 
 _PATH = _table([-1, 0, 1, 2, 3])
 
+TEACHES = ["tree.lift_jump"]
+USES = ["bits.shift_mask"]
+
 TESTS = [((_PATH, 4, 3), 1), ((_PATH, 2, 5), -1), ((_PATH, 4, 0), 4), ((_PATH, 4, 4), 0), ((_PATH, 0, 1), -1)] + _cases()

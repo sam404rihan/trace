@@ -656,5 +656,17 @@ class Stage6Audit(AuditBase):
                           "max_points_on_line": ["hash.group_key"], "segments_intersect": ["geo.cross"]})
 
 
+    def test_topic_32(self):
+        self.assert_audited("32_advanced_trees")
+        self.assert_teaches({"lift_jump": ["tree.lift_jump"], "tree_ancestor": ["tree.lift_table"],
+                             "subtree_sizes": ["tree.bfs_order"], "lca_queries": ["tree.lca"],
+                             "min_edge_reversals": ["tree.reroot"]})
+        self.assert_uses({"sum_of_distances": ["tree.bfs_order", "tree.reroot"],
+                          "path_weight_queries": ["prefix.sums", "tree.lift_table", "tree.lca"],
+                          "family_tree": ["tree.lift_table", "tree.bfs_order", "tree.lca"]})
+        for name in ("lca_queries", "min_edge_reversals"):
+            self.assertEqual(self.problems[name]["difficulty"], "easy", name)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -146,6 +146,8 @@ def _big():
     return calls, want
 
 
+USES = ["tree.lift_table", "tree.bfs_order", "tree.lca"]
+
 TESTS = [([("FamilyTree", [-1, 0, 0, 1, 1, 2, 3, 3, 6]), ("common_ancestor", 7, 4), ("distance", 7, 5), ("relation", 7, 4),
            ("relation", 3, 4), ("relation", 1, 8), ("relation", 8, 1), ("relation", 6, 7), ("relation", 8, 5), ("relation", 2, 2)],
           [None, 1, 5, "cousin 0 removed 1", "sibling", "ancestor", "descendant", "sibling", "cousin 1 removed 2", "self"]),

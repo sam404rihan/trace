@@ -586,6 +586,35 @@ TECHNIQUES = {
                    "over every edge (wrapping to the first corner), of `x[i] * y[i + 1] - x[i + 1] * y[i]`. Each term "
                    "is a signed triangle from the origin, and the parts outside the polygon cancel.",
     },
+    "tree.lift_jump": {
+        "name": "Jumping with a lifting table",
+        "explain": "With `up[j][v]` = the 2^j-th ancestor of v, the k-th ancestor is a few jumps: for every bit j set "
+                   "in k, do `v = up[j][v]`. The jumps add up to exactly k, so it takes O(log k) steps instead of k.",
+    },
+    "tree.lift_table": {
+        "name": "Building a lifting table",
+        "explain": "Row 0 of the table is each node's parent. Each next row doubles the jump: "
+                   "`up[j][v] = up[j - 1][up[j - 1][v]]`, the 2^(j-1)-th ancestor of the 2^(j-1)-th ancestor. About "
+                   "log n rows cover any jump, in O(n log n) time and space.",
+    },
+    "tree.bfs_order": {
+        "name": "Bottom-up without recursion",
+        "explain": "Deep trees break recursion in Python. Instead, BFS from the root, recording each node's parent "
+                   "and the order you visit them: every parent comes before its children. Walk that order BACKWARDS "
+                   "to combine children into parents, or forwards to push values from parents down.",
+    },
+    "tree.lca": {
+        "name": "Lowest common ancestor with lifting",
+        "explain": "To find where u's and v's paths to the root meet, first lift the deeper one by the depth "
+                   "difference. If they're now equal, that's the answer. Otherwise, from the biggest jump down, move "
+                   "both up whenever their ancestors differ; the answer is then the parent of either. O(log n).",
+    },
+    "tree.reroot": {
+        "name": "Rerooting",
+        "explain": "To answer a question for every node as the root, solve it once for the root (one pass), then "
+                   "move the root along each edge from parent to child. Usually only that edge's contribution "
+                   "changes, so `answer[child]` comes from `answer[parent]` in O(1). Two passes in all: O(n).",
+    },
     "grid.neighbors": {
         "name": "Grid neighbours",
         "explain": "A cell (r, c) has up to four neighbours: (r - 1, c), (r + 1, c), (r, c - 1) and (r, c + 1). "
