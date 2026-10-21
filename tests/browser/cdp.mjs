@@ -35,6 +35,8 @@ export async function open(url, { width = 1280, height = 900, dark = false } = {
   await send("Runtime.enable");
   await send("Page.enable");
   if (dark) await send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-color-scheme", value: "dark" }] });
+  // Chrome won't size a window below about 500px, so phone widths are emulated.
+  if (width < 500) await send("Emulation.setDeviceMetricsOverride", { width, height, deviceScaleFactor: 1, mobile: true });
   const page = {
     logs,
     async go(u, wait = 1500) { await send("Page.navigate", { url: u }); await sleep(wait); },

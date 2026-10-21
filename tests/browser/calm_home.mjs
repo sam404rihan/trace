@@ -71,6 +71,49 @@ check("an unreadable stop falls back", (await target()).href === first);
 await p.reload(BASE + "/#/d/spot-pattern/spot");
 check("the review drill is not a stop", (await target()).href === first);
 
+// ── Home: just the next step ──
+const heroContrast = (page) => page.eval(`[getComputedStyle(document.querySelector(".hero h1")).color,
+  getComputedStyle(document.querySelector(".hero")).backgroundColor]`).then(([fg, bg]) => contrast(page, fg, bg));
+await p.reload(BASE + "/#/");
+check("home has one primary action", (await p.eval(`document.querySelectorAll("#app .btn.primary").length`)) === 1);
+check("Continue goes to the resume target", (await p.eval(`document.querySelector(".hero-go")?.getAttribute("href")`)) === (await target()).href);
+check("Continue says Continue once you've started", (await p.eval(`document.querySelector(".hero-go")?.textContent.trim()`)) === "Continue");
+check("home has the topic drawing", await p.eval(`!!document.querySelector(".hero-art svg.art")`));
+check("home names the next item", (await p.eval(`document.querySelector(".hero-next")?.textContent || ""`)).includes((await target()).title));
+check("home links to the roadmap", await p.eval(`!!document.querySelector('#app a[href="#/roadmap"]')`));
+check("home shows no topic list or stats", await p.eval(`!document.querySelector("#app .topic-row, #app .stats, #app .topic-list")`));
+check("no starting-check link once placed", !(await p.eval(`document.querySelector("#app").textContent.includes("starting check")`)));
+for (const mode of ["light", "dark"]) {
+  await p.eval(`document.documentElement.dataset.theme = "${mode}"`);
+  const c = await heroContrast(p);
+  check(`hero text is readable (${mode})`, c >= 4.5, c.toFixed(2));
+}
+await p.eval(`delete document.documentElement.dataset.theme`);
+await p.reload(BASE + "/#/p/two_sum/plan/blind75");
+check("solve contains_duplicate", await solve(p, "contains_duplicate"));
+await p.reload(BASE + "/#/p/max_profit/plan/blind75");
+await p.reload(BASE + "/#/");
+check("a plan stop says which plan", (await p.eval(`document.querySelector(".hero")?.textContent || ""`)).includes("Blind 75"));
+const done = await p.eval(`(() => { const el = document.createElement("div"); Trace.mountHome(el, { target: null, started: true, placement: true });
+  return el.querySelector("h1")?.textContent; })()`);
+check("finished state", done === "You've finished the course", done);
+const phone = await open(BASE + "/#/", { width: 390, height: 844 });
+check("no sideways scroll at 390px", await phone.eval(`document.documentElement.scrollWidth <= 390 && document.querySelector("#app").scrollWidth <= 390`));
+check("phone: hero fits", await phone.eval(`document.querySelector(".hero").getBoundingClientRect().right <= 390`));
+await phone.close();
+// A learner who skipped the check and has done nothing yet sees Start.
+await post(p, "/api/reset-progress", {});
+await post(p, "/api/placement", { door: "skip" });
+await p.eval(`localStorage.clear()`);
+await p.reload(BASE + "/#/");
+check("Start before anything is done", (await p.eval(`document.querySelector(".hero-go")?.textContent.trim()`)) === "Start");
+// One with progress but no starting check is offered it, quietly.
+await post(p, "/api/reset-progress", {});
+check("solve two_sum after reset", await solve(p, "two_sum"));
+await p.reload(BASE + "/#/");
+check("offers the starting check before placement", await p.eval(`!!document.querySelector('#app a[href="#/start"]')`));
+await post(p, "/api/placement", { door: "skip" });
+
 
 check("no console errors", p.logs.length === 0, p.logs.join(" | "));
 await p.close();

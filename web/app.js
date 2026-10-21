@@ -317,66 +317,24 @@
     S.cleanup = () => m.unmount();
   }
 
+  // Anything done anywhere: a test passed, a drill run, a walkthrough layer. Before that, the button says Start.
+  function started() {
+    return Object.values(S.progress.problems || {}).some((st) => st.solved || st.passed || st.steps)
+      || Object.keys(S.progress.walkthroughs || {}).length > 0
+      || T.topics.some((dt) => dt.drills.some((d) => T.DrillProgress.rec(dt, d).runs > 0));
+  }
+
   function viewHome() {
     document.title = "Trace";
     crumbs();
-    const total = Object.keys(S.problems).length;
-    const done = Object.keys(S.problems).filter(solved).length;
-    const up = nextUp();
-    const stages = [];
-    for (const topic of S.topics) {
-      let st = stages.find((s) => s.name === topic.stage);
-      if (!st) stages.push((st = { name: topic.stage, topics: [] }));
-      st.topics.push(topic);
-    }
-    const review = T.topics.find((d) => d.n === 99);
-    const spot = review && T.spotStatus ? T.spotStatus() : null;
-    app.replaceChildren(h("div", { class: "page" },
-      h("h1", {}, "Learn it in your head, then in code."),
-      h("p", { class: "lede" }, "Every topic starts with a short drill where you run the algorithm by hand. Then you climb: a three-line snippet, a guided problem, problems on your own, and a small program you build yourself."),
-      h("section", { class: "today", "aria-label": "Today" },
-        h("p", { class: "today-label" }, "Today"),
-        up ? h("a", { class: "btn primary", href: up.kind === "drill" ? `#/d/${up.dt.id}/${up.drill.id}` : up.kind === "walkthrough" ? `#/w/${up.topic.id}` : `#/p/${up.name}` },
-          done || up.kind !== "drill" ? "Continue" : "Start", h("span", { style: "opacity:.7;font-weight:400" },
-            up.kind === "drill" ? `${topicTitle(up.topic)}: intuition`
-              : up.kind === "walkthrough" ? `${topicTitle(up.topic)}: read the code` : `${topicTitle(up.topic)}: ${S.problems[up.name].title}`)) : null,
-        h("span", { class: "hero-stat" }, `${done} of ${total} exercises solved`),
-        S.progress.placement ? null : h("a", { class: "link", href: "#/start" }, "Take the starting check")),
-      h("div", { class: "stats" },
-        h("div", { class: "stat" }, h("b", {}, `${done}`), h("span", {}, "problems solved")),
-        h("div", { class: "stat" }, h("b", {}, `${S.topics.filter((t) => t.items.length && t.items.every(solved)).length} / ${S.topics.length}`), h("span", {}, "topics complete")),
-        h("div", { class: "stat" }, h("b", {}, `${T.topics.reduce((n, dt) => n + dt.drills.filter((d) => T.DrillProgress.solid(dt, d)).length, 0)}`), h("span", {}, "drills solid")),
-        ...(S.plans.plans || []).slice(0, 2).map((pl) => {
-          const items = pl.sections.flatMap((sec) => sec.items);
-          return h("div", { class: "stat" }, h("b", {}, `${items.filter(solved).length} / ${items.length}`), h("span", {}, pl.title));
-        })),
-      plansSection(),
-      stages.map((st) => [
-        h("h2", { class: "section-title" }, st.name),
-        h("div", { class: "topic-list" }, st.topics.map((topic) => {
-          const counts = topic.items.reduce((c, n) => (c[S.problems[n].kind] = (c[S.problems[n].kind] || 0) + 1, c), {});
-          return h("a", { class: "topic-row", href: `#/t/${topic.id}` },
-            h("span", { class: "num" }, pad2(topic.n)),
-            h("span", { class: "name" }, topicTitle(topic), placedOut(topic) ? h("span", { class: "badge placed" }, "Placed out") : null,
-              h("span", { class: "sub" }, [counts.snippet && "snippet", counts.guided && "guided", counts.solo && `${counts.solo} problems`, counts.build && "build"].filter(Boolean).join(", "))),
-            ladderBar(topic));
-        })),
-      ]),
-      review ? [
-        h("h2", { class: "section-title" }, "Review"),
-        h("div", { class: "topic-list" }, spot && !spot.ready
-          ? h("div", { class: "topic-row disabled" },
-            h("span", { class: "num" }, "★"),
-            h("span", { class: "name" }, review.title, h("span", { class: "sub" }, `Opens after four pattern topics (${spot.have} of ${spot.need}).`)),
-            h("span"))
-          : h("a", { class: "topic-row", href: `#/d/${review.id}/${review.drills[0].id}` },
-            h("span", { class: "num" }, "★"),
-            h("span", { class: "name" }, review.title, h("span", { class: "sub" }, "Read a problem, name the technique. Mixes the topics you've started.")),
-            h("span", { class: "ladder-bar" }, T.pips(T.DrillProgress.rec(review, review.drills[0]).clean)))),
-      ] : null,
-      h("p", { class: "home-foot" },
-        S.progress.placement ? h("a", { class: "link", href: "#/start" }, "Retake the starting check") : null,
-        h("button", { class: "link", type: "button", onclick: resetAll }, "Reset all progress"))));
+    const target = resumeTarget();
+    const topic = target && target.topic;
+    T.mountHome(app, {
+      target, started: started(), placement: !!S.progress.placement,
+      stageNo: topic ? stageOf(topic) : 6, stageName: topic ? topic.stage : "",
+      topicTitle: topic ? topicTitle(topic) : "", topicDone: topic ? topic.items.filter(solved).length : 0,
+      topicTotal: topic ? topic.items.length : 0,
+    });
   }
 
   async function resetAll(e) {
