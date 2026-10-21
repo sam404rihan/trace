@@ -58,7 +58,9 @@ SANDBOX_MODE = os.environ.get("TRACE_SANDBOX", "local")   # "local" (default: a 
 MEMORY_MB = 512                                          # memory cap for a local run
 TEST_DEADLINE = 60      # seconds before a whole test run is killed
 SCRIPT_DEADLINE = 20    # ... or a plain script run
+HARD_GRACE = 4.0        # seconds past a limit the judge armed before it is killed from outside
 MARK = "@@DSA_RESULT@@"
+EVENT = "@@DSA_EVENT@@"  # the judge's progress lines on stderr (runner/judge.py)
 
 # Ladder order inside a topic. Solo problems sort by difficulty.
 KINDS = ("snippet", "guided", "easy", "medium", "hard", "build")
@@ -276,27 +278,121 @@ class WarmPool:
 POOL = WarmPool()
 
 
+def _supervise(proc, job, deadline):
+    """Send the job and collect the judge's output while holding it to its time limits.
+
+    The judge's own timer can't interrupt one long call into C (it only acts between bytecodes), so the
+    judge announces each limit it arms as an EVENT line on stderr, and this kills the process once an
+    armed limit is overrun by HARD_GRACE seconds, or the whole run passes `deadline`. Returns
+    (stdout, stderr without the events, events, overrun) where overrun is None, "deadline", or the
+    arm event that was overrun (with "ms": how long it had been running)."""
+    out, err, events = [], [], []
+    state = {"arm": None, "until": None, "at": 0.0, "exited": False}
+    changed = threading.Condition()
+
+    def send():
+        try:
+            proc.stdin.write(json.dumps(job))
+            proc.stdin.close()
+        except OSError:                     # it died before reading the job; its output says why
+            pass
+
+    def read_stdout():
+        for chunk in iter(lambda: proc.stdout.read(65536), ""):
+            out.append(chunk)
+        proc.stdout.close()
+
+    def read_stderr():
+        for line in proc.stderr:
+            text, found, data = line.partition(EVENT)
+            if text:
+                err.append(text)
+            if not found:
+                continue
+            try:
+                ev = json.loads(data)
+            except ValueError:
+                continue
+            with changed:
+                events.append(ev)
+                if "arm" in ev:
+                    state["arm"], state["at"] = ev, time.monotonic()
+                    state["until"] = state["at"] + float(ev["arm"]) + HARD_GRACE
+                else:
+                    state["arm"] = state["until"] = None
+                changed.notify_all()
+        proc.stderr.close()
+
+    def wait():
+        proc.wait()
+        with changed:
+            state["exited"] = True
+            changed.notify_all()
+
+    readers = [threading.Thread(target=f, daemon=True) for f in (send, read_stdout, read_stderr, wait)]
+    for t in readers:
+        t.start()
+    end = time.monotonic() + deadline
+    overrun = None
+    with changed:
+        while not state["exited"]:
+            now = time.monotonic()
+            if state["until"] is not None and now >= state["until"]:
+                overrun = {**state["arm"], "ms": round((now - state["at"]) * 1000, 2)}
+                break
+            if now >= end:
+                overrun = "deadline"
+                break
+            changed.wait(min(end, state["until"] or end) - now)
+    if overrun:
+        proc.kill()
+    for t in readers:
+        t.join(timeout=5)
+    return "".join(out), "".join(err), events, overrun
+
+
 def run_in_container(job, deadline):
     """Hand the job to a fresh, locked-down container (pre-started if one is ready) and throw it away."""
     name, proc = POOL.take()
     start = time.perf_counter()
-    try:
-        stdout, stderr = proc.communicate(json.dumps(job), timeout=deadline)
-    except subprocess.TimeoutExpired:
-        proc.kill()
-        _release(proc)
-        if name:
-            subprocess.run(["docker", "rm", "-f", name], capture_output=True)
-        return {"seconds": deadline, "exit_code": None, "stdout": "", "stderr": "",
-                "killed": f"The run was stopped after {deadline} seconds."}
+    stdout, stderr, events, overrun = _supervise(proc, job, deadline)
     _release(proc)
-    result = {"seconds": round(time.perf_counter() - start, 2), "exit_code": proc.returncode,
-              "stdout": stdout, "stderr": stderr, "killed": None}
-    if proc.returncode == 137:
+    if overrun and name:
+        subprocess.run(["docker", "rm", "-f", name], capture_output=True)
+    result = {"seconds": round(time.perf_counter() - start, 2), "exit_code": None if overrun else proc.returncode,
+              "stdout": stdout, "stderr": stderr, "events": events, "overrun": overrun, "killed": None}
+    if overrun == "deadline":
+        result["killed"] = f"The run was stopped after {deadline} seconds."
+    elif overrun:
+        result["killed"] = overrun["error"]
+    elif proc.returncode == 137:
         result["killed"] = "The container ran out of memory (256 MB limit) and was stopped."
     elif proc.returncode == 125:
-        result["killed"] = "Docker couldn't start the container:\n" + proc.stderr.strip()
+        result["killed"] = "Docker couldn't start the container:\n" + stderr.strip()
     return result
+
+
+def _report_after_kill(events, overrun):
+    """The judge was stopped from outside mid-run: rebuild its report from the events it sent."""
+    report = {"tests": [], "load_error": None, "load_output": "", "custom": None}
+    for ev in events:
+        if "plan" in ev:
+            report["tests"], report["load_output"] = [dict(t) for t in ev["plan"]], ev.get("load_output", "")
+        elif isinstance(ev.get("done"), int) and ev["done"] < len(report["tests"]):
+            report["tests"][ev["done"]] = ev["test"]
+    phase = overrun.get("phase")
+    if phase == "load":
+        report["load_error"] = overrun["error"]
+    elif phase == "test" and overrun.get("i", -1) < len(report["tests"]):
+        test = report["tests"][overrun["i"]]
+        later = overrun["i"] + 1 < len(report["tests"])
+        test.update(status="timeout", error=overrun["error"] + (" The tests after it didn't run." if later else ""),
+                    ms=overrun["ms"], output="")
+    elif phase == "custom":
+        report["custom"] = {"expr": overrun.get("expr", ""), "output": "", "error": overrun["error"]}
+    for test in report["tests"]:
+        test.setdefault("status", "skipped")            # never reached
+    return report
 
 
 def run_tests(problem, code, custom="", upto=None):
@@ -306,6 +402,8 @@ def run_tests(problem, code, custom="", upto=None):
     reply = {"seconds": run["seconds"]}
     if MARK in run["stdout"]:
         reply["report"] = json.loads(run["stdout"].rsplit(MARK, 1)[1])
+    elif isinstance(run["overrun"], dict):
+        reply["report"] = _report_after_kill(run["events"], run["overrun"])
     else:
         reply["crash"] = run["killed"] or (run["stderr"] or run["stdout"] or "The container exited unexpectedly.").strip()
     return reply

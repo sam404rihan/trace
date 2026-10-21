@@ -14,6 +14,12 @@ Problem files can define:
     CLASS = "LRUCache"                             tests are call sequences:
                                                    ([("LRUCache", 2), ("put", 1, 1), ("get", 1)], [None, None, 1])
     PREPARE(*args) -> args, FINISH(value) -> value, CHECK(got, expected[, args]) -> bool
+
+While it works, the judge tells the server what is running through EVENT lines on stderr: "arm" when a
+time limit starts (load, a test, the custom call, a script), then "plan" / "done" as results come in.
+The timer below can only interrupt Python between bytecodes, so one long call into C (the sum of a huge
+range, a giant power) runs straight past it. The server, outside the process, kills a run that clearly
+overruns an armed limit and builds the report from these events.
 """
 import inspect
 import copy
@@ -35,6 +41,7 @@ sys.path[:0] = [_HERE, os.path.dirname(_HERE)]
 from prelude import PRELUDE   # noqa: E402 - names available to user code without importing (runner/prelude.py)
 
 MARK = "@@DSA_RESULT@@"
+EVENT = "@@DSA_EVENT@@"     # progress lines on stderr, read by the server (see the docstring)
 TEST_TIMEOUT = 2.0      # seconds per test
 LOAD_TIMEOUT = 3.0      # seconds to run the top level of the user's file
 SCRIPT_TIMEOUT = 10.0   # seconds for a plain "run"
@@ -92,6 +99,21 @@ else:
         _timer[0].start()
 
 
+def event(**data):
+    """Tell the server what's happening. Any event other than "arm" ends the armed limit."""
+    try:
+        sys.__stderr__.write(EVENT + json.dumps(data) + "\n")
+        sys.__stderr__.flush()
+    except Exception:  # noqa: BLE001 - the in-process timer still applies without the server's help
+        pass
+
+
+def stuck(limit):
+    """What the server reports if it has to stop a call from outside."""
+    return (f"Still running after {limit:g}s, stuck inside one long built-in operation (a huge sum, sort, set "
+            "or number), so the run was stopped from outside.")
+
+
 def clip(text, limit=OUTPUT_LIMIT):
     return text if len(text) <= limit else text[:limit] + f"\n... ({len(text) - limit:,} more characters cut)"
 
@@ -110,8 +132,10 @@ def user_traceback(exc, filename):
     return "".join(lines).rstrip()
 
 
-def guarded(fn, timeout):
-    """Call fn() with a time limit, capturing everything it prints."""
+def guarded(fn, timeout, **arm):
+    """Call fn() with a time limit, capturing everything it prints. `arm` tells the server what is
+    running; it stays armed until the caller's next event, so checking the result is covered too."""
+    event(arm=timeout, **arm)
     out = StringIO()
     result = {"value": None, "exc": None, "timed_out": False}
     start = time.perf_counter()
@@ -133,6 +157,9 @@ def guarded(fn, timeout):
 def run_script(job):
     sys.stderr = sys.stdout  # keep prints and errors in the order they happened
     namespace = {"__name__": "__main__", **PRELUDE}
+    event(arm=SCRIPT_TIMEOUT, phase="script",
+          error=f"[stopped: still running after {SCRIPT_TIMEOUT:g} seconds — an infinite loop, "
+                "or one huge built-in operation?]")
     alarm(SCRIPT_TIMEOUT)
     try:
         exec(compile(job["code"], "main.py", "exec"), namespace)
@@ -171,7 +198,7 @@ def explain_mismatch(got, expected):
     return None
 
 
-def run_class_test(cls, calls, expected, test, finish):
+def run_class_test(cls, calls, expected, test, finish, index):
     """Replay a sequence of calls: the first builds the object, the rest are method calls."""
     got = []
 
@@ -183,7 +210,7 @@ def run_class_test(cls, calls, expected, test, finish):
             got.append(finish(value) if finish else value)
         return got
 
-    ran = guarded(replay, TEST_TIMEOUT)
+    ran = guarded(replay, TEST_TIMEOUT, phase="test", i=index, error=stuck(TEST_TIMEOUT))
     test["ms"] = round(ran["ms"], 2)
     test["output"] = ran["output"]
     if ran["timed_out"]:
@@ -227,7 +254,10 @@ def run_tests(job):
     sys.setrecursionlimit = _no_recursion_limit
 
     solution = {"__name__": "solution", **PRELUDE}   # collections, heapq, bisect, ... without imports
-    loaded = guarded(lambda: exec(compile(job["code"], "solution.py", "exec"), solution), LOAD_TIMEOUT)
+    loaded = guarded(lambda: exec(compile(job["code"], "solution.py", "exec"), solution), LOAD_TIMEOUT, phase="load",
+                     error=f"Your file took longer than {LOAD_TIMEOUT:g}s just to load (stopped from outside: it was "
+                           "stuck in one long built-in operation). Is there slow work outside the function?")
+    event(done="load")
     report["load_output"] = loaded["output"]
     if loaded["timed_out"]:
         report["load_error"] = f"Your file took longer than {LOAD_TIMEOUT:g}s just to load. Is there a loop outside the function?"
@@ -256,7 +286,6 @@ def run_tests(job):
     else:
         cases = [(None, t) for t in problem.get("TESTS", [])]
 
-    timeouts = 0
     for step, (args, expected) in cases:
         if cls_name:
             test = {"call": "; ".join(f"{c[0]}({', '.join(short_repr(a, 40) for a in c[1:])})" for c in args)[:400],
@@ -266,56 +295,26 @@ def run_tests(job):
         if step is not None:
             test["step"] = step
         report["tests"].append(test)
+    event(plan=report["tests"], load_output=report["load_output"])   # what the server reports if it must stop us
+
+    timeouts = 0
+    for index, (test, (_, (args, expected))) in enumerate(zip(report["tests"], cases)):
         if timeouts >= 2:  # it's almost certainly an infinite loop; don't make them wait for every test
             test["status"] = "skipped"
             continue
         if cls_name:
-            run_class_test(fn, args, expected, test, finish)
-            if test["status"] == "timeout":
-                timeouts += 1
-            continue
-        call_args = copy.deepcopy(args)
-        if prepare:
-            try:
-                call_args = prepare(*call_args)
-            except Exception as exc:  # noqa: BLE001 - a broken PREPARE in the problem file
-                test["status"], test["error"] = "error", "The problem's PREPARE failed:\n" + user_traceback(exc, "problem.py")
-                continue
-        ran = guarded(lambda: fn(*call_args), TEST_TIMEOUT)
-        test["ms"] = round(ran["ms"], 2)
-        test["output"] = ran["output"]
-        if ran["timed_out"]:
-            timeouts += 1
-            test["status"] = "timeout"
-            test["error"] = f"Still running after {TEST_TIMEOUT:g}s. An infinite loop, or too slow for this input?"
-        elif isinstance(ran["exc"], NotImplementedError):
-            test["status"] = "todo"
-        elif ran["exc"]:
-            test["status"] = "error"
-            test["error"] = user_traceback(ran["exc"], "solution.py")
+            run_class_test(fn, args, expected, test, finish, index)
         else:
-            try:
-                got = finish(ran["value"]) if finish else ran["value"]
-                test["got"] = short_repr(got)
-                if check_args:
-                    ok = bool(check(got, expected, copy.deepcopy(args)))
-                else:
-                    ok = bool(check(got, expected)) if check else got == expected
-            except Exception:  # noqa: BLE001 - e.g. CHECK tried to sort a None
-                test["got"] = short_repr(ran["value"])
-                ok = False
-            test["status"] = "pass" if ok else "fail"
-            if not ok and not check:            # with a custom CHECK, "expected" is only a description
-                try:
-                    shown = finish(ran["value"]) if finish else ran["value"]
-                except Exception:  # noqa: BLE001
-                    shown = ran["value"]
-                test["note"] = explain_mismatch(shown, expected)
+            run_function_test(fn, args, expected, test, index, prepare, finish, check, check_args)
+        if test["status"] == "timeout":
+            timeouts += 1
+        event(done=index, test=test)
 
     expr = (job.get("custom") or "").strip()
     if expr:
         env = dict(solution)                             # prelude + everything the user defined
-        ran = guarded(lambda: eval(compile(expr, "your call", "eval"), env), TEST_TIMEOUT)
+        ran = guarded(lambda: eval(compile(expr, "your call", "eval"), env), TEST_TIMEOUT,
+                      phase="custom", expr=expr, error=stuck(TEST_TIMEOUT))
         custom = {"expr": expr, "output": ran["output"]}
         if ran["timed_out"]:
             custom["error"] = f"Still running after {TEST_TIMEOUT:g}s."
@@ -324,7 +323,47 @@ def run_tests(job):
         else:
             custom["value"] = short_repr(ran["value"], 2000)
         report["custom"] = custom
+        event(done="custom")
     return report
+
+
+def run_function_test(fn, args, expected, test, index, prepare, finish, check, check_args):
+    call_args = copy.deepcopy(args)
+    if prepare:
+        try:
+            call_args = prepare(*call_args)
+        except Exception as exc:  # noqa: BLE001 - a broken PREPARE in the problem file
+            test["status"], test["error"] = "error", "The problem's PREPARE failed:\n" + user_traceback(exc, "problem.py")
+            return
+    ran = guarded(lambda: fn(*call_args), TEST_TIMEOUT, phase="test", i=index, error=stuck(TEST_TIMEOUT))
+    test["ms"] = round(ran["ms"], 2)
+    test["output"] = ran["output"]
+    if ran["timed_out"]:
+        test["status"] = "timeout"
+        test["error"] = f"Still running after {TEST_TIMEOUT:g}s. An infinite loop, or too slow for this input?"
+    elif isinstance(ran["exc"], NotImplementedError):
+        test["status"] = "todo"
+    elif ran["exc"]:
+        test["status"] = "error"
+        test["error"] = user_traceback(ran["exc"], "solution.py")
+    else:
+        try:
+            got = finish(ran["value"]) if finish else ran["value"]
+            test["got"] = short_repr(got)
+            if check_args:
+                ok = bool(check(got, expected, copy.deepcopy(args)))
+            else:
+                ok = bool(check(got, expected)) if check else got == expected
+        except Exception:  # noqa: BLE001 - e.g. CHECK tried to sort a None
+            test["got"] = short_repr(ran["value"])
+            ok = False
+        test["status"] = "pass" if ok else "fail"
+        if not ok and not check:            # with a custom CHECK, "expected" is only a description
+            try:
+                shown = finish(ran["value"]) if finish else ran["value"]
+            except Exception:  # noqa: BLE001
+                shown = ran["value"]
+            test["note"] = explain_mismatch(shown, expected)
 
 
 def main():
