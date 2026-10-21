@@ -14,8 +14,13 @@ starts Trace on an empty workspace with a fresh browser profile:
     bash tests/browser/fresh.sh 8177 calm_home.mjs
     bash tests/browser/fresh.sh 8180 workspace.mjs
     bash tests/browser/fresh.sh 8183 drills.mjs
+    bash tests/browser/fresh.sh 8190 contest.mjs
 
 These aren't part of `python -m unittest`; run them when you change a screen.
+
+`contest.mjs` covers contest mode. Headless Chrome won't grant fullscreen without a real user
+gesture, so the check stubs `document.fullscreenElement` and fires `fullscreenchange` to test the
+lock, and moves the countdown forward by replacing `Trace.now`.
 
 Two helpers take screenshots for looking at, not checks:
 

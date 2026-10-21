@@ -42,6 +42,7 @@
     home: ["M4 11l8-6.5 8 6.5", "M6.5 9.5V19h11V9.5"],
     road: ["M9 5L4 7v12l5-2 6 2 5-2V5l-5 2z", "M9 5v12", "M15 7v12"],
     plan: ["M8 6h11", "M8 12h11", "M8 18h11", "M4.5 6h.01", "M4.5 12h.01", "M4.5 18h.01"],
+    contest: T.CONTEST_ICON,
   };
 
   // inline `code`
@@ -365,6 +366,12 @@
       stages, hereTopicId: pathTopic()?.id || null,
       extras: [
         h("section", { id: "plans", class: "road-extra" }, plansSection()),
+        h("section", { class: "road-extra" },
+          h("h2", { class: "section-title" }, "Contest"),
+          h("div", { class: "topic-list" }, h("a", { class: "topic-row", href: "#/contest" },
+            h("span", { class: "num" }, icon(ICONS.contest)),
+            h("span", { class: "name" }, "Timed contest", h("span", { class: "sub" }, "Three problems against the clock, in fullscreen until you submit.")),
+            h("span")))),
         review ? h("section", { class: "road-extra" },
           h("h2", { class: "section-title" }, "Review"),
           h("div", { class: "topic-list" }, spot && !spot.ready
@@ -452,6 +459,56 @@
       ]),
       Object.keys(S.plans.reported || {}).length ? h("p", { class: "hero-stat", style: "margin-top:40px" },
         "Company names on problems: ", S.plans.reported_note) : null));
+  }
+
+  // ── contest ────────────────────────────────────────────────────────────────
+  // Where a contest draws from: the topics you've started or placed out of, or the whole course. With
+  // fewer than three problems to draw from, the first stage joins in.
+  const RANK = { easy: 0, medium: 1, hard: 2 };
+  const contestable = (n) => S.problems[n].kind === "solo" && !S.problems[n].steps && Object.hasOwn(RANK, S.problems[n].difficulty);
+  function contestTopics(scope) {
+    if (scope === "all") return S.topics;
+    const reached = T.reachedTopics();
+    const mine = S.topics.filter((t) => reached.has(t.id));
+    if (mine.flatMap((t) => t.items).filter(contestable).length >= 3) return mine;
+    return S.topics.filter((t) => reached.has(t.id) || t.stage === stageNames()[0]);
+  }
+  // Three problems for the length's mix (MIX in contest.js), easiest first. Each slot takes the closest
+  // difficulty, preferring problems you haven't touched, then ones you haven't solved.
+  function drawContest(scope, minutes) {
+    const mix = T.CONTEST_MIX[minutes] || T.CONTEST_MIX[60];
+    const order = S.topics.flatMap((t) => t.items);
+    const pool = contestTopics(scope).flatMap((t) => t.items).filter(contestable);
+    const freshness = (n) => (solved(n) ? 2 : (pstate(n).passed || 0) > 0 ? 1 : 0);
+    const picked = [];
+    for (const want of mix) {
+      const left = pool.filter((n) => !picked.includes(n));
+      if (!left.length) break;
+      const score = (n) => Math.abs(RANK[S.problems[n].difficulty] - RANK[want]) * 10 + freshness(n);
+      const best = Math.min(...left.map(score));
+      picked.push(T.pick(left.filter((n) => score(n) === best)));
+    }
+    return picked.sort((a, b) => RANK[S.problems[a].difficulty] - RANK[S.problems[b].difficulty] || order.indexOf(a) - order.indexOf(b));
+  }
+  T.drawContest = drawContest;
+
+  function viewContest() {
+    document.title = "Contest | Trace";
+    crumbs({ label: "Roadmap", href: "#/roadmap" }, { label: "Contest" });
+    const m = T.contest.mountSetup(app, {
+      startedTopics: S.topics.filter((t) => T.reachedTopics().has(t.id)).length,
+      draw: (scope, minutes) => drawContest(scope, minutes).map((n) => ({ name: n, title: S.problems[n].title, difficulty: S.problems[n].difficulty, total: S.problems[n].tests })),
+    });
+    S.cleanup = () => m.unmount();
+  }
+
+  function viewContestResults(id) {
+    const entry = T.contest.find(id);
+    if (!entry) return viewContest();
+    document.title = "Contest results | Trace";
+    crumbs({ label: "Roadmap", href: "#/roadmap" }, { label: "Contest", href: "#/contest" }, { label: "Results" });
+    const m = T.contest.mountResults(app, entry);
+    S.cleanup = () => m.unmount();
   }
 
   // ── topic page ─────────────────────────────────────────────────────────────
@@ -653,16 +710,20 @@
   }
 
   // ── workspace ──────────────────────────────────────────────────────────────
-  async function viewProblem(name, planId) {
+  async function viewProblem(name, planId, inContest) {
     const topic = topicOf(name);
     if (!topic) return viewHome();
+    // Contest mode: the contest's problems, no ladder locks, no hints or solutions until it's submitted.
+    const contest = inContest ? T.contest.get() : null;
+    const contestItems = contest ? contest.problems.map((x) => x.name) : [];
     // Plan mode: working through a study plan skips the ladder's locks and follows the plan's order.
     const plan = planId ? (S.plans.plans || []).find((pl) => pl.id === planId) : null;
     const planItems = plan ? plan.sections.flatMap((sec) => sec.items) : [];
     const inPlan = plan && planItems.includes(name);
-    const unlocked = (n) => (inPlan && planItems.includes(n)) || isUnlocked(topic, n);
-    const link = (n) => (inPlan && planItems.includes(n) ? `#/p/${n}/plan/${plan.id}` : `#/p/${n}`);
-    const here = inPlan
+    const unlocked = (n) => (contest && contestItems.includes(n)) || (inPlan && planItems.includes(n)) || isUnlocked(topic, n);
+    const link = (n) => (contest ? `#/p/${n}/contest` : inPlan && planItems.includes(n) ? `#/p/${n}/plan/${plan.id}` : `#/p/${n}`);
+    const here = contest ? [{ label: "Contest" }]
+      : inPlan
       ? [{ label: "Roadmap", href: "#/roadmap" }, { label: plan.title, href: `#/plan/${plan.id}` }]
       : [{ label: "Roadmap", href: "#/roadmap" }, { label: topicTitle(topic), href: `#/t/${topic.id}` }];
     document.body.classList.add("ws");
@@ -677,7 +738,8 @@
     const dt = drillTopic(topic);
     document.title = `${p.title} | Trace`;
     crumbs(...here, { label: p.title });
-    if (unlocked(name)) recordStop(inPlan ? `#/p/${name}/plan/${plan.id}` : `#/p/${name}`);
+    if (contest) T.contest.open(name);
+    else if (unlocked(name)) recordStop(inPlan ? `#/p/${name}/plan/${plan.id}` : `#/p/${name}`);
 
     const st = () => pstate(name);
     const stepCount = p.steps.length;
@@ -686,7 +748,7 @@
     let showHowTo = !local.get("trace.howtoSeen", false);
 
     // stepper across the topic's ladder
-    const order = inPlan ? planItems : topic.items;
+    const order = contest ? contestItems : inPlan ? planItems : topic.items;
     const i = order.indexOf(name);
     const prev = order[i - 1], next = order[i + 1];
     const home = inPlan ? `#/plan/${plan.id}` : `#/t/${topic.id}`;
@@ -696,7 +758,7 @@
         class: "step-pill" + (solved(n) ? " solved" : !isUnlocked(topic, n) ? " locked" : ""),
         href: `#/p/${n}`, title: `${S.problems[n].title} (${kindLabel(S.problems[n])})`, "aria-current": n === name ? "page" : null,
       }, pillLabel(topic, n))));
-    const bar = h("div", { class: "ws-bar" }, stepper,
+    const bar = contest ? T.contest.bar(name) : h("div", { class: "ws-bar" }, stepper,
       h("div", { class: "ws-nav" },
         inPlan ? h("span", { class: "plan-pos" }, `${plan.title}: ${i + 1} of ${order.length}`) : null,
         h("a", { class: "btn ghost small", href: prev ? link(prev) : home, "aria-label": "Previous" }, icon(ICONS.left)),
@@ -704,13 +766,13 @@
 
     // left pane, under a band in the stage colour: the topic's name and its drawing, like the home card
     const left = h("div", { class: "pane-left" });
-    const band = h("a", { class: "ws-topic", href: `#/t/${topic.id}`, title: `Back to ${topicTitle(topic)}` },
+    const band = contest ? null : h("a", { class: "ws-topic", href: `#/t/${topic.id}`, title: `Back to ${topicTitle(topic)}` },
       h("span", { class: "ws-topic-text" }, h("span", { class: "ws-topic-name" }, topicTitle(topic)),
         h("span", { class: "ws-topic-stage" }, `Stage ${stageOf(topic)} · ${topic.stage}`)),
       T.topicArt(topic.n));
     function renderLeft() {
       const tabs = h("div", { class: "tabs", role: "tablist" },
-        [["problem", "Problem"], ["solution", "Solution"]].map(([id, label]) =>
+        (contest ? [["problem", "Problem"]] : [["problem", "Problem"], ["solution", "Solution"]]).map(([id, label]) =>
           h("button", { class: "tab", role: "tab", type: "button", "aria-selected": String(tab === id), onclick: () => { tab = id; renderLeft(); } }, label)));
       const body = h("div", { class: "statement" });
       if (!unlocked(name)) {
@@ -729,21 +791,21 @@
                 S.progress = (await api("/api/unlock", { name })).progress;
                 route();
               } }, "Open anyway"))));
-        left.replaceChildren(band, tabs, body);
+        left.replaceChildren(...[band, tabs, body].filter(Boolean));
         return;
       }
       if (tab === "problem") {
         body.append(h("h1", {}, p.title),
           h("div", { class: "st-meta" }, h("span", { class: "badge " + (p.difficulty || p.kind) }, kindLabel(p)),
-            solved(name) ? h("span", { class: "badge easy" }, "Solved") : null,
+            solved(name) && !contest ? h("span", { class: "badge easy" }, "Solved") : null,
             h("span", { class: "badge" }, stepCount ? `${stepCount} steps` : `${p.tests} tests`),
-            ...(p.in_plans || []).map((t) => h("span", { class: "badge plan" }, t)),
-            p.reported && p.reported.length ? h("span", { class: "badge reported", title: p.reported_note }, `Often reported: ${p.reported.join(", ")}`) : null),
-          ...[T.usesRow(S.problems[name], techCtx()), T.techniqueBanner(S.problems[name], topic, techCtx())].filter(Boolean),
+            ...(contest ? [] : p.in_plans || []).map((t) => h("span", { class: "badge plan" }, t)),
+            !contest && p.reported && p.reported.length ? h("span", { class: "badge reported", title: p.reported_note }, `Often reported: ${p.reported.join(", ")}`) : null),
+          ...(contest ? [] : [T.usesRow(S.problems[name], techCtx()), T.techniqueBanner(S.problems[name], topic, techCtx())].filter(Boolean)),
           showHowTo
             ? T.howToCard({ onClose: () => { showHowTo = false; local.set("trace.howtoSeen", true); renderLeft(); } })
             : h("button", { class: "link howto-link", type: "button", onclick: () => { showHowTo = true; renderLeft(); } }, "How to work a problem"),
-          ...T.techniqueBoxes(S.problems[name], techCtx()));
+          ...(contest ? [] : T.techniqueBoxes(S.problems[name], techCtx())));
         // The problem, then one worked example with its inputs drawn, then what to aim for.
         const parts = splitStatement(p.statement);
         const figures = T.inputFigures(p.params, (p.examples || [])[0]);
@@ -768,7 +830,7 @@
                 s.hint ? (showHint ? h("div", { class: "callout" }, h("h4", {}, "Hint"), h("p", {}, inline(s.hint)))
                   : h("button", { class: "btn small", type: "button", onclick: () => { showHint = true; renderLeft(); } }, "Show hint")) : null) : null);
           })));
-        } else if (p.hint) {
+        } else if (p.hint && !contest) {
           body.append(showHint ? h("div", { class: "callout" }, h("h4", {}, "Hint"), h("p", {}, inline(p.hint)))
             : h("button", { class: "btn small hint-btn", type: "button", onclick: () => { showHint = true; renderLeft(); } }, "Show hint"));
         }
@@ -784,7 +846,7 @@
             renderLeft();
           } }, "Show the solution")));
       }
-      left.replaceChildren(band, tabs, body);
+      left.replaceChildren(...[band, tabs, body].filter(Boolean));
     }
     renderLeft();
 
@@ -821,7 +883,7 @@
       h("div", { class: "gutter", role: "separator", "aria-orientation": "vertical", "aria-label": "Resize panels" }), right);
     right.style.setProperty("--console", `${local.get("trace.console", 38)}%`);
     app.replaceChildren(h("div", { class: "ws-grid" }, bar, split));
-    T.cropArt(band.querySelector("svg"), 6);
+    if (band) T.cropArt(band.querySelector("svg"), 6);
 
     const cm = CodeMirror(editorWrap, {
       value: p.code, mode: "python", theme: "trace", lineNumbers: true, indentUnit: 4, tabSize: 4,
@@ -892,6 +954,7 @@
           return;
         }
         if (r.progress) { S.progress = r.progress; renderSide(); }
+        if (contest) T.contest.record(name, (r.report && r.report.tests) || []);
         saveState.textContent = "Saved";
         renderResults(r, before, wasSolved);
         if (stepsDone() !== before || solved(name) !== wasSolved) { showHint = false; renderLeft(); refreshStepper(); }
@@ -949,7 +1012,14 @@
 
       if (todo) kids.push(h("div", { class: "notice info" }, "Your function still raises NotImplementedError. Replace that line with your solution."));
       const nowSteps = stepsDone();
-      if (solved(name) && passed === tests.length && !todo) {
+      if (contest && passed === tests.length && tests.length && !todo) {
+        const nx = T.contest.nextOpen(name);
+        kids.push(h("div", { class: "notice ok solved-card" },
+          h("span", { class: "solved-mark", "aria-hidden": "true" }, icon(ICONS.check)),
+          h("strong", {}, "Solved."),
+          nx ? h("a", { class: "btn small primary", href: link(nx) }, `Next: problem ${contestItems.indexOf(nx) + 1}`, icon(ICONS.right))
+            : h("span", {}, "That's all of them. Submit when you're ready.")));
+      } else if (solved(name) && passed === tests.length && !todo) {
         const nx = inPlan ? (next ? { name: next, plan: true } : { done: true, plan: true }) : nextItem(name);
         kids.push(h("div", { class: "notice ok solved-card" },
           h("span", { class: "solved-mark", "aria-hidden": "true" }, icon(ICONS.check)),
@@ -1074,7 +1144,8 @@
     $("side-nav").replaceChildren(...[
       h("div", { class: "side-list", style: "margin-top:6px" },
         link("#/", icon(ICONS.home), "Home", "", !kind, false),
-        link("#/roadmap", icon(ICONS.road), "Roadmap", "", kind === "roadmap", false)),
+        link("#/roadmap", icon(ICONS.road), "Roadmap", "", kind === "roadmap", false),
+        link("#/contest", icon(ICONS.contest), "Contest", "", kind === "contest", false)),
       group("plans", "Study plans", (S.plans.plans || []).map((pl) => {
         const items = pl.sections.flatMap((sec) => sec.items);
         const done = items.filter(solved).length;
@@ -1172,7 +1243,9 @@
   // ── desktop shell: app-wide keys and behaviours ───────────────────────────
   document.addEventListener("keydown", (e) => {
     const mod = e.ctrlKey || e.metaKey;
-    if (mod && (e.key === "k" || e.key === "K" || e.key === "p" || e.key === "P")) { e.preventDefault(); openPalette(); }
+    if (T.contest.get() && mod && /^[kKpPbB]$/.test(e.key) && !e.target.closest?.(".CodeMirror")) e.preventDefault();   // a contest has no way out
+    else if (T.contest.get()) { /* nothing else to open during a contest */ }
+    else if (mod && (e.key === "k" || e.key === "K" || e.key === "p" || e.key === "P")) { e.preventDefault(); openPalette(); }
     else if (mod && (e.key === "b" || e.key === "B") && !e.target.closest?.(".CodeMirror")) { e.preventDefault(); toggleSide(); }
     else if (e.altKey && (e.key === "ArrowLeft" || e.key === "ArrowRight") && document.body.classList.contains("ws")) {
       const btn = document.querySelector(`.ws-nav a[aria-label="${e.key === "ArrowLeft" ? "Previous" : "Next"}"]`);
@@ -1193,14 +1266,24 @@
     document.body.classList.remove("ws");
     app.scrollTop = 0;
     const [, kind, a, b, c] = decodeURIComponent(location.hash).split("/");
+    // A running contest keeps you inside it: anywhere else goes back to the problem you were on.
+    const live = T.contest.get();
+    if (live && live.endsAt - T.now() <= 0) { T.contest.end("time"); return; }
+    document.body.classList.toggle("contest", !!live);
+    if (live && !(kind === "p" && b === "contest" && live.problems.some((x) => x.name === a))) {
+      location.replace(`#/p/${live.current || live.problems[0].name}/contest`);
+      return;
+    }
+    if (!live && kind === "p" && b === "contest") { location.replace(`#/p/${a}`); return; }
     const viewed = kind === "t" || kind === "w" ? S.topics.find((t) => t.id === a)
       : kind === "p" ? topicOf(a) : kind === "d" && T.byId[a] ? S.topics.find((t) => t.n === T.byId[a].n) : null;
-    if (viewed) document.body.dataset.stage = stageOf(viewed);
+    if (viewed && !live) document.body.dataset.stage = stageOf(viewed);
     else delete document.body.dataset.stage;
     try {
       renderSide();
       if (kind === "t") return await viewTopic(a);
-      if (kind === "p") return await viewProblem(a, b === "plan" ? c : null);
+      if (kind === "p") return await viewProblem(a, b === "plan" ? c : null, b === "contest");
+      if (kind === "contest") return a ? viewContestResults(a) : viewContest();
       if (kind === "plan") return viewPlan(a);
       if (kind === "d") return viewDrill(a, b);
       if (kind === "w") return await viewWalkthrough(a);
@@ -1234,6 +1317,8 @@
       return;
     }
     window.addEventListener("hashchange", route);
+    T.contest.configure({ onEnd: (entry) => { location.hash = `#/contest/${entry.id}`; } });
+    T.contest.resume();
     route();
   }
   boot();
