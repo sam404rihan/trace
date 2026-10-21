@@ -700,6 +700,33 @@ class Stage6Audit(AuditBase):
         big("min_edge_reversals", lambda a, w: a[0] >= 20_000)                      # BFS from every node
         big("subtree_sizes", lambda a, w: a[0] >= 100_000)                          # recursion: too deep
 
+    def test_lca_big_tests_meet_far_above_both_nodes(self):
+        # Lifting to equal depth, then stepping both nodes up one parent at a time, must time out:
+        # the big test needs many queries whose answer is far above both nodes.
+        def depths(parent):
+            children = [[] for _ in parent]
+            for v in range(1, len(parent)):
+                children[parent[v]].append(v)
+            depth, order = [0] * len(parent), [0]
+            for v in order:
+                for c in children[v]:
+                    depth[c] = depth[v] + 1
+                    order.append(c)
+            return depth
+
+        def far(depth, pairs):
+            return sum(min(depth[u], depth[v]) - depth[c] >= 1_000 for u, v, c in pairs)
+
+        best = 0
+        for (parent, queries), want in self.cases_of("lca_queries"):
+            best = max(best, far(depths(parent), [(u, v, c) for (u, v), c in zip(queries, want)]))
+        self.assertGreaterEqual(best, 35_000, "lca_queries")
+        best = 0
+        for calls, want in self.cases_of("family_tree"):
+            pairs = [(call[1], call[2], c) for call, c in zip(calls, want) if call[0] == "common_ancestor"]
+            best = max(best, far(depths(calls[0][1]), pairs))
+        self.assertGreaterEqual(best, 12_000, "family_tree")     # counts common_ancestor only; distance and relation climb too
+
 
 if __name__ == "__main__":
     unittest.main()

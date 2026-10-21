@@ -20,7 +20,7 @@ are below their common ancestor:
     (so an aunt or uncle is "cousin 0 removed 1", and first cousins are "cousin 1 removed 0")
 
 Aim for:  O(log n) per question. The last test has 60,000 people in a very deep line
-          and 50,000 questions.
+          with long branches, and 50,000 questions.
 Hint:     This is binary lifting plus depths. common_ancestor is LCA. distance is
           depth[a] + depth[b] - 2·depth[lca]. relation reads da and db off the depths.
 """
@@ -43,13 +43,15 @@ class FamilyTree:
 CLASS = "FamilyTree"
 
 
-def _caterpillar(seed, spine, leaves):
-    """A long path 0..spine-1 with leaves hung on random path nodes, relabelled at random (0 stays the root).
-    Returns parent (by new label), depth, and lca(u, v) that is O(1) thanks to the construction."""
+def _comb(seed, spine, arms, arm_len):
+    """A long path 0..spine-1 with `arms` paths of arm_len nodes hung on random nodes near its far end,
+    relabelled at random (0 stays the root). Two nodes deep on different arms meet far above both.
+    Returns parent (by new label), depth, lca(u, v) that is O(1) thanks to the construction, and tips:
+    the nodes on the far half of their arm."""
     import random
     rng = random.Random(seed)
-    n = spine + leaves
-    hang = [rng.randrange(spine) for _ in range(leaves)]          # leaf i (old label spine + i) hangs on hang[i]
+    n = spine + arms * arm_len
+    hang = [rng.randrange(spine - 10_000, spine) for _ in range(arms)]  # arm k hangs on path node hang[k]
     perm = list(range(1, n))
     rng.shuffle(perm)
     perm = [0] + perm                                               # old label -> new label
@@ -58,26 +60,34 @@ def _caterpillar(seed, spine, leaves):
         old[nw] = o
     parent = [-1] * n
     for o in range(1, n):
-        parent[perm[o]] = perm[o - 1] if o < spine else perm[hang[o - spine]]
+        if o < spine:
+            parent[perm[o]] = perm[o - 1]
+        else:
+            k, i = divmod(o - spine, arm_len)
+            parent[perm[o]] = perm[hang[k]] if i == 0 else perm[o - 1]
 
-    def depth_old(o):
-        return o if o < spine else hang[o - spine] + 1
+    def place(o):
+        """(arm, step along the arm, path node it hangs on); arm is -1 for a path node."""
+        if o < spine:
+            return -1, 0, o
+        k, i = divmod(o - spine, arm_len)
+        return k, i, hang[k]
 
     def lca(u, v):
-        a, b = old[u], old[v]
-        if a == b:
-            return u
-        sa = a if a < spine else hang[a - spine]
-        sb = b if b < spine else hang[b - spine]
-        if a >= spine and b >= spine:
-            return perm[min(sa, sb)]
-        if a >= spine:                      # a is a leaf, b on the spine
-            return perm[b] if b <= sa else perm[sa]
-        if b >= spine:
-            return perm[a] if a <= sb else perm[sb]
-        return perm[min(a, b)]
-    depth = [depth_old(old[v]) for v in range(n)]
-    return parent, depth, lca
+        (ka, ia, ha), (kb, ib, hb) = place(old[u]), place(old[v])
+        if ka == kb:
+            return u if (ia <= ib if ka >= 0 else ha <= hb) else v
+        if ka >= 0 and kb >= 0:
+            return perm[min(ha, hb)]
+        if ka >= 0:                         # u on an arm, v on the path
+            return v if hb <= ha else perm[ha]
+        return u if ha <= hb else perm[hb]
+    depth = [0] * n
+    for v in range(n):
+        k, i, h = place(old[v])
+        depth[v] = h if k < 0 else h + 1 + i
+    tips = [v for v in range(n) if place(old[v])[1] >= arm_len // 2]
+    return parent, depth, lca, tips
 
 
 def _answer(op, a, b, depth, lca):
@@ -134,13 +144,13 @@ def _small(seed, n, q):
 def _big():
     import random
     rng = random.Random(3212)
-    parent, depth, lca = _caterpillar(3211, 40_000, 20_000)
+    parent, depth, lca, tips = _comb(3211, 30_000, 15, 2_000)
     n = len(parent)
-    deep = [v for v in range(n) if depth[v] > 30_000]
+    deep = [v for v in range(n) if depth[v] > 25_000]
     calls, want = [("FamilyTree", parent)], [None]
-    for _ in range(50_000):
+    for k in range(50_000):
         op = rng.choice(["common_ancestor", "distance", "relation"])
-        a, b = rng.choice(deep), rng.choice(deep)
+        a, b = (rng.choice(tips), rng.choice(tips)) if k % 5 else (rng.choice(deep), rng.choice(deep))
         calls.append((op, a, b))
         want.append(_answer(op, a, b, depth, lca))
     return calls, want
