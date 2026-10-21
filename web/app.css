@@ -749,3 +749,47 @@ button, .crumbs, .tabs, .stepper, .ws-bar, .drill-tabs, .badge, .console-bar, .r
 .tech-banner { margin-top: 12px; padding: 10px 14px; border-radius: var(--radius); background: var(--fill); color: var(--ink-2); font-size: 14.5px; }
 .tech-banner p { margin: 0; }
 .tech-banner p + p { margin-top: 6px; }
+
+/* ── Topic drawings (art.js) ─────────────────────────── */
+/* Drawn on the stage colour: white cells with a pressed edge, the stage's soft tint for key parts,
+   and a partner stage colour for the part the eye should land on. */
+.art {
+  --a-fill: var(--bg); --a-text: var(--ink);
+  --a-line: color-mix(in srgb, var(--on-stage) 42%, transparent);
+  --a-hi: var(--st2); --a-hi-ink: var(--on-st2);
+  display: block; width: 100%; height: auto; overflow: visible;
+}
+[data-stage="2"] .art, [data-stage="6"] .art { --a-hi: var(--st1); --a-hi-ink: var(--on-st1); }
+[data-stage="4"] .art { --a-hi: var(--st5); --a-hi-ink: var(--on-st5); }
+.art .a-cell { fill: var(--a-fill); stroke: none; filter: drop-shadow(0 3px 0 var(--stage-ink)); }
+.art .a-cell.key { fill: var(--stage-soft); }
+.art .a-cell.hi { fill: var(--a-hi); }
+.art .a-cell.dim { opacity: 0.45; }
+.art .a-label { font: 700 15px var(--mono); fill: var(--a-text); text-anchor: middle; dominant-baseline: central; }
+.art .a-label.key { fill: var(--stage-text); }
+.art .a-label.hi { fill: var(--a-hi-ink); }
+.art .a-line { stroke: var(--a-line); stroke-width: 3; stroke-linecap: round; }
+.art .a-line.key { stroke: var(--on-stage); }
+.art .a-line.hi { stroke: var(--a-hi); }
+.art .a-line.dim { opacity: 0.5; }
+.art .a-head { fill: var(--a-line); }
+.art .a-head.key { fill: var(--on-stage); }
+.art .a-head.hi { fill: var(--a-hi); }
+.art .a-note { font: 600 12.5px var(--sans); fill: var(--on-stage); text-anchor: middle; dominant-baseline: central; }
+.art .a-note.hi { font-weight: 800; }
+.art .a-note.dim { opacity: 0.6; }
+.art .a-curve { fill: none; stroke: var(--on-stage); stroke-width: 3.5; stroke-linecap: round; }
+.art .a-curve.key { stroke: var(--a-fill); }
+.art .a-curve.hi { stroke: var(--a-hi); }
+.art .a-frame { fill: none; stroke: var(--a-hi); stroke-width: 3.5; }
+.art .a-wall { fill: none; stroke: var(--on-stage); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; opacity: 0.5; }
+.art .a-ring { fill: color-mix(in srgb, var(--a-fill) 16%, transparent); }
+.art .a-hull { fill: color-mix(in srgb, var(--a-hi) 35%, transparent); stroke: var(--a-hi); stroke-width: 3; stroke-linejoin: round; }
+/* The one authored moment: on home, the drawing builds itself in, part by part. */
+.art.build [style*="--i"] {
+  transform-box: fill-box; transform-origin: center;
+  animation: art-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  animation-delay: calc(var(--i) * 45ms + 120ms);
+}
+@keyframes art-in { from { opacity: 0; transform: translateY(10px) scale(0.8); } }
+@media (prefers-reduced-motion: reduce) { .art.build [style*="--i"] { animation: none; } }

@@ -37,6 +37,14 @@ for (const mode of ["light", "dark"]) {
 }
 await p.eval(`delete document.documentElement.dataset.theme`);
 
+// ── Every topic has a drawing of its data structure ──
+const art = await p.eval(`Array.from({ length: 34 }, (_, k) => { const s = Trace.topicArt(k + 1);
+  return { n: k + 1, kind: Trace.ART_KINDS[k + 1], svg: s instanceof SVGSVGElement, hidden: s.getAttribute("aria-hidden"),
+           parts: s.querySelectorAll("[style*='--i']").length }; })`);
+check("every topic has a drawing", art.every((a) => a.svg && a.hidden === "true" && a.parts >= 4),
+  JSON.stringify(art.filter((a) => !(a.svg && a.hidden === "true" && a.parts >= 4))));
+check("at least 15 kinds of drawing", new Set(art.map((a) => a.kind)).size >= 15, String(new Set(art.map((a) => a.kind)).size));
+
 check("no console errors", p.logs.length === 0, p.logs.join(" | "));
 await p.close();
 summary();
