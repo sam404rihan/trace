@@ -568,6 +568,24 @@ TECHNIQUES = {
                    "goes in. Composite d never divide what's left, since their prime factors went first. Whatever is "
                    "left above 1 at the end is a prime factor bigger than the square root. It's O(sqrt(n)).",
     },
+    "geo.cross": {
+        "name": "The cross product for turns",
+        "explain": "For points p, q and r, `(q.x - p.x) * (r.y - p.y) - (q.y - p.y) * (r.x - p.x)` is positive for a "
+                   "left turn, negative for a right turn and 0 when they're on one line. It's exact with integers, so "
+                   "there are no angles. r lies on segment pq when it's 0 and r is inside pq's bounding box.",
+    },
+    "geo.hull": {
+        "name": "Convex hull (monotone chain)",
+        "explain": "Sort the points. Walk left to right building the bottom chain: before adding a point, pop the "
+                   "last one while the last two and the new point don't make a left turn. Do the same right to left "
+                   "for the top chain, then join them. O(n log n) for the sort.",
+    },
+    "geo.shoelace": {
+        "name": "The shoelace formula",
+        "explain": "The area of a polygon whose corners are listed in order is half the absolute value of the sum, "
+                   "over every edge (wrapping to the first corner), of `x[i] * y[i + 1] - x[i + 1] * y[i]`. Each term "
+                   "is a signed triangle from the origin, and the parts outside the polygon cancel.",
+    },
     "grid.neighbors": {
         "name": "Grid neighbours",
         "explain": "A cell (r, c) has up to four neighbours: (r - 1, c), (r + 1, c), (r, c - 1) and (r, c + 1). "

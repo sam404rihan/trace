@@ -648,5 +648,13 @@ class Stage6Audit(AuditBase):
             self.assertEqual(self.problems[name]["difficulty"], "easy", name)
 
 
+    def test_topic_31(self):
+        self.assert_audited("31_geometry")
+        self.assert_teaches({"orientation": ["geo.cross"], "convex_hull": ["geo.hull"], "polygon_area": ["geo.shoelace"]})
+        self.assert_uses({"fence_planner": ["geo.cross", "geo.hull", "geo.shoelace"],
+                          "rectangle_area_ii": ["intervals.merge", "intervals.sort_by_start"],
+                          "max_points_on_line": ["hash.group_key"], "segments_intersect": ["geo.cross"]})
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -159,6 +159,8 @@ def _cases():
     return out
 
 
+USES = ["geo.cross", "geo.hull", "geo.shoelace"]
+
 TESTS = [([("FencePlanner",), ("add", 0, 0), ("add", 4, 0), ("add", 4, 3), ("area",), ("perimeter",), ("add", 0, 3),
            ("encloses", 2, 1), ("encloses", 4, 2), ("encloses", 5, 1)], [None, None, None, None, 6.0, 12.0, None, True, True, False]),
          ([("FencePlanner",), ("area",), ("perimeter",), ("encloses", 0, 0), ("add", 2, 2), ("perimeter",), ("encloses", 2, 2),

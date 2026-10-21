@@ -80,6 +80,9 @@ def _bowl():
     return ((pts,), rim)                       # left to right along the bottom is counterclockwise
 
 
+TEACHES = ["geo.hull"]
+USES = ["geo.cross"]
+
 STEPS = [
     {
         "title": "Make it work",

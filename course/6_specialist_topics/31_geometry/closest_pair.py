@@ -60,6 +60,8 @@ def _cases():
     return out
 
 
+USES = ["window.variable", "bsearch.first_true"]
+
 TESTS = [
     (([[0, 0], [5, 5], [1, 1], [9, 0]],), 2),
     (([[3, 3], [3, 3]],), 0),

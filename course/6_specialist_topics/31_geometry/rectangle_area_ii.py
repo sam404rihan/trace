@@ -73,6 +73,8 @@ def _cases():
     return out
 
 
+USES = ["intervals.merge", "intervals.sort_by_start"]
+
 TESTS = [
     (([[0, 0, 2, 2], [1, 0, 2, 3], [1, 0, 3, 1]],), 6),
     (([[0, 0, 1000000000, 1000000000]],), 49),
