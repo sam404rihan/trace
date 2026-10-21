@@ -773,7 +773,7 @@ button, .crumbs, .tabs, .stepper, .ws-bar, .drill-tabs, .badge, .console-bar, .r
 .art .a-head.hi { fill: var(--a-hi); }
 .art .a-note { font: 600 12.5px var(--sans); fill: var(--on-stage); text-anchor: middle; dominant-baseline: central; }
 .art .a-note.hi { font-weight: 800; }
-.art .a-note.dim { opacity: 0.6; }
+.art .a-note.dim { font-weight: 500; }   /* quieter by weight: opacity would drop it below 4.5:1 */
 .art .a-curve { fill: none; stroke: var(--on-stage); stroke-width: 3.5; stroke-linecap: round; }
 .art .a-curve.key { stroke: var(--a-fill); }
 .art .a-curve.hi { stroke: var(--a-hi); }

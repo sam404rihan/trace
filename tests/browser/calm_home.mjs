@@ -205,6 +205,10 @@ check("finished home links the review drill", await p.eval(`(() => { const el = 
   Trace.mountHome(el, { target: null, started: true, placement: true }); return !!el.querySelector('a[href^="#/d/spot-pattern"]'); })()`));
 
 // Every topic draws itself, not a neighbour's picture.
+// Faded notes in drawings still read at 4.5:1: no opacity, and the colour itself passes on every stage.
+check("drawing notes are never faded by opacity", await p.eval(`(() => { const box = document.createElement("div"); box.dataset.stage = "2";
+  box.append(Trace.topicArt(11)); document.body.append(box);
+  const ok = [...box.querySelectorAll(".a-note")].every((n) => getComputedStyle(n).opacity === "1"); box.remove(); return ok; })()`));
 check("34 different drawings", (await p.eval(`new Set(Object.values(Trace.ART_KINDS)).size`)) === 34);
 
 // Home: the drawing leads; only the button looks pressable; the kind follows the title.
