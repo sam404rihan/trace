@@ -40,4 +40,49 @@
         : h("p", { class: "home-check" }, "Not sure where to start? ", h("a", { class: "link", href: "#/start" }, "Take the starting check"))));
     return { unmount() {} };
   };
+
+  const check = () => s("svg", { class: "icon", viewBox: "0 0 24 24", "aria-hidden": "true" }, s("path", { d: "M5 12.5l4.5 4.5L19 7.5" }));
+  const chevron = () => s("svg", { class: "icon", viewBox: "0 0 24 24", "aria-hidden": "true" }, s("path", { d: "M6 9l6 6 6-6" }));
+
+  // ctx: { stages: [{ no, name, topics: [{ id, n, title, done, total, placedOut }] }], hereTopicId, extras: Node[] }
+  // The current stage is the one holding hereTopicId (the last stage once everything is done). Folded stages
+  // keep their topics as a compact row of numbered links, so every topic stays one click away.
+  T.mountRoadmap = (host, ctx) => {
+    const finished = (t) => t.placedOut || (t.total > 0 && t.done === t.total);
+    const current = ctx.stages.find((st) => st.topics.some((t) => t.id === ctx.hereTopicId)) || ctx.stages[ctx.stages.length - 1];
+    const stage = (st) => {
+      const state = st === current ? "current" : st.topics.every(finished) ? "done" : "ahead";
+      const doneCount = st.topics.filter(finished).length;
+      const li = h("li", { class: "road-stage", "data-state": state, "data-stage": String(st.no), "data-open": st === current ? "" : null });
+      const listId = `road-${st.no}`;
+      const toggle = h("button", { class: "road-toggle", type: "button", "aria-expanded": String(st === current), "aria-controls": listId,
+        onclick: () => {
+          const open = !li.hasAttribute("data-open");
+          li.toggleAttribute("data-open", open);
+          toggle.setAttribute("aria-expanded", String(open));
+        } }, h("span", { class: "sr-only" }, `Show or hide ${st.name}`), chevron());
+      li.append(
+        h("span", { class: "road-marker", "aria-hidden": "true" }, state === "done" ? check() : String(st.no)),
+        h("div", { class: "road-body" },
+          h("div", { class: "road-head" },
+            h("h2", {}, st.name),
+            h("span", { class: "road-count" }, `${doneCount} of ${st.topics.length} topics`),
+            toggle),
+          h("ol", { class: "road-stops", id: listId }, st.topics.map((t) => h("li", {},
+            h("a", { class: "road-stop" + (finished(t) ? " done" : "") + (t.id === ctx.hereTopicId ? " here" : ""), href: `#/t/${t.id}`,
+              title: t.title, "aria-current": t.id === ctx.hereTopicId ? "step" : null },
+              h("span", { class: "road-n" }, finished(t) ? check() : String(t.n).padStart(2, "0")),
+              h("span", { class: "road-title" }, t.title),
+              t.id === ctx.hereTopicId ? h("span", { class: "road-here" }, "You're here") : null,
+              t.placedOut ? h("span", { class: "badge placed" }, "Placed out") : null,
+              h("span", { class: "road-progress" }, `${t.done}/${t.total}`)))))));
+      return li;
+    };
+    host.replaceChildren(h("div", { class: "page road-page" },
+      h("h1", {}, "Your roadmap"),
+      h("p", { class: "lede" }, `${ctx.stages.reduce((n, st) => n + st.topics.length, 0)} topics in ${ctx.stages.length} stages, from the basics to specialist techniques. Open any stage to see its topics.`),
+      h("ol", { class: "road" }, ctx.stages.map(stage)),
+      ctx.extras));
+    return { unmount() {} };
+  };
 })();

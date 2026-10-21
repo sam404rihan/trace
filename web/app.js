@@ -294,7 +294,7 @@
   async function viewStart() {
     S.startShown = true;                         // redirect a first visit here once per session, never in a loop
     document.title = "Where are you starting? | Trace";
-    crumbs({ label: "Topics", href: "#/" }, { label: "Where are you starting?" });
+    crumbs({ label: "Roadmap", href: "#/roadmap" }, { label: "Where are you starting?" });
     const host = h("div", { class: "start-page", "aria-busy": "true" }, sk("sk-title"), sk("sk-line", "width:70%"));
     app.replaceChildren(host);
     let check;
@@ -303,7 +303,7 @@
     } catch (err) {
       host.removeAttribute("aria-busy");
       host.replaceChildren(h("h1", {}, "The starting check isn't available"), h("p", { class: "lede" }, err.message),
-        h("div", { class: "start-actions" }, h("a", { class: "btn primary", href: "#/" }, "Go to the topics")));
+        h("div", { class: "start-actions" }, h("a", { class: "btn primary", href: "#/roadmap" }, "Go to the roadmap")));
       return;
     }
     if (!host.isConnected) return;               // you navigated away while it loaded
@@ -337,6 +337,37 @@
     });
   }
 
+  // The whole course: six stages as a path, then study plans, the review drill, the starting check and reset.
+  function viewRoadmap() {
+    document.title = "Roadmap | Trace";
+    crumbs({ label: "Home", href: "#/" }, { label: "Roadmap" });
+    const stages = stageNames().map((name, k) => ({ no: k + 1, name,
+      topics: S.topics.filter((t) => t.stage === name).map((t) => ({ id: t.id, n: t.n, title: topicTitle(t),
+        done: t.items.filter(solved).length, total: t.items.length, placedOut: placedOut(t) })) }));
+    const review = T.topics.find((d) => d.n === 99);
+    const spot = review && T.spotStatus ? T.spotStatus() : null;
+    T.mountRoadmap(app, {
+      stages, hereTopicId: nextUp()?.topic.id || null,
+      extras: [
+        h("section", { id: "plans", class: "road-extra" }, plansSection()),
+        review ? h("section", { class: "road-extra" },
+          h("h2", { class: "section-title" }, "Review"),
+          h("div", { class: "topic-list" }, spot && !spot.ready
+            ? h("div", { class: "topic-row disabled" },
+              h("span", { class: "num" }, "★"),
+              h("span", { class: "name" }, review.title, h("span", { class: "sub" }, `Opens after four pattern topics (${spot.have} of ${spot.need}).`)),
+              h("span"))
+            : h("a", { class: "topic-row", href: `#/d/${review.id}/${review.drills[0].id}` },
+              h("span", { class: "num" }, "★"),
+              h("span", { class: "name" }, review.title, h("span", { class: "sub" }, "Read a problem, name the technique. Mixes the topics you've started.")),
+              h("span", { class: "ladder-bar" }, T.pips(T.DrillProgress.rec(review, review.drills[0]).clean))))) : null,
+        h("p", { class: "home-foot" },
+          h("a", { class: "link", href: "#/start" }, S.progress.placement ? "Retake the starting check" : "Take the starting check"),
+          h("button", { class: "link", type: "button", onclick: resetAll }, "Reset all progress")),
+      ],
+    });
+  }
+
   async function resetAll(e) {
     const btn = e.currentTarget;
     if (!btn.dataset.armed) {
@@ -347,7 +378,7 @@
     }
     S.progress = (await api("/api/reset-progress", {})).progress;
     T.DrillProgress.reset();
-    viewHome();
+    viewRoadmap();
   }
 
   // ── study plans ────────────────────────────────────────────────────────────
@@ -387,7 +418,7 @@
     const plan = (S.plans.plans || []).find((pl) => pl.id === id);
     if (!plan) return viewHome();
     document.title = `${plan.title} | Trace`;
-    crumbs({ label: "Plans", href: "#/" }, { label: plan.title });
+    crumbs({ label: "Roadmap", href: "#/roadmap" }, { label: plan.title });
     const items = planItemsOf(plan);
     const done = items.filter(solved).length;
     const first = items.find((n) => !solved(n));
@@ -453,7 +484,7 @@
     if (!topic) return viewHome();
     const dt = drillTopic(topic);
     document.title = `${topicTitle(topic)} | Trace`;
-    crumbs({ label: "Topics", href: "#/" }, { label: topicTitle(topic) });
+    crumbs({ label: "Roadmap", href: "#/roadmap" }, { label: topicTitle(topic) });
     const groups = [
       dt ? dt.drills : [],
       topic.has_walkthrough ? ["walkthrough"] : [],
@@ -515,7 +546,7 @@
     const topic = S.topics.find((t) => t.id === id);
     if (!topic || !topic.has_walkthrough) return viewTopic(id);
     document.title = `${topicTitle(topic)}: read the code | Trace`;
-    crumbs({ label: "Topics", href: "#/" }, { label: topicTitle(topic), href: `#/t/${topic.id}` }, { label: "Read the code" });
+    crumbs({ label: "Roadmap", href: "#/roadmap" }, { label: topicTitle(topic), href: `#/t/${topic.id}` }, { label: "Read the code" });
     const host = h("div", { class: "wt-page", "aria-busy": "true" }, sk("", "height:4px"), sk("sk-title", "margin-top:30px"), sk("sk-line", "width:90%"), sk("sk-line", "width:70%"));
     app.replaceChildren(host);
     const wt = await api(`/api/walkthrough?topic=${encodeURIComponent(id)}`);
@@ -546,11 +577,11 @@
     const drill = dt.drills.find((d) => d.id === drillId) || dt.drills[0];
     const course = S.topics.find((t) => t.n === dt.n);
     document.title = `${dt.title}: ${drill.name} | Trace`;
-    crumbs({ label: "Topics", href: "#/" }, course ? { label: topicTitle(course), href: `#/t/${course.id}` } : { label: "Review" }, { label: drill.name });
+    crumbs({ label: "Roadmap", href: "#/roadmap" }, course ? { label: topicTitle(course), href: `#/t/${course.id}` } : { label: "Review" }, { label: drill.name });
     if (dt.n === 99 && T.spotStatus && !T.spotStatus().ready) {
       app.replaceChildren(h("div", { class: "page" }, h("h1", {}, dt.title),
         h("p", { class: "lede" }, `This mixes the techniques you've started, so it opens after four pattern topics. You've started ${T.spotStatus().have} so far.`),
-        h("p", { style: "margin-top:24px" }, h("a", { class: "btn", href: "#/" }, "Back to the topics"))));
+        h("p", { style: "margin-top:24px" }, h("a", { class: "btn", href: "#/roadmap" }, "Back to the roadmap"))));
       return;
     }
     if (dt.n !== 99) recordStop(`#/d/${dt.id}/${drill.id}`);
@@ -616,8 +647,8 @@
     const unlocked = (n) => (inPlan && planItems.includes(n)) || isUnlocked(topic, n);
     const link = (n) => (inPlan && planItems.includes(n) ? `#/p/${n}/plan/${plan.id}` : `#/p/${n}`);
     const here = inPlan
-      ? [{ label: "Plans", href: "#/" }, { label: plan.title, href: `#/plan/${plan.id}` }]
-      : [{ label: "Topics", href: "#/" }, { label: topicTitle(topic), href: `#/t/${topic.id}` }];
+      ? [{ label: "Roadmap", href: "#/roadmap" }, { label: plan.title, href: `#/plan/${plan.id}` }]
+      : [{ label: "Roadmap", href: "#/roadmap" }, { label: topicTitle(topic), href: `#/t/${topic.id}` }];
     document.body.classList.add("ws");
     crumbs(...here, { label: S.problems[name].title });
     const pending = fetchProblem(name);
@@ -1133,12 +1164,13 @@
       if (kind === "d") return viewDrill(a, b);
       if (kind === "w") return await viewWalkthrough(a);
       if (kind === "start") return await viewStart();
+      if (kind === "roadmap") return viewRoadmap();
       if (!kind && !S.startShown && firstVisit()) { history.replaceState(null, "", "#/start"); return await viewStart(); }
       return viewHome();
     } catch (err) {
       console.error(err);
       app.replaceChildren(h("div", { class: "page" }, h("h1", {}, "Something went wrong"), h("p", { class: "lede" }, err.message),
-        h("p", {}, h("a", { class: "btn", href: "#/" }, "Back to topics"))));
+        h("p", {}, h("a", { class: "btn", href: "#/" }, "Back to home"))));
     }
   }
 

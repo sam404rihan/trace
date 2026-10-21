@@ -114,6 +114,24 @@ await p.reload(BASE + "/#/");
 check("offers the starting check before placement", await p.eval(`!!document.querySelector('#app a[href="#/start"]')`));
 await post(p, "/api/placement", { door: "skip" });
 
+// ── The roadmap holds the whole course ──
+await p.eval(`localStorage.removeItem("trace.lastStop")`);
+await p.reload(BASE + "/#/roadmap");
+const here = await p.eval(`Trace.resumeTarget().topic.id`);       // no stop stored: the course position
+check("six stages", (await p.eval(`document.querySelectorAll(".road-stage").length`)) === 6);
+check("one current stage, open", await p.eval(`(() => { const c = document.querySelectorAll('.road-stage[data-state="current"]');
+  return c.length === 1 && c[0].hasAttribute("data-open"); })()`));
+check("every topic one click from the roadmap", (await p.eval(`new Set([...document.querySelectorAll("a.road-stop")].map(a => a.getAttribute("href"))).size`)) === 34);
+check("You're here is the course position", (await p.eval(`document.querySelector(".road-here")?.closest("a.road-stop")?.getAttribute("href")`)) === "#/t/" + here);
+check("a folded stage opens", await p.eval(`(() => { const b = document.querySelector('.road-stage:not([data-open]) .road-toggle');
+  if (!b || b.getAttribute("aria-expanded") !== "false") return false;
+  b.click(); return b.closest(".road-stage").hasAttribute("data-open") && b.getAttribute("aria-expanded") === "true"; })()`));
+check("study plans are on the roadmap", await p.eval(`document.querySelectorAll("#plans a.topic-row").length === 3`));
+check("the review drill is on the roadmap", await p.eval(`document.querySelector("#app").textContent.includes("Spot the pattern")`));
+check("retake and reset are on the roadmap", await p.eval(`[...document.querySelectorAll("#app a, #app button")].some(a => /Reset all progress/.test(a.textContent))
+  && !!document.querySelector('#app a[href="#/start"]')`));
+check("roadmap crumb", (await p.eval(`document.querySelector("#crumbs").textContent`)).includes("Roadmap"));
+
 
 check("no console errors", p.logs.length === 0, p.logs.join(" | "));
 await p.close();

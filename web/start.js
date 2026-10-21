@@ -128,7 +128,7 @@
         page(h("h1", {}, "That didn't save"), h("p", { class: "lede" }, err.message),
           h("div", { class: "start-actions" },
             h("button", { class: "btn primary", type: "button", onclick: () => finish(chosen) }, "Try again"),
-            h("a", { class: "link", href: "#/" }, "Go to the topics")));
+            h("a", { class: "link", href: "#/roadmap" }, "Go to the roadmap")));
       } finally {
         busy = false;
       }
@@ -153,7 +153,7 @@
         placed.length ? [h("p", { class: "start-label" }, "Placed out (still open any time)"),
           h("ul", { class: "start-list" }, placed.map((id) => h("li", {}, topicTitle(id))))] : null,
         h("div", { class: "start-actions" },
-          h("a", { class: "btn primary", href: placement.start ? startHref(placement.start) : "#/" }, placement.start ? "Start here" : "Go to the topics"),
+          h("a", { class: "btn primary", href: placement.start ? startHref(placement.start) : "#/roadmap" }, placement.start ? "Start here" : "Go to the roadmap"),
           placement.start ? h("a", { class: "link", href: "#/" }, "See all topics") : null));
     }
 

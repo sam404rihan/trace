@@ -841,3 +841,72 @@ button, .crumbs, .tabs, .stepper, .ws-bar, .drill-tabs, .badge, .console-bar, .r
   .hero-art .art { max-width: 340px; margin: 0 auto; }
   .hero .hero-go { width: 100%; justify-content: center; }
 }
+
+/* ── Roadmap: six stages as a path ───────────────────── */
+.road-page { max-width: 820px; }
+.road { list-style: none; margin: 40px 0 0; padding: 0; position: relative; }
+.road-stage { display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 0 20px; position: relative; padding-bottom: 28px; }
+.road-stage::before {           /* the path between stage markers */
+  content: ""; position: absolute; left: 24px; top: 56px; bottom: 4px; width: 4px; border-radius: 4px;
+  background: var(--fill-2);
+}
+.road-stage:last-child::before { display: none; }
+.road-stage[data-state="done"]::before { background: var(--stage); }
+.road-marker {
+  width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center;
+  font: 800 20px var(--sans); background: var(--fill); color: var(--ink-3); position: relative; z-index: 1;
+}
+.road-marker .icon { width: 24px; height: 24px; stroke-width: 3; }
+.road-stage[data-state="current"] .road-marker,
+.road-stage[data-state="done"] .road-marker { background: var(--stage); color: var(--on-stage); box-shadow: 0 4px 0 var(--stage-ink); }
+.road-body { min-width: 0; padding-top: 8px; }
+.road-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; min-height: 38px; }
+.road-head h2 { margin: 0; font-size: 22px; letter-spacing: -0.02em; font-weight: 800; }
+.road-count { color: var(--ink-3); font-size: 14px; font-weight: 500; }
+.road-toggle {
+  margin-left: auto; width: 38px; height: 38px; border: 0; border-radius: 12px; background: none; color: var(--ink-2);
+  display: grid; place-items: center; cursor: pointer;
+}
+.road-toggle:hover { background: var(--fill); color: var(--ink); }
+.road-toggle .icon { width: 20px; height: 20px; stroke-width: 2.4; transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
+.road-stage[data-open] .road-toggle .icon { transform: rotate(180deg); }
+
+/* open: each topic is a stop on the path */
+.road-stops { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 6px; }
+.road-stop {
+  display: grid; grid-template-columns: 36px minmax(0, 1fr) auto auto; align-items: center; gap: 12px;
+  padding: 10px 14px 10px 10px; border-radius: 14px; background: var(--fill); text-decoration: none;
+}
+.road-stop:hover { background: var(--fill-2); }
+.road-n {
+  width: 36px; height: 36px; border-radius: 11px; display: grid; place-items: center;
+  font: 600 13px var(--mono); background: var(--bg); color: var(--ink-2);
+}
+.road-n .icon { width: 18px; height: 18px; stroke-width: 3; }
+.road-stop.done .road-n { background: var(--ok); color: #fff; }
+.road-title { font-weight: 600; font-size: 16px; min-width: 0; }
+.road-progress { font: 500 13px var(--mono); color: var(--ink-3); }
+.road-stop.here { background: var(--stage); color: var(--on-stage); box-shadow: 0 4px 0 var(--stage-ink); }
+.road-stop.here .road-n { background: var(--on-stage); color: var(--stage); }
+.road-stop.here .road-progress { color: inherit; }
+.road-here { font-size: 12.5px; font-weight: 800; padding: 3px 10px; border-radius: 999px; background: color-mix(in srgb, var(--on-stage) 16%, transparent); }
+
+/* folded: the same stops shrink to a row of numbered links */
+.road-stage:not([data-open]) .road-stops { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.road-stage:not([data-open]) .road-stop { display: block; padding: 0; background: none; box-shadow: none; }
+.road-stage:not([data-open]) .road-stop .road-n { background: var(--fill); }
+.road-stage:not([data-open]) .road-stop:hover .road-n { background: var(--fill-2); }
+.road-stage:not([data-open]) .road-stop.done .road-n { background: var(--ok); color: #fff; }
+.road-stage:not([data-open]) .road-stop.here .road-n { background: var(--stage); color: var(--on-stage); }
+.road-stage:not([data-open]) :is(.road-title, .road-here, .road-progress, .badge) {
+  position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+}
+.road-extra { margin-top: 8px; }
+@media (max-width: 600px) {
+  .road-stage { grid-template-columns: 40px minmax(0, 1fr); gap: 0 14px; }
+  .road-marker { width: 40px; height: 40px; font-size: 16px; }
+  .road-stage::before { left: 18px; top: 44px; }
+  .road-stop { grid-template-columns: 32px minmax(0, 1fr) auto; }
+  .road-stop .road-progress { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .road-toggle .icon { transition: none; } }
