@@ -583,6 +583,45 @@ def prelude_covers(node):
     return all((a.asname or a.name) in PRELUDE and "." not in a.name for a in node.names)
 
 
+def _plain(value):
+    """value as JSON (tuples become lists), or raise TypeError for anything else (nodes, sets, objects)."""
+    if value is None or isinstance(value, (bool, int, float, str)):
+        return value
+    if isinstance(value, (list, tuple)):
+        return [_plain(v) for v in value]
+    if isinstance(value, dict) and all(isinstance(k, str) for k in value):
+        return {k: _plain(v) for k, v in value.items()}
+    raise TypeError(type(value).__name__)
+
+
+def problem_examples(module, limit=3, longest=400):
+    """The first few small tests as {args, expected}, so the page can draw real inputs. None for class problems."""
+    if module.get("CLASS"):
+        return []
+    tests = module.get("TESTS") or ((module.get("STEPS") or [{}])[0].get("tests") or [])
+    out = []
+    for args, expected in tests:
+        try:
+            ex = {"args": _plain(list(args)), "expected": _plain(expected)}
+        except TypeError:
+            continue
+        if len(repr(ex["args"])) <= longest:
+            out.append(ex)
+        if len(out) == limit:
+            break
+    return out
+
+
+def problem_params(tree):
+    """The first public function's parameters, with their annotations as written."""
+    for node in tree.body:
+        if isinstance(node, ast.FunctionDef) and not node.name.startswith("_"):
+            return [{"name": a.arg, "type": ast.unparse(a.annotation) if a.annotation else ""} for a in node.args.args]
+        if isinstance(node, ast.ClassDef) and not node.name.startswith("_"):
+            return []
+    return []
+
+
 def parse_problem(path):
     source = path.read_text(encoding="utf-8")
     tree = ast.parse(source)
@@ -633,6 +672,8 @@ def parse_problem(path):
         "has_solution": (SOLUTIONS / f"{path.stem}.py").exists(),
         "uses": module.get("USES", []),
         "teaches": module.get("TEACHES", []),
+        "params": problem_params(tree),
+        "examples": problem_examples(module),
         "audited": "USES" in module or "TEACHES" in module,
     }
 
@@ -973,6 +1014,7 @@ class Handler(BaseHTTPRequestHandler):
             saved = saved_code_path(problem["name"])
             data = public_problem(problem)
             data["starter"] = problem["starter"]
+            data["params"], data["examples"] = problem["params"], problem["examples"]
             plans = load_plans()
             data["reported"] = plans.get("reported", {}).get(problem["name"], [])
             data["reported_note"] = plans.get("reported_note", "")

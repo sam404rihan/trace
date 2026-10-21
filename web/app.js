@@ -88,6 +88,19 @@
     return out;
   }
 
+  // A statement's parts: the problem text, the indented example block after "Example:", and any notes after it.
+  function splitStatement(text) {
+    const lines = text.split("\n");
+    const at = lines.findIndex((l) => /^\s*Examples?:\s*$/.test(l));
+    if (at < 0) return { desc: text, example: "", notes: "" };
+    let end = at + 1;
+    while (end < lines.length && (!lines[end].trim() || /^ {2,}/.test(lines[end]))) end++;
+    const block = lines.slice(at + 1, end);
+    while (block.length && !block[block.length - 1].trim()) block.pop();
+    const indent = Math.min(...block.filter((l) => l.trim()).map((l) => l.match(/^ */)[0].length));
+    return { desc: lines.slice(0, at).join("\n"), example: block.map((l) => l.slice(indent)).join("\n"), notes: lines.slice(end).join("\n") };
+  }
+
   // Lesson notes: a small markdown subset.
   function renderMarkdown(text) {
     const out = [];
@@ -730,9 +743,18 @@
           showHowTo
             ? T.howToCard({ onClose: () => { showHowTo = false; local.set("trace.howtoSeen", true); renderLeft(); } })
             : h("button", { class: "link howto-link", type: "button", onclick: () => { showHowTo = true; renderLeft(); } }, "How to work a problem"),
-          ...T.techniqueBoxes(S.problems[name], techCtx()),
-          h("div", { class: "body-text" }, renderStatement(p.statement)));
-        if (p.aim) body.append(h("div", { class: "callout" }, h("h4", {}, "Aim for"), h("p", {}, inline(p.aim))));
+          ...T.techniqueBoxes(S.problems[name], techCtx()));
+        // The problem, then one worked example with its inputs drawn, then what to aim for.
+        const parts = splitStatement(p.statement);
+        const figures = T.inputFigures(p.params, (p.examples || [])[0]);
+        body.append(h("section", { class: "st-desc body-text", "aria-label": "Problem" }, renderStatement(parts.desc)));
+        if (parts.example || figures.length) body.append(h("section", { class: "st-example" },
+          h("h2", {}, "Example"),
+          parts.example ? h("pre", { class: "st-example-code" }, parts.example) : null,
+          figures.length ? [h("p", { class: "st-figures-head" }, "First test, drawn · returns ", h("code", {}, T.pyRepr(p.examples[0].expected))),
+            h("div", { class: "st-figures" }, figures)] : null,
+          parts.notes.trim() ? h("div", { class: "body-text st-notes" }, renderStatement(parts.notes)) : null));
+        if (p.aim) body.append(h("p", { class: "st-aim" }, h("span", { class: "st-aim-label" }, "Aim for"), h("span", {}, inline(p.aim))));
         if (stepCount) {
           const done = stepsDone();
           body.append(h("div", { class: "steps" }, p.steps.map((s, k) => {
