@@ -78,7 +78,8 @@ container instead, and `docker compose up -d` runs the server itself in Docker.
 - The **Solution** tab holds a commented reference solution.
 
 Drills: keys `1`–`9` answer, `H` shows the answer (counts as a slip), `N` gives a new
-example, and `Enter` goes to the next one. Three clean runs make a drill solid.
+example, and `Enter` goes to the next one. Two clean runs make a drill solid, and once you've made the
+same move correctly twice in a row, its repeats play themselves.
 
 ## The sandbox
 

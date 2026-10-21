@@ -23,3 +23,4 @@ desktop.ini
 .superpowers/
 .impeccable/review/
 tests/browser/*.png
+.claude/worktrees/

@@ -6,7 +6,9 @@
   const { h } = T;
 
   // ── drill progress (per browser) ───────────────────────────────────────────
-  const GOAL = 3; // clean runs that make a drill "solid"
+  const GOAL = 2; // clean runs that make a drill "solid"
+  const AUTO_AFTER = 2; // the same move made correctly this many times in a row, then its repeats play themselves
+  const AUTO_MS = 650;
   const KEY = "trace.v1";
   let store = (() => { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch { return {}; } })();
   store.drills ||= {};
@@ -52,8 +54,18 @@
     let sess = null;
     const slipText = () => (sess.slips ? `${sess.slips} slip${sess.slips > 1 ? "s" : ""} so far` : "");
 
+    // A routine repeat: the same question (same choices) with the same answer as the last few, which the
+    // learner got right first time. Those play themselves, so a run is about the decisions that change.
+    const formOf = (ask) => (ask.options ? ask.options.map((o) => String(o.value)).join("|") : ask.picks ? "pick" : null);
+    const keyOf = (ask) => JSON.stringify(ask.answer);
+    function routine(ask) {
+      const f = formOf(ask);
+      return !!f && sess.streak >= AUTO_AFTER && sess.last && sess.last.form === f && sess.last.key === keyOf(ask);
+    }
+
     function start() {
-      sess = { slips: 0, ask: null, done: false, revealed: false };
+      clearTimeout(sess && sess.timer);
+      sess = { slips: 0, ask: null, done: false, revealed: false, streak: 0, last: null, missed: false, auto: 0, playing: false, timer: null };
       els.blurb.textContent = drill.blurb;
       els.view.replaceChildren();
       setFeedback("");
@@ -84,18 +96,45 @@
       els.view.querySelectorAll(".reveal, .miss").forEach((el) => el.classList.remove("reveal", "miss"));
       els.slips.textContent = slipText();
       els.showBtn.disabled = false;
+      sess.missed = false;
+      if (routine(ask)) play(ask);
+    }
+
+    // Show the move, highlighted, then make it.
+    function play(ask) {
+      sess.playing = true;
+      sess.auto++;
+      els.showBtn.disabled = true;
+      const value = Array.isArray(ask.answer) ? ask.answer[0] : ask.answer;
+      let target = null;
+      if (ask.options) target = els.options.querySelector(`[data-i="${ask.options.findIndex((o) => String(o.value) === String(value))}"]`);
+      else if (ask.picks) target = els.view.querySelector(`[data-pick="${CSS.escape(String(value))}"]`);
+      if (target) target.classList.add("auto");
+      els.options.querySelectorAll(".opt").forEach((b) => { b.disabled = true; });
+      setFeedback("Same move again, so it plays itself.", "hint");
+      sess.timer = setTimeout(() => {
+        sess.playing = false;
+        if (sess.ask !== ask) return;
+        sess.ask = null;
+        step(value);
+      }, AUTO_MS);
     }
 
     function answer(value, el) {
       if (!sess || !sess.ask || sess.done) return;
       const ask = sess.ask;
+      if (sess.playing) return;
       if (ask.accept(value)) {
+        const same = sess.last && sess.last.form === formOf(ask) && sess.last.key === keyOf(ask);
+        sess.streak = sess.missed || sess.revealed ? 0 : same ? sess.streak + 1 : 1;
+        sess.last = { form: formOf(ask), key: keyOf(ask) };
         const note = typeof ask.note === "function" ? ask.note(value) : ask.note;
         setFeedback(note || "", "ok");
         sess.ask = null;
         step(value);
       } else {
         sess.slips++;
+        sess.missed = true;
         setFeedback(ask.why(value), "bad");
         if (el) {
           el.classList.remove("miss");
@@ -107,7 +146,7 @@
     }
 
     function showMe() {
-      if (!sess || !sess.ask || sess.done) return;
+      if (!sess || !sess.ask || sess.done || sess.playing) return;
       const ask = sess.ask;
       if (!sess.revealed) {
         sess.revealed = true;
@@ -178,7 +217,13 @@
     }
     document.addEventListener("keydown", onKey);
 
+    // Read-only view of the run, for the browser checks.
+    container.drillState = () => ({
+      answer: sess.ask && sess.ask.answer, options: sess.ask && sess.ask.options ? sess.ask.options.map((o) => String(o.value)) : null,
+      done: sess.done, auto: sess.auto, playing: sess.playing,
+    });
+
     start();
-    return { unmount: () => document.removeEventListener("keydown", onKey) };
+    return { unmount: () => { clearTimeout(sess && sess.timer); document.removeEventListener("keydown", onKey); } };
   };
 })();
