@@ -211,12 +211,20 @@ def run_class_test(cls, calls, expected, test, finish):
             break
 
 
+def _no_recursion_limit(limit):
+    raise RuntimeError("sys.setrecursionlimit is switched off in the judge: tests run with Python's normal "
+                       "recursion limit (about 1,000 calls deep). If a test is too deep for recursion, "
+                       "use an explicit stack or a loop instead.")
+
+
 def run_tests(job):
     name = job["name"]
     report = {"tests": [], "load_error": None, "load_output": "", "custom": None}
 
     problem = {"__name__": "problem"}
     exec(compile(job["problem"], "problem.py", "exec"), problem)
+    # Deep tests teach the explicit stack, so a solution can't raise the limit to get past them.
+    sys.setrecursionlimit = _no_recursion_limit
 
     solution = {"__name__": "solution", **PRELUDE}   # collections, heapq, bisect, ... without imports
     loaded = guarded(lambda: exec(compile(job["code"], "solution.py", "exec"), solution), LOAD_TIMEOUT)
