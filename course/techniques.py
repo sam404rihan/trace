@@ -388,6 +388,18 @@ TECHNIQUES = {
                    "unused edge, take it and push where it leads. When it has none, pop it onto the route. Reverse "
                    "the route at the end. Loops you would get stuck in are spliced in automatically.",
     },
+    "bt.core": {
+        "name": "Backtracking: choose, explore, un-choose",
+        "explain": "Build a solution one choice at a time. At each step, loop over the choices: make one (append to "
+                   "the path), recurse to fill in the rest, then undo it (pop) before trying the next. Record a "
+                   "COPY of the path when it's complete, and stop early on branches that can't work.",
+    },
+    "bt.skip_duplicates": {
+        "name": "Skipping duplicate branches",
+        "explain": "When the input has repeated values, sort it first. In the loop at each depth, skip a value equal "
+                   "to the one just tried at the SAME depth: `if i > start and nums[i] == nums[i - 1]: continue`. "
+                   "The same value deeper down is still allowed, so no answer is lost and none is repeated.",
+    },
     "grid.neighbors": {
         "name": "Grid neighbours",
         "explain": "A cell (r, c) has up to four neighbours: (r - 1, c), (r + 1, c), (r, c - 1) and (r, c + 1). "

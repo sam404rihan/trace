@@ -18,6 +18,8 @@ def n_queens(n: int) -> int:
     raise NotImplementedError  # replace this line with your solution
 
 
+USES = ["hash.group_key", "bt.core"]
+
 TESTS = [
     ((1,), 1),
     ((4,), 2),

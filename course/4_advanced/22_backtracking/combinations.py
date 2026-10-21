@@ -15,6 +15,9 @@ def combinations(n: int, k: int) -> list[list[int]]:
     raise NotImplementedError  # replace this line with your solution
 
 
+TEACHES = ["bt.core"]
+USES = ["recursion.trust"]
+
 STEPS = [
     {
         "title": "Choose, explore, un-choose",

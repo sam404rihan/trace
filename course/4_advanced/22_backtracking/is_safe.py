@@ -18,6 +18,8 @@ def is_safe(queens: list[int], col: int) -> bool:
     raise NotImplementedError  # replace this line with your solution
 
 
+USES = []
+
 TESTS = [
     (([1, 3], 0), True),
     (([1, 3], 2), False),

@@ -1,5 +1,5 @@
 """
-Subsets II                                                                    [medium]
+Subsets II                                                                    [easy]
 
 nums may contain duplicates. Return every DISTINCT subset (including the
 empty one). Order doesn't matter: the tests sort your answer before comparing.
@@ -8,7 +8,7 @@ Example:
     subsets_ii([1, 2, 2])  ->  [[], [1], [1, 2], [1, 2, 2], [2], [2, 2]]
 
 Hint:     Sort nums. Backtrack: record the current path at every node. When choosing the next number,
-          skip a value equal to the previous one at the same depth, like Combination Sum II.
+          skip a value equal to the previous one at the same depth.
 """
 
 
@@ -34,5 +34,9 @@ def _cases():
     return [((v,), _brute(v)) for v in ([rng.randint(0, 3) for _ in range(rng.randint(0, 8))] for _ in range(8))]
 
 
+TEACHES = ["bt.skip_duplicates"]
+USES = ["bt.core"]
+
 TESTS = [(([1, 2, 2],), [[], [1], [1, 2], [1, 2, 2], [2], [2, 2]]), (([0],), [[], [0]]), (([],), [[]]),
-         (([4, 4, 4, 1, 4],), _brute([4, 4, 4, 1, 4]))] + _cases()
+         (([4, 4, 4, 1, 4],), _brute([4, 4, 4, 1, 4]))] + _cases() + [
+         (([1] * 12 + [2] * 12,), sorted([1] * i + [2] * j for i in range(13) for j in range(13)))]

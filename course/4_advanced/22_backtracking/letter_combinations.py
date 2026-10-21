@@ -26,4 +26,6 @@ def _ref(d):
     return ["".join(p) for p in prod(*(_KEYS[x] for x in d))] if d else []
 
 
+USES = ["bt.core"]
+
 TESTS = [((d,), _ref(d)) for d in ("23", "", "2", "79", "234", "9999")]

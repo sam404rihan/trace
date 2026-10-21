@@ -21,6 +21,8 @@ def CHECK(got, expected):
     return sorted(got) == sorted(expected)
 
 
+USES = ["brackets.balance", "bt.core"]
+
 TESTS = [
     ((1,), ["()"]),
     ((2,), ["(())", "()()"]),

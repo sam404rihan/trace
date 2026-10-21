@@ -29,4 +29,6 @@ def _brute(s):
     return sorted(out)
 
 
+USES = ["bt.core"]
+
 TESTS = [((s,), _brute(s)) for s in ("aab", "a", "racecar", "abba", "abc", "aaaa", "abacabad", "")]

@@ -487,5 +487,15 @@ class Stage4Audit(AuditBase):
             self.assertEqual(self.problems[name]["difficulty"], "easy", name)
 
 
+    def test_topic_22(self):
+        self.assert_audited("22_backtracking")
+        self.assert_teaches({"combinations": ["bt.core"], "subsets_ii": ["bt.skip_duplicates"]})
+        self.assert_uses({"combination_sum_ii": ["bt.core", "bt.skip_duplicates"],
+                          "word_search_ii": ["trie.walk", "grid.neighbors", "bt.core"],
+                          "n_queens": ["hash.group_key", "bt.core"], "generate_parentheses": ["brackets.balance", "bt.core"]})
+        for name in ("subsets", "subsets_ii"):
+            self.assertEqual(self.problems[name]["difficulty"], "easy", name)
+
+
 if __name__ == "__main__":
     unittest.main()

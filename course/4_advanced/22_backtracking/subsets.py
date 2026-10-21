@@ -1,5 +1,5 @@
 """
-Subsets                                                      [medium] · backtracking
+Subsets                                                                       [easy]
 
 `nums` has distinct values. Return every possible subset (the "power set"),
 including the empty one. Any order.
@@ -25,6 +25,8 @@ def CHECK(got, expected):
         return sorted(sorted(s) for s in sets)
     return normalize(got) == normalize(expected)
 
+
+USES = ["bt.core"]
 
 TESTS = [
     (([1, 2, 3],), [[], [1], [2], [3], [1, 2], [1, 3], [2, 3], [1, 2, 3]]),

@@ -58,6 +58,8 @@ def _cases():
     return out
 
 
+USES = ["brackets.balance", "bt.core"]
+
 TESTS = [
     (("()())()",), ["(())()", "()()()"]),
     (("(a)())()",), ["(a())()", "(a)()()"]),

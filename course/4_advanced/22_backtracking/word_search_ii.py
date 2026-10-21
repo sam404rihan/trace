@@ -51,5 +51,7 @@ def _cases():
     return out
 
 
+USES = ["trie.walk", "grid.neighbors", "bt.core"]
+
 TESTS = [((["oaan", "etae", "ihkr", "iflv"], ["oath", "pea", "eat", "rain"]), ["eat", "oath"]),
          ((["ab", "cd"], ["abcb"]), []), ((["a"], ["a", "a"]), ["a"]), ((["ab", "cd"], ["acdb", "abdc", "ad"]), ["abdc", "acdb"])] + _cases()

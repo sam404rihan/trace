@@ -46,5 +46,7 @@ def _cases():
 
 
 B = ["ABCE", "SFCS", "ADEE"]
+USES = ["grid.neighbors", "bt.core"]
+
 TESTS = [((B, "ABCCED"), True), ((B, "SEE"), True), ((B, "ABCB"), False), ((["a"], "a"), True),
          ((["aa"], "aaa"), False)] + _cases()
