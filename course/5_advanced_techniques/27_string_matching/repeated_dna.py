@@ -37,5 +37,7 @@ def _cases():
     return out
 
 
+USES = ["hash.seen_set", "window.fixed", "bits.shift_mask"]
+
 TESTS = [(("AAAAACCCCCAAAAACCCCCCAAAAAGGGTTT",), ["AAAAACCCCC", "CCCCCAAAAA"]), (("AAAAAAAAAAAAA",), ["AAAAAAAAAA"]),
          (("ACGT",), [])] + _cases()

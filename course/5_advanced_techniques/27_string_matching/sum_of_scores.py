@@ -46,6 +46,8 @@ def _cases():
     return out
 
 
+USES = []
+
 TESTS = [
     (("babab",), 9),
     (("azbazbzaz",), 14),

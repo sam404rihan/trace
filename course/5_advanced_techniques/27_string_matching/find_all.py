@@ -40,6 +40,9 @@ def _rand(seed, count):
 
 _BT, _BP = _big()
 
+TEACHES = ["str.kmp"]
+USES = ["str.prefix_function"]
+
 STEPS = [
     {
         "title": "Make it work",

@@ -55,6 +55,8 @@ def _cases():
     return out
 
 
+USES = ["hash.set_lookup", "window.fixed"]
+
 TESTS = [(("The cat sat on the mat.", "A cat sat on a hat; the cat sat on it.", 3), ["the cat sat", "cat sat on"]),
          (("one two", "one two", 3), []), (("Hello, WORLD!", "hello world", 2), ["hello world"]),
          (("a b a b a", "b a b", 2), ["a b", "b a"])] + _cases()

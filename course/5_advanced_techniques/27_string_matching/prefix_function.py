@@ -33,5 +33,8 @@ def _cases():
     return [((s,), _brute(s)) for s in ("".join(rng.choice("ab") for _ in range(rng.randint(1, 18))) for _ in range(10))]
 
 
+TEACHES = ["str.prefix_function"]
+USES = []
+
 TESTS = [(("abacaba",), [0, 0, 1, 0, 1, 2, 3]), (("aaaa",), [0, 1, 2, 3]), (("abcd",), [0, 0, 0, 0]), (("",), []),
          (("aabaaab",), [0, 1, 0, 1, 2, 2, 3])] + _cases()

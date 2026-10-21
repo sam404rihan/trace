@@ -37,4 +37,6 @@ def _cases():
     return out
 
 
+USES = ["str.prefix_function"]
+
 TESTS = [(("abab",), True), (("aba",), False), (("abcabcabcabc",), True), (("a",), False), (("aaaa",), True)] + _cases()

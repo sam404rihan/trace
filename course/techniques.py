@@ -519,6 +519,18 @@ TECHNIQUES = {
                    "`rank = {v: i + 1 for i, v in enumerate(sorted(set(nums)))}`. Then the values can index small "
                    "arrays and trees directly, from 1 up to the number of distinct values.",
     },
+    "str.prefix_function": {
+        "name": "The prefix function",
+        "explain": "`pi[i]` is the length of the longest proper prefix of `s[:i + 1]` that is also its suffix. Build "
+                   "it left to right with k, the current border: while the next character doesn't extend it, fall "
+                   "back with `k = pi[k - 1]`. All the fall-backs together are O(n).",
+    },
+    "str.kmp": {
+        "name": "Matching with the prefix function (KMP)",
+        "explain": "To find a pattern in a text, build the pattern's prefix function, then walk the text once keeping "
+                   "k, how much of the pattern matches right now. On a mismatch, fall back with `k = pi[k - 1]` "
+                   "instead of starting over; when k reaches the pattern's length, that's a match. O(text + pattern).",
+    },
     "grid.neighbors": {
         "name": "Grid neighbours",
         "explain": "A cell (r, c) has up to four neighbours: (r - 1, c), (r + 1, c), (r, c - 1) and (r, c + 1). "

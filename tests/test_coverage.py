@@ -583,5 +583,13 @@ class Stage5Audit(AuditBase):
             self.assertEqual(self.problems[name]["difficulty"], "easy", name)
 
 
+    def test_topic_27(self):
+        self.assert_audited("27_string_matching")
+        self.assert_teaches({"prefix_function": ["str.prefix_function"], "find_all": ["str.kmp"]})
+        self.assert_uses({"shortest_palindrome": ["str.prefix_function"], "longest_happy_prefix": ["str.prefix_function"],
+                          "longest_dup_substring": ["bsearch.first_true", "bsearch.on_answer"], "sum_of_scores": []})
+        self.assertEqual(self.problems["longest_happy_prefix"]["difficulty"], "easy")
+
+
 if __name__ == "__main__":
     unittest.main()

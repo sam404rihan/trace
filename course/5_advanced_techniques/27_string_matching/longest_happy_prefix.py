@@ -1,5 +1,5 @@
 """
-Longest Happy Prefix                                                            [hard]
+Longest Happy Prefix                                                          [easy]
 
 A "happy prefix" is a non-empty prefix of s that is also a suffix, but isn't
 the whole string. Return the longest one, or "".
@@ -40,5 +40,7 @@ def _cases():
     out.append(((big,), _fast(big)))
     return out
 
+
+USES = ["str.prefix_function"]
 
 TESTS = [(("level",), "l"), (("ababab",), "abab"), (("a",), ""), (("abc",), "")] + _cases()
