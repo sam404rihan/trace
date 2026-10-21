@@ -43,6 +43,12 @@
     road: ["M9 5L4 7v12l5-2 6 2 5-2V5l-5 2z", "M9 5v12", "M15 7v12"],
     plan: ["M8 6h11", "M8 12h11", "M8 18h11", "M4.5 6h.01", "M4.5 12h.01", "M4.5 18h.01"],
     contest: T.CONTEST_ICON,
+    down: "M6 9l6 6 6-6",
+    cross: ["M7.5 7.5l9 9", "M16.5 7.5l-9 9"],
+    code: ["M9 7l-5 5 5 5", "M15 7l5 5-5 5"],
+    idea: ["M9.5 18h5", "M10.5 21h3", "M12 3a6 6 0 0 0-3.6 10.8c.7.5 1.1 1.3 1.1 2.2h5c0-.9.4-1.7 1.1-2.2A6 6 0 0 0 12 3z"],
+    review: ["M19.5 10A8 8 0 0 0 5.6 6.4", "M5 3v4h4", "M4.5 14a8 8 0 0 0 13.9 3.6", "M19 21v-4h-4"],
+    go: ["M5 12h13", "M13 6l6 6-6 6"],
   };
 
   // inline `code`
@@ -261,7 +267,7 @@
   function crumbs(...parts) {
     const kids = [];
     parts.forEach((p, i) => {
-      if (i) kids.push(h("span", { class: "sep" }, "/"));
+      if (i) kids.push(h("span", { class: "sep", "aria-hidden": "true" }, icon(ICONS.right)));
       kids.push(p.href ? h("a", { href: p.href }, p.label) : h("span", { class: "here" }, p.label));
     });
     $("crumbs").replaceChildren(...kids);
@@ -376,11 +382,11 @@
           h("h2", { class: "section-title" }, "Review"),
           h("div", { class: "topic-list" }, spot && !spot.ready
             ? h("div", { class: "topic-row disabled" },
-              h("span", { class: "num" }, "★"),
+              h("span", { class: "num" }, icon(ICONS.review)),
               h("span", { class: "name" }, review.title, h("span", { class: "sub" }, `Opens after four pattern topics (${spot.have} of ${spot.need}).`)),
               h("span"))
             : h("a", { class: "topic-row", href: `#/d/${review.id}/${review.drills[0].id}` },
-              h("span", { class: "num" }, "★"),
+              h("span", { class: "num" }, icon(ICONS.review)),
               h("span", { class: "name" }, review.title, h("span", { class: "sub" }, "Read a problem, name the technique. Mixes the topics you've started.")),
               h("span", { class: "ladder-bar" }, T.pips(T.DrillProgress.rec(review, review.drills[0]).clean))))) : null,
         h("p", { class: "home-foot" },
@@ -416,7 +422,7 @@
         const items = planItemsOf(pl);
         const done = items.filter(solved).length;
         return h("a", { class: "topic-row", href: `#/plan/${pl.id}` },
-          h("span", { class: "num" }, String(items.length)),
+          h("span", { class: "num" + (done === items.length ? " done" : ""), "aria-hidden": "true" }, icon(done === items.length ? ICONS.check : ICONS.plan)),
           h("span", { class: "name" }, pl.title, h("span", { class: "sub" }, pl.about)),
           h("span", { class: "plan-meter", style: `--share:${items.length ? done / items.length : 0}` },
             h("span", {}, `${done} / ${items.length}`), h("i")));
@@ -424,13 +430,13 @@
     ];
   }
 
-  function planRow(plan, name) {
+  function planRow(plan, name, next) {
     const p = S.problems[name];
     const st = pstate(name);
     const topic = topicOf(name);
     const reported = (S.plans.reported || {})[name];
-    return h("a", { class: "item" + (solved(name) ? " solved" : st.passed ? " partial" : ""), href: `#/p/${name}/plan/${plan.id}`,
-      style: `--p:${st.total ? Math.round((100 * (st.passed || 0)) / st.total) : 0}` },
+    return h("a", { class: "item" + (solved(name) ? " solved" : st.passed ? " partial" : "") + (next ? " next" : ""), href: `#/p/${name}/plan/${plan.id}`,
+      style: `--p:${st.total ? Math.round((100 * (st.passed || 0)) / st.total) : 0}`, "aria-current": next ? "step" : null },
       h("span", { class: "state" }),
       h("span", { class: "t" }, p.title, reported ? h("span", { class: "reported-dot", title: `Often reported: ${reported.join(", ")}. ${S.plans.reported_note}` }, reported.join(", ")) : null),
       h("span", { class: "meta" }, topicTitle(topic)),
@@ -445,20 +451,32 @@
     const items = planItemsOf(plan);
     const done = items.filter(solved).length;
     const first = items.find((n) => !solved(n));
-    app.replaceChildren(h("div", { class: "page" },
-      h("h1", {}, plan.title),
+    // Plans cut across stages, so they wear stage 1, the default. The drawing is the next problem's topic.
+    const drawn = topicOf(first || items[items.length - 1]);
+    const stop = first ? describeStop({ kind: "problem", topic: topicOf(first), name: first, plan }) : null;
+    app.replaceChildren(h("div", { class: "page plan-page" },
+      leadCard({
+        cls: "plan-hero", stage: 1, title: plan.title, line: `${items.length} problems in ${plan.sections.length} groups`,
+        next: stop ? stop.title : "Every problem in this plan is solved",
+        kind: stop ? `${stop.itemLabel} · ${topicTitle(stop.topic)}` : "Pick another plan, or keep going on the roadmap",
+        href: stop ? stop.href : "#/roadmap", label: stop ? (done ? "Continue" : "Start") : "Open the roadmap",
+        art: T.topicArt(drawn.n),
+      }),
+      underLine(done, items.length, `${done} of ${items.length} solved`),
       h("p", { class: "lede" }, plan.about),
-      h("div", { class: "hero-actions" },
-        first ? h("a", { class: "btn primary", href: `#/p/${first}/plan/${plan.id}` }, done ? "Continue" : "Start",
-          h("span", { style: "opacity:.7;font-weight:400" }, S.problems[first].title)) : h("span", { class: "badge easy" }, "Plan complete"),
-        h("span", { class: "hero-stat" }, `${done} of ${items.length} solved`)),
-      h("p", { class: "hero-stat", style: "margin-top:14px" }, "Problems opened from a plan skip the topic ladder's locks. The arrows follow the plan's order."),
-      plan.sections.map((sec) => [
-        h("h2", { class: "section-title plan-sec" }, h("span", {}, sec.name), h("span", {}, `${sec.items.filter(solved).length} / ${sec.items.length}`)),
-        h("div", { class: "items" }, sec.items.map((n) => planRow(plan, n))),
-      ]),
-      Object.keys(S.plans.reported || {}).length ? h("p", { class: "hero-stat", style: "margin-top:40px" },
-        "Company names on problems: ", S.plans.reported_note) : null));
+      h("p", { class: "plan-note" }, "Problems opened from a plan skip the topic ladder's locks. The arrows follow the plan's order."),
+      h("h2", { class: "section-title" }, "The problems"),
+      h("div", { class: "plan-sections" }, plan.sections.map((sec) => {
+        const got = sec.items.filter(solved).length;
+        return h("details", { class: "plan-section", open: sec.items.includes(first) ? true : null },
+          h("summary", {}, h("span", { class: "plan-section-name" }, sec.name),
+            h("span", { class: "plan-meter", style: `--share:${sec.items.length ? got / sec.items.length : 0}` },
+              h("span", {}, `${got} / ${sec.items.length}`, h("span", { class: "sr-only" }, " solved")), h("i")),
+            icon(ICONS.down)),
+          h("div", { class: "items" }, sec.items.map((n) => planRow(plan, n, n === first))));
+      })),
+      Object.keys(S.plans.reported || {}).length ? h("p", { class: "plan-foot" }, "Company names on problems: ", S.plans.reported_note) : null));
+    T.cropArt(app.querySelector(".lead .hero-art svg"));
   }
 
   // ── contest ────────────────────────────────────────────────────────────────
@@ -521,16 +539,16 @@
     ["Build", "A small, real program that uses the idea."],
   ];
 
-  function itemRow(topic, name) {
+  function itemRow(topic, name, next) {
     const p = S.problems[name];
     const st = pstate(name);
     const locked = !isUnlocked(topic, name);
-    const cls = ["item", solved(name) ? "solved" : st.passed ? "partial" : "", locked ? "locked" : ""].join(" ");
+    const cls = ["item", solved(name) ? "solved" : st.passed ? "partial" : "", locked ? "locked" : "", next ? "next" : ""].filter(Boolean).join(" ");
     const pct = st.total ? Math.round((100 * (p.steps ? st.steps || 0 : st.passed || 0)) / (p.steps || st.total)) : 0;
-    return h("a", { class: cls, href: `#/p/${name}`, style: `--p:${pct}` },
+    return h("a", { class: cls, href: `#/p/${name}`, style: `--p:${pct}`, "aria-current": next ? "step" : null },
       h("span", { class: "state" }),
       h("span", { class: "t" }, p.title),
-      h("span", { class: "meta" }, locked ? h("span", { style: "display:inline-flex;gap:6px;align-items:center" }, icon(ICONS.lock), "locked")
+      h("span", { class: "meta" }, locked ? h("span", { class: "lock-meta" }, icon(ICONS.lock), "locked")
         : p.steps ? `${st.steps || 0} of ${p.steps} steps` : `${p.tests} tests`),
       h("span", { class: "badge " + (p.difficulty || p.kind) }, kindLabel(p)));
   }
@@ -543,14 +561,46 @@
       h("pre", {}, skel.size ? code.split("\n").map((line, k) => h("span", { class: skel.has(k + 1) ? "dim" : null }, line + "\n")) : code));
   }
 
-  function walkthroughRow(topic) {
+  function walkthroughRow(topic, next) {
     const got = wtGot(topic), of = topic.walkthrough_layers;
-    return h("a", { class: "item" + (got >= of ? " solved" : got ? " partial" : ""), href: `#/w/${topic.id}`, style: `--p:${Math.round((100 * got) / of)}` },
+    return h("a", { class: "item" + (got >= of ? " solved" : got ? " partial" : "") + (next ? " next" : ""), href: `#/w/${topic.id}`,
+      style: `--p:${Math.round((100 * got) / of)}`, "aria-current": next ? "step" : null },
       h("span", { class: "state" }),
       h("span", { class: "t" }, "Build the pattern, one piece at a time"),
       h("span", { class: "meta" }, `${got} of ${of} layers`),
       h("span", { class: "badge read" }, "Read"));
   }
+
+  // The lead card on topic and plan pages: home's hero at page scale. A slab in the stage colour, the drawing
+  // on one side, and on the other the title, its line, what comes next and the one button that opens it.
+  function leadCard({ cls, stage, title, line, next, kind, href, label, art }) {
+    return h("section", { class: "hero lead " + cls, "data-stage": String(stage), "aria-labelledby": "lead-title" },
+      h("div", { class: "hero-text" },
+        h("h1", { id: "lead-title" }, title),
+        h("p", { class: "hero-stage" }, line),
+        h("p", { class: "hero-next" }, h("strong", {}, next), kind ? h("span", { class: "hero-kind" }, kind) : null),
+        h("a", { class: "btn primary hero-go", href }, label, icon(ICONS.go))),
+      h("div", { class: "hero-art" }, art));
+  }
+  const underLine = (done, total, text, note) => h("div", { class: "topic-under" },
+    h("p", { class: "hero-progress" },
+      h("span", { class: "meter", style: `--share:${total ? done / total : 0}`, "aria-hidden": "true" }, h("i")), text),
+    note ? h("p", { class: "under-note" }, note) : null);
+  const chevron = () => icon(ICONS.down);
+
+  // What to do next in a topic. Where you stopped, when that's in this topic, so the topic page and home's
+  // Continue agree; otherwise the topic's own next step in ladder order; null once every problem is solved.
+  function topicNext(topic) {
+    const t = resumeTarget();
+    if (t && !t.plan && t.topic.id === topic.id) return t;
+    const dt = drillTopic(topic);
+    const fresh = topic.items.every((n) => !solved(n));
+    if (dt && fresh && !dt.drills.some((d) => T.DrillProgress.rec(dt, d).runs > 0)) return describeStop({ kind: "drill", topic, dt, drill: dt.drills[0] });
+    if (topic.has_walkthrough && !wtDone(topic) && fresh) return describeStop({ kind: "walkthrough", topic });
+    const name = topic.items.find((n) => !solved(n) && isUnlocked(topic, n)) || topic.items.find((n) => !solved(n));
+    return name ? describeStop({ kind: "problem", topic, name }) : null;
+  }
+  const RUNG_OF_KIND = { snippet: 2, guided: 3, solo: 4, build: 5 };
 
   async function viewTopic(id) {
     const topic = S.topics.find((t) => t.id === id);
@@ -568,30 +618,62 @@
     ];
     const rungDone = (i) => (i === 0 ? dt && T.DrillProgress.topicSolid(dt) : i === 1 ? wtDone(topic) : groups[i].length && groups[i].every(solved));
     const shown = RUNGS.map((_, i) => i).filter((i) => groups[i].length);
-    const current = shown.find((i) => !rungDone(i));
-    const sheet = h("details", { class: "sheet" }, h("summary", {}, "Cheat sheet"), h("div", { class: "sheet-body", "aria-busy": "true" }, [90, 75, 82, 40].map((w) => sk("sk-line", `width:${w}%`))));
-    app.replaceChildren(h("div", { class: "page" },
-      h("div", { class: "topic-top" }, h("span", { class: "num" }, pad2(topic.n)), h("h1", {}, topicTitle(topic))),
-      placedOut(topic) ? h("p", { class: "placed-note" }, "You placed out of this. Everything stays open.") : null,
+
+    // One next step, and the rung it's on is the only one open.
+    const next = topicNext(topic);
+    const nextName = next && next.kind === "problem" ? next.href.split("/")[2] : null;
+    const nextDrill = next && next.kind === "drill" ? next.href.split("/")[3] : null;
+    const current = !next ? -1 : next.kind === "drill" ? 0 : next.kind === "walkthrough" ? 1 : RUNG_OF_KIND[S.problems[nextName].kind];
+    const begun = topic.items.some((n) => solved(n) || pstate(n).passed || pstate(n).steps) || wtGot(topic) > 0
+      || (dt && dt.drills.some((d) => T.DrillProgress.rec(dt, d).runs > 0));
+    const after = S.topics[S.topics.indexOf(topic) + 1];
+    const done = topic.items.filter(solved).length;
+    const lead = leadCard({
+      cls: "topic-hero", stage: stageOf(topic), title: topicTitle(topic), line: `Stage ${stageOf(topic)} · ${topic.stage}`,
+      next: next ? next.title : "Every problem here is solved",
+      kind: next ? next.itemLabel : after ? `Next up: ${topicTitle(after)}` : "That's the whole course",
+      href: next ? next.href : after ? `#/t/${after.id}` : "#/roadmap",
+      label: next ? (begun ? "Continue" : "Start") : after ? "Next topic" : "Open the roadmap",
+      art: T.topicArt(topic.n),
+    });
+
+    const count = (i) => (i === 0 ? [dt.drills.filter((d) => T.DrillProgress.solid(dt, d)).length, dt.drills.length]
+      : i === 1 ? [Math.min(wtGot(topic), topic.walkthrough_layers), topic.walkthrough_layers]
+      : [groups[i].filter(solved).length, groups[i].length]);
+    const rung = (i, k) => {
+      const [title, sub] = RUNGS[i], [got, of] = count(i);
+      return h("details", { class: "rung" + (rungDone(i) ? " done" : "") + (i === current ? " current" : ""), open: i === current ? true : null },
+        h("summary", {},
+          h("span", { class: "rung-dot", "aria-hidden": "true" }, rungDone(i) ? icon(ICONS.check) : String(k + 1)),
+          h("span", { class: "rung-head" }, h("span", { class: "rung-title" }, title), h("span", { class: "rung-sub" }, sub)),
+          h("span", { class: "rung-count" }, `${got}/${of}`, h("span", { class: "sr-only" }, " done")),
+          chevron()),
+        h("div", { class: "rung-body" },
+          i === 0
+            ? h("div", { class: "drill-chips" }, dt.drills.map((d) =>
+              h("a", { class: "chip-link" + (d.id === nextDrill ? " next" : ""), href: `#/d/${dt.id}/${d.id}`, "aria-current": d.id === nextDrill ? "step" : null },
+                d.name, T.pips(T.DrillProgress.rec(dt, d).clean))))
+            : i === 1 ? h("div", { class: "items" }, walkthroughRow(topic, next && next.kind === "walkthrough"))
+            : h("div", { class: "items" }, groups[i].map((n) => itemRow(topic, n, n === nextName)))));
+    };
+
+    const sheet = h("details", { class: "fold sheet" },
+      h("summary", {}, h("span", { class: "fold-title" }, "Cheat sheet"), h("span", { class: "fold-sub" }, "The topic on one page, with examples to run"), chevron()),
+      h("div", { class: "fold-body sheet-body", "aria-busy": "true" }, [90, 75, 82, 40].map((w) => sk("sk-line", `width:${w}%`))));
+    const techniques = T.topicTechniques(topic, techCtx());
+    app.replaceChildren(h("div", { class: "page topic-page" },
+      lead,
+      underLine(done, topic.items.length, `${done} of ${topic.items.length} solved`,
+        placedOut(topic) ? "You placed out of this. Everything stays open." : null),
       dt ? h("p", { class: "lede" }, dt.idea) : null,
       dt ? h("dl", { class: "facts" },
         h("div", {}, h("dt", {}, "Reach for it when"), h("dd", {}, dt.signals)),
         h("div", {}, h("dt", {}, "True at every step"), h("dd", {}, dt.invariant))) : null,
       h("h2", { class: "section-title" }, "The ladder"),
-      h("div", { class: "rungs" }, RUNGS.map(([title, sub], i) => {
-        if (!groups[i].length) return null;
-        return h("section", { class: "rung" + (rungDone(i) ? " done" : i === current ? " current" : "") },
-          h("span", { class: "rung-dot" }, rungDone(i) ? "✓" : shown.indexOf(i)),
-          h("div", {},
-            h("div", { class: "rung-head" }, h("h3", {}, title), h("p", {}, sub)),
-            i === 0
-              ? h("div", { class: "drill-chips" }, dt.drills.map((d) =>
-                h("a", { class: "chip-link", href: `#/d/${dt.id}/${d.id}` }, d.name, T.pips(T.DrillProgress.rec(dt, d).clean))))
-              : i === 1 ? h("div", { class: "items" }, walkthroughRow(topic))
-              : h("div", { class: "items" }, groups[i].map((n) => itemRow(topic, n)))));
-      })),
-      T.topicTechniques(topic, techCtx()),
-      topic.has_lesson ? sheet : null));
+      h("div", { class: "rungs" }, shown.map(rung)),
+      techniques || topic.has_lesson ? [h("h2", { class: "section-title" }, "Notes and techniques"),
+        h("div", { class: "folds" }, techniques, topic.has_lesson ? sheet : null)] : null));
+    T.cropArt(app.querySelector(".lead .hero-art svg"));
     if (topic.has_lesson) {
       const lesson = await api(`/api/lesson?topic=${encodeURIComponent(topic.id)}`).catch(() => null);
       if (!lesson) return;
@@ -608,8 +690,10 @@
         } catch (err) { out.textContent = err.message; }
         runBtn.disabled = false;
       };
-      sheet.lastElementChild.replaceChildren(h("div", { class: "prose" }, renderMarkdown(lesson.notes)),
-        lesson.code ? h("div", { class: "run-box" }, h("h3", { style: "font-size:14px;margin:22px 0 8px" }, "Runnable examples"),
+      const body = sheet.lastElementChild;
+      body.removeAttribute("aria-busy");
+      body.replaceChildren(h("div", { class: "prose" }, renderMarkdown(lesson.notes)),
+        lesson.code ? h("div", { class: "run-box" }, h("h3", { class: "run-title" }, "Runnable examples"),
           h("div", { class: "prose" }, h("pre", {}, h("code", {}, lesson.code))), runBtn, out) : null);
     }
   }
@@ -823,7 +907,7 @@
             const state = k < done ? "done" : k === done ? "current" : "locked";
             const open = state === "current";
             return h("section", { class: "step " + state },
-              h("div", { class: "step-head" }, h("span", { class: "step-num" }, k < done ? "✓" : k + 1),
+              h("div", { class: "step-head" }, h("span", { class: "step-num" }, k < done ? icon(ICONS.check) : k + 1),
                 h("span", { class: "step-title" }, s.title),
                 h("span", { class: "step-tag" }, state === "done" ? "passed" : state === "locked" ? "locked" : `${s.tests} tests`)),
               open ? h("div", { class: "step-body" }, h("p", {}, inline(s.text)),
@@ -1045,7 +1129,8 @@
       const testRow = (t) => {
         const bad = ["fail", "error", "timeout"].includes(t.status);
         const det = h("details", { class: "test " + t.status, open: bad && !firstFail ? true : null },
-          h("summary", {}, h("span", { class: "dot" }), h("span", { class: "call" }, t.call),
+          h("summary", {}, h("span", { class: "dot", "aria-hidden": "true" }, t.status === "pass" ? icon(ICONS.check) : bad ? icon(ICONS.cross) : null),
+            h("span", { class: "call" }, t.call),
             h("span", { class: "ms" }, t.status === "pass" ? `${t.ms} ms` : t.status)),
           h("div", { class: "test-detail" },
             h("div", { class: "kv-line" }, h("span", {}, "expected"), h("code", {}, t.expected)),
@@ -1066,8 +1151,8 @@
           const ok = group.every((t) => t.status === "pass");
           const last = k === groups.length - 1;
           kids.push(h("details", { class: "step-group", open: !ok || last ? true : null },
-            h("summary", { class: "board-label", style: "margin:12px 2px 6px;cursor:pointer" },
-              `Step ${k + 1}: ${p.steps[k].title}   ${group.filter((t) => t.status === "pass").length} of ${group.length} passed`),
+            h("summary", {}, icon(ICONS.down), h("span", { class: "sg-title" }, `Step ${k + 1}: ${p.steps[k].title}`),
+              h("span", { class: "sg-count" }, `${group.filter((t) => t.status === "pass").length} of ${group.length} passed`)),
             group.map(testRow)));
         });
       } else {
@@ -1130,11 +1215,12 @@
     const activeTopic = kind === "t" || kind === "w" ? a : kind === "p" ? topicOf(a)?.id : kind === "d" ? S.topics.find((t) => T.byId[a] && t.n === T.byId[a].n)?.id : null;
     const activePlan = kind === "plan" ? a : kind === "p" && hash.split("/")[3] === "plan" ? hash.split("/")[4] : null;
     const group = (id, label, kids) => h("section", { class: "side-group" + (closedGroups.has(id) ? " closed" : "") },
-      h("button", { type: "button", onclick: (e) => {
-        e.currentTarget.parentElement.classList.toggle("closed");
-        closedGroups.has(id) ? closedGroups.delete(id) : closedGroups.add(id);
+      h("button", { type: "button", "aria-expanded": String(!closedGroups.has(id)), onclick: (e) => {
+        const closed = e.currentTarget.parentElement.classList.toggle("closed");
+        e.currentTarget.setAttribute("aria-expanded", String(!closed));
+        closed ? closedGroups.add(id) : closedGroups.delete(id);
         local.set("trace.closedGroups", [...closedGroups]);
-      } }, label),
+      } }, h("span", {}, label), icon(ICONS.down)),
       h("div", { class: "side-list" }, kids));
     const link = (href, n, t, f, current, done) =>
       h("a", { class: "side-link" + (done ? " done" : ""), href, "aria-current": current ? "page" : null, title: t }, h("span", { class: "n" }, n), h("span", { class: "t" }, t), h("span", { class: "f" }, f));
@@ -1179,15 +1265,16 @@
 
   function paletteEntries() {
     const out = [];
-    for (const pl of S.plans.plans || []) out.push({ k: "≡", t: pl.title, m: "Study plan", href: `#/plan/${pl.id}` });
+    // k: a topic's number (data, so mono), or the name of a drawn icon for everything else
+    for (const pl of S.plans.plans || []) out.push({ icon: "plan", t: pl.title, m: "Study plan", href: `#/plan/${pl.id}` });
     for (const topic of S.topics) {
       out.push({ k: pad2(topic.n), t: topicTitle(topic), m: "Topic", href: `#/t/${topic.id}` });
       for (const n of topic.items) {
         const pr = S.problems[n];
-        out.push({ k: kindLabel(pr)[0], t: pr.title, m: `${kindLabel(pr)} · ${topicTitle(topic)}`.replace(" · ", ", "), href: `#/p/${n}`, solved: solved(n) });
+        out.push({ icon: "code", t: pr.title, m: `${kindLabel(pr)}, ${topicTitle(topic)}`, href: `#/p/${n}`, solved: solved(n) });
       }
     }
-    for (const dt of T.topics) for (const d of dt.drills) out.push({ k: "◇", t: d.name, m: `Drill, ${dt.title}`, href: `#/d/${dt.id}/${d.id}` });
+    for (const dt of T.topics) for (const d of dt.drills) out.push({ icon: "idea", t: d.name, m: `Drill, ${dt.title}`, href: `#/d/${dt.id}/${d.id}` });
     return out;
   }
 
@@ -1214,7 +1301,10 @@
     palette.list.replaceChildren(...(palette.shown.length ? palette.shown.map((e, i) =>
       h("li", { role: "option", class: e.solved ? "solved" : "", "aria-selected": String(i === palette.at), onclick: () => openEntry(e),
         onmousemove: () => { if (palette.at !== i) { palette.at = i; renderPalette(); } } },
-        h("span", { class: "pk" }, e.k), h("span", { class: "pt" }, e.t), h("span", { class: "pm" }, e.m)))
+        h("span", { class: "pk", "aria-hidden": e.icon ? "true" : null }, e.icon ? icon(ICONS[e.icon]) : e.k),
+        h("span", { class: "pt" }, h("span", {}, e.t),
+          e.solved ? h("span", { class: "ps" }, icon(ICONS.check), h("span", { class: "sr-only" }, "solved")) : null),
+        h("span", { class: "pm" }, e.m)))
       : [h("li", { class: "palette-empty" }, "Nothing matches. Try part of a problem name, or its initials.")]));
     palette.list.querySelector('[aria-selected="true"]')?.scrollIntoView({ block: "nearest" });
   }

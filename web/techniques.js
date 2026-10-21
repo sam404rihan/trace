@@ -3,7 +3,8 @@
    banner for techniques taught in other topics, and a topic's list of techniques. */
 (function () {
   const T = window.Trace;
-  const { h } = T;
+  const { h, s } = T;
+  const check = () => s("svg", { class: "icon", viewBox: "0 0 24 24", "aria-hidden": "true" }, s("path", { d: "M5 12.5l4.5 4.5L19 7.5" }));
 
   // ctx comes from app.js: techniques, known(id), teacherHref(id), teacherTitle(id), teacherTopic(id),
   // topicTitle(topic), taughtIn(topic). Ids missing from the registry are skipped everywhere.
@@ -27,7 +28,7 @@
           ctx.teacherHref(id) ? h("p", { class: "tech-teacher" }, ctx.known(id) ? "Learned in " : "Taught in ",
             h("a", { class: "link", href: ctx.teacherHref(id) }, ctx.teacherTitle(id))) : null);
       },
-    }, ctx.known(id) ? "✓ " : "", ctx.techniques[id].name));
+    }, ctx.known(id) ? check() : null, ctx.techniques[id].name));
     return h("div", { class: "tech-uses-wrap" }, h("div", { class: "tech-uses" }, h("span", { class: "tech-label" }, "Uses"), chips), detail);
   };
 
@@ -43,9 +44,14 @@
   T.topicTechniques = (topic, ctx) => {
     const ids = ctx.taughtIn(topic);
     if (!ids.length) return null;
-    return [h("h2", { class: "section-title" }, "Techniques in this topic"),
-      h("div", { class: "items tech-list" }, ids.map((id) => h("a", { class: "item" + (ctx.known(id) ? " solved" : ""), href: ctx.teacherHref(id) },
-        h("span", { class: "state" }), h("span", { class: "t" }, ctx.techniques[id].name),
-        h("span", { class: "meta" }, ctx.teacherTitle(id)), h("span"))))];
+    // Folded on the topic page: a reference to look things up in, not another list to work through.
+    const chevron = s("svg", { class: "icon", viewBox: "0 0 24 24", "aria-hidden": "true" }, s("path", { d: "M6 9l6 6 6-6" }));
+    return h("details", { class: "fold tech-fold" },
+      h("summary", {}, h("span", { class: "fold-title" }, "Techniques in this topic"),
+        h("span", { class: "fold-sub" }, `${ids.filter(ctx.known).length} of ${ids.length} learned`), chevron),
+      h("div", { class: "fold-body" },
+        h("div", { class: "items tech-list" }, ids.map((id) => h("a", { class: "item" + (ctx.known(id) ? " solved" : ""), href: ctx.teacherHref(id) },
+          h("span", { class: "state" }), h("span", { class: "t" }, ctx.techniques[id].name),
+          h("span", { class: "meta" }, ctx.teacherTitle(id)), h("span"))))));
   };
 })();

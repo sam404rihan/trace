@@ -56,7 +56,7 @@ typography:
   display:
     fontFamily: "Schibsted Grotesk, Segoe UI, system-ui, sans-serif"
     fontSize: "clamp(34px, 4.6vw, 56px)"
-    fontWeight: 800
+    fontWeight: 700
     lineHeight: 1.02
     letterSpacing: "-0.035em"
   headline:
@@ -68,7 +68,7 @@ typography:
   title:
     fontFamily: "Schibsted Grotesk, Segoe UI, system-ui, sans-serif"
     fontSize: "22px"
-    fontWeight: 800
+    fontWeight: 700
     lineHeight: 1.2
     letterSpacing: "-0.02em"
   body:
@@ -245,9 +245,9 @@ Every token has a dark value (in `web/app.css` under `prefers-color-scheme: dark
 **Character:** One friendly, slightly condensed grotesk carries everything from the 56px hero title to 11.5px sidebar group names, with weight doing the hierarchy work; Plex Mono marks anything that is data (code, topic numbers, progress fractions, drawing labels).
 
 ### Hierarchy
-- **Display** (800, clamp(34px, 4.6vw, 56px), 1.02, -0.035em, balanced wrap): the topic name in the home hero only.
+- **Display** (700, clamp(34px, 4.6vw, 56px), 1.02, -0.035em, balanced wrap): the topic name in the home hero only.
 - **Headline** (700, 40px, 1.1, -0.03em): page titles (roadmap, topic). Drill 28px, walkthrough 32px, statement 23px are the same role scaled to the surface.
-- **Title** (800, 22px, -0.02em): roadmap stage names. Rung titles use 600 at 17px.
+- **Title** (700, 22px, -0.02em): roadmap stage names. Rung titles use 600 at 17px. Size, not a heavier weight, separates the display from the headline and title.
 - **Body** (400, 16.5px, 1.6): reading pages; long prose is 17px/1.65 capped at 72ch; ledes are 18.5px in ink-muted capped at 62ch. App chrome runs at 15px/1.55.
 - **Label** (600, 14px, ink-faint, sentence case): section titles such as "The ladder"; 12.5px for fact headings and figure captions; 11.5px for sidebar groups. Never uppercase, never tracked out.
 - **Code** (Plex Mono 13.5px/1.6 in the editor; 13 to 14px in blocks; 500 weight for numbers and indices).
@@ -255,7 +255,7 @@ Every token has a dark value (in `web/app.css` under `prefers-color-scheme: dark
 ### Named Rules
 **The Vendored Faces Rule.** Only the two families in `web/vendor/fonts` may appear. Trace runs offline; a face that is not vendored is a face that falls back to Segoe UI.
 
-**The Weight Ceiling Note.** The vendored grotesk is declared at 400 to 700. The 800 used by the hero title, the hero button and roadmap stage names resolves to the 700 face; heavier type needs a vendored face declared at that weight, not a bigger number.
+**The Weight Ceiling Rule.** Ask only for weights a vendored face has: the grotesk 400 to 700, Plex Mono 400 to 600. The hero title, the hero button and roadmap stage names are 700; drawing labels and other mono data top out at 600. `strong` is pinned to 700 so `bolder` never asks for 900. Heavier type needs a vendored face declared at that weight, not a bigger number.
 
 **The Mono Is Data Rule.** Plex Mono is for code and for numbers that are data (topic numbers, `2/12`, indices, drawing values). Prose and headings never set in mono.
 
@@ -297,7 +297,7 @@ Chunky and tactile: a solid face on a darker under-edge that sinks when pressed.
 - **Default:** fill face over a 3px fill-strong edge; hover moves to fill-strong.
 - **Ghost:** no face, no edge, ink-muted text; hover gains a fill face.
 - **Small:** 32px tall, 10px radius, 13px text.
-- **Hero Continue:** the inversion on the stage slab: ground face with ink text, 54px tall, 16px radius, 18px/800, 5px stage-ink edge, 20px arrow icon; focus ring is a 3px on-stage outline offset 4px. Full width on narrow screens.
+- **Hero Continue:** the inversion on the stage slab: ground face with ink text, 54px tall, 16px radius, 18px/700, 5px stage-ink edge, 20px arrow icon; focus ring is a 3px on-stage outline offset 4px. Full width on narrow screens.
 - **Focus:** every control shows a 2px accent outline offset 2px.
 
 ### Badges and Chips
@@ -316,17 +316,20 @@ Chunky and tactile: a solid face on a darker under-edge that sinks when pressed.
 
 ### Navigation
 - **Sidebar:** panel background, brand at top, search pill, then Home and Roadmap with 16px stroke icons, then collapsible groups (11.5px/600 faint names) of 13.5px links with mono topic numbers and mono progress fractions. Links are 8px-rounded; hover fill-strong; current is accent on accent-soft at 500 weight.
-- **Top bar:** 44px, hairline bottom, sidebar toggle and breadcrumbs (ink-muted links, line-strong "/" separators, ink current crumb).
+- **Top bar:** 44px, hairline bottom, sidebar toggle and breadcrumbs (ink-muted links, 13px drawn chevron separators in ink-faint, ink current crumb).
 - **Mobile:** the sidebar becomes a fixed overlay drawer.
 
 ### Hero Card (signature)
 The whole home screen. A 28px-rounded slab in the stage fill with on-stage text: display-size topic name, then a 15px/600 stage line ("Stage 2 · Core patterns") below the title, the next item's title (19px/700) with its kind, and the Continue button; the topic drawing fills the other column (max 340px tall, 230px on mobile), cropped to its own bounding box.
 
 ### Topic Drawing (signature)
-Thirty-four drawings, one per topic, composed in `web/art.js` from a small set of atoms (tile, node, line, arrow, curve, frame, wall, note). Tiles are ground-faced with the tile edge; `key` parts use stage-soft with stage-text labels; `hi` parts use a partner stage colour (stage 2 by default; stage 1 on stages 2 and 6; stage 5 on stage 4) with its on-colour label. Labels are Plex Mono 700 15px; notes are the grotesk at 12.5px/600 in on-stage. On home the drawing builds in part by part (0.6s, cubic-bezier(0.16, 1, 0.3, 1), 45ms stagger, 120ms lead-in), switched off under `prefers-reduced-motion`.
+Thirty-four drawings, one per topic, composed in `web/art.js` from a small set of atoms (tile, node, line, arrow, curve, frame, wall, note). Tiles are ground-faced with the tile edge; `key` parts use stage-soft with stage-text labels; `hi` parts use a partner stage colour (stage 2 by default; stage 1 on stages 2 and 6; stage 5 on stage 4) with its on-colour label. Labels are Plex Mono 600 15px; notes are the grotesk at 12.5px/600 in on-stage. On home the drawing builds in part by part (0.6s, cubic-bezier(0.16, 1, 0.3, 1), 45ms stagger, 120ms lead-in), switched off under `prefers-reduced-motion`.
 
 ### Roadmap (signature)
-Six stages as a vertical path: a 52px circular marker (stage fill when current or done, a check icon when done; stage-soft with stage-text when ahead) joined by a 4px rounded rail that takes the stage fill once done. The current stage opens to a list of 14px-rounded stops on fill with 36px number tiles; the "you are here" stop takes the stage fill, the stage-ink pressed edge and a "You're here" pill. Folded stages shrink to a row of numbered tiles so every topic stays one click away.
+Six stages as a vertical path: a 52px circular marker (stage fill when current or done, a check icon when done; stage-soft with stage-text when ahead) joined by a 4px rounded rail that takes the stage fill once done. The current stage opens to a list of 14px-rounded stops on fill with 36px number tiles; the "you are here" stop takes the stage fill, the stage-ink pressed edge and a "You're here" pill. Folded stages shrink to a row of numbered tiles so every topic stays one click away. Below the path, study plans, the contest and the review drill are stop-like rows on fill with a 36px ground tile holding a drawn mark and a one-line description.
+
+### Topic and Plan Pages
+The home hero at page scale. A lead card in the stage colour (a plan has no stage, so it wears stage 1) with the cropped drawing on one side (a plan draws its next problem's topic) and, on the other, the 40px title, the stage line below it, the next item (17.5px/700 with its kind) and one Continue button; it does not build in. Next on a topic page is where you stopped if that is in the topic, else the topic's next rung; a finished topic points to the next topic. Under the card: the progress meter line, then the idea and facts. The ladder is one summary row per rung (28px dot on a line-strong rail, title, sub, mono `2/5`, chevron) and only the rung holding the next step is open, that step ringed with the 1.5px accent. Techniques and the cheat sheet are fill folds below. Plan sections are hairline-separated rows with a meter; only the section holding the next problem is open. Every fold uses the same 18px chevron, pointing down while shut and up while open.
 
 ## Do's and Don'ts
 
