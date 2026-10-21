@@ -17,6 +17,8 @@ def is_power_of_two(n: int) -> bool:
     raise NotImplementedError  # replace this line with your solution
 
 
+USES = ["bits.clear_lowest"]
+
 TESTS = [
     ((1,), True),
     ((16,), True),

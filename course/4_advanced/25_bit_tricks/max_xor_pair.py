@@ -48,6 +48,8 @@ def _cases():
     return out
 
 
+USES = ["hash.complement", "bits.shift_mask", "bits.xor_cancel"]
+
 TESTS = [
     (([3, 10, 5, 25, 2, 8],), 28),
     (([0],), 0),

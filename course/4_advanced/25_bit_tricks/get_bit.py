@@ -15,6 +15,9 @@ def get_bit(x: int, k: int) -> int:
     raise NotImplementedError  # replace this line with your solution
 
 
+TEACHES = ["bits.shift_mask"]
+USES = []
+
 TESTS = [
     ((0b1010, 1), 1),
     ((0b1010, 2), 0),

@@ -460,6 +460,29 @@ TECHNIQUES = {
                    "run and try every split point k: the parts i..k and k+1..j are shorter runs. So fill the table "
                    "by length, shortest runs first. It's usually O(n³).",
     },
+    "bits.shift_mask": {
+        "name": "Shifts and masks",
+        "explain": "Bit k of x is `(x >> k) & 1`. `1 << k` is a number with only bit k set: use `x | (1 << k)` to "
+                   "set the bit, `x & ~(1 << k)` to clear it and `x & (1 << k)` to test it. A whole set of small "
+                   "numbers fits in one int this way.",
+    },
+    "bits.clear_lowest": {
+        "name": "Clearing the lowest set bit",
+        "explain": "`n & (n - 1)` is n with its lowest 1 bit cleared, because subtracting 1 flips that bit and every "
+                   "0 below it. Repeat it to visit only the set bits, or check `n & (n - 1) == 0` to see whether n "
+                   "has exactly one bit set.",
+    },
+    "bits.xor_cancel": {
+        "name": "XOR cancels pairs",
+        "explain": "`x ^ x == 0` and `x ^ 0 == x`, and the order doesn't matter. So XOR-ing a list cancels every pair "
+                   "and leaves whatever is unpaired. It also undoes itself: `a ^ b == c` exactly when `a ^ c == b`.",
+    },
+    "dp.bitmask": {
+        "name": "DP over subsets as bitmasks",
+        "explain": "When there are at most about 20 things, a set of them fits in an int: bit s is thing s. Then "
+                   "`best[mask]` can be the answer for exactly that set, for all 2^n masks. Go through the masks in "
+                   "increasing order, since adding a thing only adds bits: `best[mask | 1 << s]` builds on `best[mask]`.",
+    },
     "grid.neighbors": {
         "name": "Grid neighbours",
         "explain": "A cell (r, c) has up to four neighbours: (r - 1, c), (r + 1, c), (r, c - 1) and (r, c + 1). "

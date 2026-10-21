@@ -41,6 +41,8 @@ def _cases():
     return out
 
 
+USES = ["bits.shift_mask"]
+
 TESTS = [
     (([4, 14, 2],), 6),
     (([4, 14, 4],), 4),

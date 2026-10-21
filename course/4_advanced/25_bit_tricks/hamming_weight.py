@@ -16,4 +16,7 @@ def hamming_weight(n: int) -> int:
     raise NotImplementedError  # replace this line with your solution
 
 
+TEACHES = ["bits.clear_lowest"]
+USES = []
+
 TESTS = [((n,), bin(n).count("1")) for n in (11, 128, 0, 1, 2**31, 2**32 - 3, 255, 1023, 2**60 + 7)]

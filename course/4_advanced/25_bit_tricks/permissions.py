@@ -56,6 +56,8 @@ class Permissions:
 
 CLASS = "Permissions"
 
+USES = ["bits.shift_mask"]
+
 TESTS = [
     ([("Permissions",), ("grant", "ana", "rw"), ("grant", "ben", "r"), ("has", "ana", "rw"), ("has", "ben", "rw"),
       ("describe", "ana"), ("revoke", "ana", "w"), ("describe", "ana"), ("users_with", "r"), ("mask", "ana")],

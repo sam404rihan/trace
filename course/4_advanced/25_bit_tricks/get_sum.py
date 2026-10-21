@@ -25,4 +25,6 @@ def _cases():
     return [((x, y), x + y) for x, y in ((rng.randint(-1000, 1000), rng.randint(-1000, 1000)) for _ in range(10))]
 
 
+USES = ["bits.shift_mask", "bits.xor_cancel"]
+
 TESTS = [((1, 2), 3), ((-2, 3), 1), ((0, 0), 0), ((-1000, -1000), -2000), ((1000, -1), 999), ((-7, 7), 0)] + _cases()

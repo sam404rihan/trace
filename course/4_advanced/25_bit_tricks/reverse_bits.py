@@ -16,6 +16,8 @@ def reverse_bits(x: int, width: int) -> int:
     raise NotImplementedError  # replace this line with your solution
 
 
+USES = ["bits.shift_mask"]
+
 STEPS = [
     {
         "title": "Peel and push",

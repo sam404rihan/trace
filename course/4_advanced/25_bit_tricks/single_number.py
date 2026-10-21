@@ -16,6 +16,9 @@ def single_number(nums: list[int]) -> int:
     raise NotImplementedError  # replace this line with your solution
 
 
+TEACHES = ["bits.xor_cancel"]
+USES = []
+
 TESTS = [
     (([2, 2, 1],), 1),
     (([4, 1, 2, 1, 2],), 4),

@@ -519,5 +519,34 @@ class Stage4Audit(AuditBase):
             self.assertEqual(self.problems[name]["difficulty"], "easy", name)
 
 
+    def test_topic_25(self):
+        self.assert_audited("25_bit_tricks")
+        self.assert_teaches({"get_bit": ["bits.shift_mask"], "hamming_weight": ["bits.clear_lowest"],
+                             "single_number": ["bits.xor_cancel"], "cheapest_team": ["dp.bitmask"]})
+        self.assert_uses({"min_xor_sum": ["bits.shift_mask", "dp.bitmask"], "is_power_of_two": ["bits.clear_lowest"],
+                          "max_xor_pair": ["hash.complement", "bits.shift_mask", "bits.xor_cancel"],
+                          "count_bits": ["dp.recurrence", "bits.shift_mask"]})
+        self.assertEqual(self.problems["cheapest_team"]["difficulty"], "easy")
+
+    def test_every_stage_4_topic_keeps_two_hard_problems(self):
+        for topic_id in STAGE_4:
+            hards = [n for n in self.items(topic_id) if self.problems[n]["difficulty"] == "hard"]
+            self.assertGreaterEqual(len(hards), 2, (topic_id, hards))
+
+    def test_teacher_big_tests_reject_the_naive_solution(self):
+        # Solving a teacher marks its technique learned, so its big test must time out without it.
+        def big(name, ok):
+            self.assertTrue(any(ok(args, want) for args, want in self.cases_of(name)), name)
+        big("groups_after_each", lambda a, w: a[0] >= 100_000 and len(a[1]) >= 100_000)       # BFS per edge
+        big("subsets_ii", lambda a, w: len(a[0]) >= 24 and len(w) <= 200)                     # all 2^n, then dedupe
+        big("coin_change", lambda a, w: a[1] >= 5_000)                                         # plain recursion
+        big("longest_increasing_subsequence", lambda a, w: len(a[0]) >= 100_000)               # O(n²) DP
+        big("palindromic_substrings", lambda a, w: len(a[0]) >= 100_000)                       # every substring
+        big("partition_equal_subset", lambda a, w: len(a[0]) >= 100)                           # every subset
+        big("stock_cooldown", lambda a, w: len(a[0]) >= 100_000)                               # plain recursion
+        big("matrix_chain", lambda a, w: len(a[0]) >= 150)                                     # every bracketing
+        big("cheapest_team", lambda a, w: len(a[0]) >= 60)                                     # every team
+
+
 if __name__ == "__main__":
     unittest.main()

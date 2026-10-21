@@ -17,6 +17,8 @@ def count_bits(n: int) -> list[int]:
     raise NotImplementedError  # replace this line with your solution
 
 
+USES = ["dp.recurrence", "bits.shift_mask"]
+
 TESTS = [
     ((2,), [0, 1, 1]),
     ((5,), [0, 1, 1, 2, 1, 2]),
