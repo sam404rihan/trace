@@ -934,3 +934,75 @@ button, .crumbs, .tabs, .stepper, .ws-bar, .drill-tabs, .badge, .console-bar, .r
 @keyframes solved-in { from { transform: scale(0.3); opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .test-strip .cell, .solved-mark { animation: none; } .test-strip .cell:hover { transform: none; } }
 @media (max-width: 900px) { .ws-topic { margin: 12px 12px 2px; min-height: 84px; } .ws-topic .art { height: 60px; } .console-bar .timing { display: none; } }
+
+/* ── Contest: a timed set, fullscreen until you submit ── */
+/* While a contest runs, the sidebar and breadcrumbs step aside; the contest bar is the only way around. */
+body.contest { grid-template-columns: minmax(0, 1fr); }
+body.contest .side, body.contest .main > .bar { display: none; }
+body.contest .main { grid-template-rows: minmax(0, 1fr); }
+
+.contest-bar { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 12px; padding: 8px 14px; border-bottom: 1px solid var(--line); min-width: 0; }
+.contest-tabs { display: flex; gap: 6px; flex: 1 1 auto; min-width: 0; overflow-x: auto; scrollbar-width: none; }
+.contest-tab {
+  display: inline-flex; align-items: center; gap: 9px; height: 36px; padding: 0 12px 0 5px; flex: 0 1 auto; min-width: 0; max-width: 260px;
+  border-radius: 12px; background: var(--fill); color: var(--ink-2); text-decoration: none; font-size: 13.5px; font-weight: 500; white-space: nowrap;
+}
+.contest-tab:hover { background: var(--fill-2); color: var(--ink); }
+.contest-tab-n {
+  width: 26px; height: 26px; border-radius: 8px; display: grid; place-items: center; flex: none;
+  font: 600 12px var(--mono); background: var(--bg); color: var(--ink-2);
+}
+.contest-tab-n .icon { width: 15px; height: 15px; stroke-width: 3; }
+.contest-tab-t { overflow: hidden; text-overflow: ellipsis; }
+.contest-tab[data-state="tried"] .contest-tab-n { box-shadow: inset 0 0 0 1.5px var(--ink-3); color: var(--ink); }
+.contest-tab[data-state="solved"] .contest-tab-n { background: var(--ok); color: var(--on-ok); }
+.contest-tab[aria-current="page"] { background: var(--accent-soft); color: var(--accent); box-shadow: inset 0 0 0 1.5px var(--accent); }
+.contest-clock {
+  display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px; border-radius: 12px;
+  background: var(--fill); color: var(--ink); font: 600 15px var(--mono); font-variant-numeric: tabular-nums;
+}
+.contest-clock[data-warn] { color: var(--warn); box-shadow: inset 0 0 0 1.5px var(--warn); }
+.contest-end { display: flex; align-items: center; gap: 8px; }
+.contest-confirm { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 14px; font-weight: 600; }
+
+/* The cover while a running contest is out of fullscreen: the whole screen, nothing behind it to read. */
+.contest-lock { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; padding: 24px 16px; background: var(--bg); overflow-y: auto; }
+.contest-lock-card { max-width: 440px; text-align: center; display: grid; justify-items: center; gap: 4px; }
+.contest-lock-mark { width: 64px; height: 64px; border-radius: 20px; display: grid; place-items: center; background: var(--stage); color: var(--on-stage); margin-bottom: 14px; }
+.contest-lock-mark .icon { width: 30px; height: 30px; stroke-width: 2.2; }
+.contest-lock h2 { margin: 0; font-size: 28px; line-height: 1.15; letter-spacing: -0.025em; font-weight: 700; }
+.contest-lock p { margin: 6px 0 0; color: var(--ink-2); font-size: 16px; }
+.contest-lock .contest-lock-time { font: 600 18px var(--mono); color: var(--ink); margin: 14px 0 18px; }
+.contest-lock .contest-lock-note { font-size: 14px; color: var(--ink-3); margin-top: 16px; }
+
+/* Setup: two plain choices and a Start button. */
+.contest-choice { border: 0; margin: 32px 0 0; padding: 0; min-width: 0; }
+.contest-choice legend { padding: 0; margin-bottom: 10px; font-size: 14px; font-weight: 600; color: var(--ink-3); }
+.contest-opts { display: flex; flex-wrap: wrap; gap: 8px; }
+.contest-opt { position: relative; display: grid; gap: 1px; flex: 0 1 200px; min-width: 0; padding: 12px 18px; border-radius: var(--radius); background: var(--fill); cursor: pointer; }
+.contest-opt:hover { background: var(--fill-2); }
+.contest-opt input { position: absolute; inset: 0; margin: 0; opacity: 0; cursor: pointer; }
+.contest-opt strong { font-size: 16px; font-weight: 600; }
+.contest-opt span { font-size: 13.5px; color: var(--ink-2); }
+.contest-opt:has(input:checked) { background: var(--accent-soft); box-shadow: inset 0 0 0 1.5px var(--accent); }
+.contest-opt:has(input:checked) strong { color: var(--accent); }
+.contest-opt:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
+.contest-rules { margin: 28px 0 0; color: var(--ink-2); max-width: 62ch; }
+.contest-note { margin: 14px 0 0; color: var(--ink-3); font-size: 14.5px; }
+.contest-note:empty { display: none; }
+.contest-page .topic-row .num .icon, .road-extra .topic-row .num .icon { width: 18px; height: 18px; }
+.contest-facts { margin-top: 24px; }
+.contest-facts dd { font-size: 17px; font-weight: 600; color: var(--ink); }
+
+/* On narrow screens the workspace scrolls as one page; the bar stays put so the clock is always in view. */
+@media (max-width: 900px) { .contest-bar { position: sticky; top: 0; z-index: 5; background: var(--bg); } }
+@media (max-width: 600px) {
+  .contest-bar { padding: 8px 12px; }
+  .contest-end:has(> .contest-confirm:not([hidden])) { flex-basis: 100%; }
+  .contest-confirm > span { flex-basis: 100%; }
+  .contest-tab { padding: 0 5px; }
+  .contest-tab-t { display: none; }
+  .contest-end { margin-left: auto; }
+  .contest-opt { flex: 1 1 100%; }
+  .contest-lock h2 { font-size: 24px; }
+}
