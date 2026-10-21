@@ -1,9 +1,11 @@
 "use strict";
 /* "Read the code": a topic's pattern built up one layer at a time. Each layer shows why, the code so
-   far (new lines marked +, reuse layers coloured by role), a Run button, and one check question. */
+   far (numbered, this layer's lines tinted, reuse layers coloured by role), a Run button, and one check question. */
 (function () {
   const T = window.Trace;
-  const { h } = T;
+  const { h, s } = T;
+  const icon = (d) => s("svg", { class: "icon", viewBox: "0 0 24 24", "aria-hidden": "true" }, s("path", { d }));
+  T.markIcon = (right) => icon(right ? "M5 12.5l4.5 4.5L19 7.5" : "M6.5 6.5l11 11M17.5 6.5l-11 11");
 
   // wt: /api/walkthrough payload. done: layers already answered. run(code) -> /api/run reply.
   T.mountWalkthrough = function mountWalkthrough(container, wt, { done = 0, run, onAnswer, problemHref, topicHref }) {
@@ -19,7 +21,8 @@
       const added = new Set(layer.added);
       return h("pre", { class: "wt-code" }, layer.code.split("\n").map((text, k) => {
         const ln = k + 1;
-        return h("span", { class: "ln" + (added.has(ln) ? " add" : "") + (ln in roleOf ? ` r${roleOf[ln]}` : ""), "data-g": added.has(ln) ? "+" : "" }, text || " ");
+        return h("span", { class: "ln" + (added.has(ln) ? " add" : "") + (ln in roleOf ? ` r${roleOf[ln]}` : "") },
+          h("span", { class: "no", "aria-hidden": "true" }, ln), h("span", { class: "tx" }, text || " "));
       }));
     }
 
@@ -51,14 +54,11 @@
       function choose(k) {
         if (opts[0].disabled) return;
         const right = k === check.answer;
-        opts.forEach((b, j) => {
-          b.disabled = true;
-          if (j === check.answer) b.classList.add("right");
-          else if (j === k) b.classList.add("wrong");
-        });
+        T.markOptions(opts, check.answer, k);
         explain.hidden = false;
         explain.className = "wt-explain " + (right ? "ok" : "bad");
-        explain.replaceChildren(h("strong", {}, right ? "Right. " : "Not quite. "), ...T.inline(check.explain));
+        explain.replaceChildren(h("span", { class: "explain-mark" }, T.markIcon(right)),
+          h("p", {}, h("strong", {}, right ? "Right. " : "Not quite. "), ...T.inline(check.explain)));
         answered.add(i);
         if (onAnswer) onAnswer(i + 1);
         next.disabled = false;
@@ -67,18 +67,25 @@
       }
 
       const roles = Object.keys(layer.roles || {});
+      const qid = `wt-q-${i}`;
+      const lines = layer.code.split("\n").length;
       container.replaceChildren(...[
-        h("div", { class: "progress", role: "progressbar", "aria-valuemin": 1, "aria-valuemax": n, "aria-valuenow": i + 1, style: `--p:${(i + 1) / n}` }, h("i")),
-        h("p", { class: "wt-label" }, layer.reuse ? "Same skeleton, new problem" : `Layer ${i + 1} of ${base}`),
         h("h1", {}, layer.title),
+        h("div", { class: "wt-meta" },
+          h("span", {}, layer.reuse ? "Same skeleton, new problem" : `Layer ${i + 1} of ${base}`),
+          h("span", { class: "wt-track", role: "progressbar", "aria-label": "Layers", "aria-valuemin": 1, "aria-valuemax": n, "aria-valuenow": i + 1 },
+            wt.layers.map((l, k) => h("i", { class: [k === i ? "here" : answered.has(k) ? "done" : "", l.reuse ? "reuse" : ""].join(" ").trim() || null })))),
         h("div", { class: "prose wt-why" }, T.renderMarkdown(layer.why)),
-        roles.length ? h("div", { class: "wt-legend" }, roles.map((r, k) => h("span", { class: `r${k % 4}` }, layer.roles[r]))) : null,
-        codeBlock(layer),
-        h("div", { class: "wt-run" }, runBtn,
-          layer.reuse && problemHref ? h("a", { class: "link", href: problemHref(layer.reuse) }, "Open the problem") : null),
-        out,
-        h("section", { class: "wt-check", "aria-label": "Check your understanding" },
-          h("p", { class: "wt-q" }, T.inline(check.question)), h("div", { class: "wt-opts" }, opts), explain),
+        h("section", { class: "wt-codecard", "aria-label": "The code so far" },
+          h("div", { class: "wt-codebar" },
+            roles.length ? h("div", { class: "wt-legend" }, roles.map((r, k) => h("span", { class: `r${k % 4}` }, layer.roles[r])))
+              : layer.added.length ? h("span", { class: "wt-key" }, layer.added.length >= lines - 1 ? "All new" : "New in this layer") : h("span"),
+            h("div", { class: "wt-run" },
+              layer.reuse && problemHref ? h("a", { class: "link", href: problemHref(layer.reuse) }, "Open the problem") : null, runBtn)),
+          codeBlock(layer),
+          out),
+        h("section", { class: "wt-check", "aria-labelledby": qid },
+          h("h2", { id: qid }, T.inline(check.question)), h("div", { class: "wt-opts" }, opts), explain),
         h("nav", { class: "wt-nav" },
           i > 0 ? h("button", { class: "btn ghost", type: "button", onclick: () => go(i - 1) }, "Back") : h("span"),
           h("span", { class: "wt-next" }, hint, next)),
@@ -107,4 +114,12 @@
     render();
     return { unmount: () => document.removeEventListener("keydown", onKey) };
   };
+
+  // After a choice: the right answer turns green with a check, a wrong pick red with a cross, the rest settle.
+  T.markOptions = (opts, answer, picked) => opts.forEach((b, j) => {
+    b.disabled = true;
+    if (j === answer) b.classList.add("right");
+    else if (j === picked) b.classList.add("wrong");
+    if (j === answer || j === picked) b.append(T.markIcon(j === answer));
+  });
 })();
