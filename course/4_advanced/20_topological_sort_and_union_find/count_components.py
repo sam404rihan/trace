@@ -18,6 +18,8 @@ def count_components(n: int, edges: list[list[int]]) -> int:
     raise NotImplementedError  # replace this line with your solution
 
 
+USES = ["uf.find", "uf.union"]
+
 TESTS = [
     ((5, [[0, 1], [1, 2], [3, 4]]), 2),
     ((5, [[0, 1], [1, 2], [2, 3], [3, 4]]), 1),

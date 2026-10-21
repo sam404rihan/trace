@@ -63,6 +63,9 @@ def _big():
 
 _BN, _BDEPS = _big()
 
+TEACHES = ["graph.topo_kahn"]
+USES = ["graph.adjacency"]
+
 STEPS = [
     {
         "title": "Take what's ready",

@@ -346,6 +346,24 @@ TECHNIQUES = {
                    "letter, then mark the end, for example `node[\"$\"] = True`. Words that share a prefix share its "
                    "path, so looking up a word or a prefix takes O(its length).",
     },
+    "uf.find": {
+        "name": "Union-find: finding the root",
+        "explain": "Union-find keeps groups as trees in a `parent` list: `parent[x] == x` means x is the root, the "
+                   "group's name. To find x's group, follow parents up to the root. On the way, point the nodes you "
+                   "passed straight at the root (path compression), so later finds are nearly instant.",
+    },
+    "graph.topo_kahn": {
+        "name": "Topological order (Kahn's algorithm)",
+        "explain": "To order tasks so every prerequisite comes first, count each task's unfinished prerequisites. "
+                   "Start a queue with the tasks that have none. Pop one, add it to the order, and take 1 off each "
+                   "task that waits on it, queueing any that reach 0. Tasks never reached are stuck in a cycle.",
+    },
+    "uf.union": {
+        "name": "Union-find: merging groups",
+        "explain": "To join the groups of a and b, find both roots. If they're the same, a and b were already "
+                   "connected, so this link closes a cycle. Otherwise point one root at the other: two groups became "
+                   "one. Counting the merges tells you how many groups are left.",
+    },
     "grid.neighbors": {
         "name": "Grid neighbours",
         "explain": "A cell (r, c) has up to four neighbours: (r - 1, c), (r + 1, c), (r, c - 1) and (r, c + 1). "

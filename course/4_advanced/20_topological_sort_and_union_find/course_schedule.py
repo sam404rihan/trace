@@ -22,6 +22,8 @@ def course_schedule(num_courses: int, prerequisites: list[list[int]]) -> bool:
     raise NotImplementedError  # replace this line with your solution
 
 
+USES = ["graph.adjacency", "graph.topo_kahn"]
+
 TESTS = [
     ((2, [[1, 0]]), True),
     ((2, [[1, 0], [0, 1]]), False),

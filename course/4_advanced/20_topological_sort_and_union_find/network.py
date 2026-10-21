@@ -90,6 +90,8 @@ def _big():
 
 _CALLS, _OUT = _big()
 
+USES = ["uf.find", "uf.union"]
+
 TESTS = [
     ([("Network",), ("add", "ana"), ("add", "ben"), ("add", "cy"), ("add", "dee"), ("connect", "ana", "ben"),
       ("connect", "ben", "ana"), ("connected", "ana", "cy"), ("groups",), ("largest",), ("size_of", "ben")],

@@ -33,6 +33,9 @@ def FINISH(root):
     return root, _SEEN[0]
 
 
+TEACHES = ["uf.find"]
+USES = []
+
 TESTS = [
     (([0, 0, 1, 2], 3), (0, [0, 0, 0, 0])),
     (([0, 1, 2], 2), (2, [0, 1, 2])),

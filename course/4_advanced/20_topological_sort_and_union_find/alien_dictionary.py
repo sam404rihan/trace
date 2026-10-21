@@ -84,4 +84,6 @@ def _cases():
 
 _FIXED = [["wrt", "wrf", "er", "ett", "rftt"], ["z", "x"], ["z", "x", "z"], ["abc", "ab"], ["a"], ["ab", "abc"],
           ["ac", "ab", "zc", "zb"]]
+USES = ["graph.adjacency", "graph.topo_kahn"]
+
 TESTS = [((w,), _describe(w)) for w in _FIXED] + _cases()

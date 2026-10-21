@@ -82,6 +82,8 @@ def _cases():
     return out
 
 
+USES = ["graph.adjacency", "graph.topo_kahn"]
+
 TESTS = [
     ((3, [[0, 2], [1, 2]], [3, 2, 5]), 8),
     ((5, [[0, 4], [1, 4], [2, 4], [3, 4], [1, 2]], [1, 2, 3, 4, 5]), 10),

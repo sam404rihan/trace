@@ -467,5 +467,14 @@ class Stage4Audit(AuditBase):
         self.assertEqual(self.problems["largest_factor_component"]["topic_id"], "30_number_theory")
 
 
+    def test_topic_20(self):
+        self.assert_audited("20_topological_sort_and_union_find")
+        self.assert_teaches({"find_root": ["uf.find"], "build_order": ["graph.topo_kahn"], "groups_after_each": ["uf.union"]})
+        self.assert_uses({"course_schedule": ["graph.adjacency", "graph.topo_kahn"],
+                          "redundant_connection": ["uf.find", "uf.union"], "network": ["uf.find", "uf.union"],
+                          "parallel_courses_iii": ["graph.adjacency", "graph.topo_kahn"]})
+        self.assertEqual(self.problems["groups_after_each"]["difficulty"], "easy")
+
+
 if __name__ == "__main__":
     unittest.main()
