@@ -591,5 +591,12 @@ class Stage5Audit(AuditBase):
         self.assertEqual(self.problems["longest_happy_prefix"]["difficulty"], "easy")
 
 
+    def test_topic_28(self):
+        self.assert_audited("28_advanced_dynamic_programming")
+        self.assert_uses({"ones_and_zeroes": ["dp.knapsack01"], "stock_k_transactions": ["dp.states"],
+                          "min_cost_cut_stick": ["dp.interval"], "partition_k_subsets": ["bits.shift_mask", "dp.bitmask"],
+                          "stickers_to_spell": ["bfs.shortest", "bfs.implicit", "dp.bitmask"]})
+
+
 if __name__ == "__main__":
     unittest.main()

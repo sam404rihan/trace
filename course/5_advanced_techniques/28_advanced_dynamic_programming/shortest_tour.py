@@ -65,6 +65,8 @@ def _rand(seed, count, lo, hi, sym=True):
 
 _BIG = _rand(303, 1, 13, 13, sym=False)[0]
 
+USES = ["bits.shift_mask", "dp.bitmask"]
+
 STEPS = [
     {
         "title": "Try every order",

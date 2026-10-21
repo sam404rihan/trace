@@ -23,4 +23,6 @@ def _brute(nums):
     return [sum(nums[i] for i in range(n) if m >> i & 1) for m in range(1 << n)]
 
 
+USES = ["dp.bitmask", "bits.clear_lowest"]
+
 TESTS = [((v,), _brute(v)) for v in ([3, 5], [], [7], [1, 2, 4], [-3, 10, 0, 6], list(range(1, 13)))]

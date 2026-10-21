@@ -59,4 +59,6 @@ def _cases():
     return [((v,), _brute(v)) for v in (_random_tree_values(rng, rng.randint(0, 12)) for _ in range(8))]
 
 
+USES = ["tree.recursion", "dp.states"]
+
 TESTS = [(([3, 2, 3, None, 3, None, 1],), 7), (([3, 4, 5, 1, 3, None, 1],), 9), (([],), 0), (([5],), 5)] + _cases()

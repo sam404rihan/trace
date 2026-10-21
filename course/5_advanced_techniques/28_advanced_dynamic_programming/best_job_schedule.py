@@ -66,5 +66,7 @@ def _cases():
 
 
 _EX = [("logo", 1, 3, 50), ("site", 2, 5, 20), ("app", 3, 10, 100), ("fix", 6, 9, 70)]
+USES = ["bsearch.first_true", "bfs.path", "dp.recurrence"]
+
 TESTS = [((_EX,), "(150, ['logo', 'app'])"), (([("a", 1, 2, 5), ("b", 2, 3, 5), ("c", 1, 3, 9)],), "(total 10, any best plan)"),
          (([],), "(0, [])")] + _cases()

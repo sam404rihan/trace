@@ -53,4 +53,6 @@ def _cases():
     return out
 
 
+USES = ["dp.prefix", "dp.interval"]
+
 TESTS = [(("aab",), 1), (("abba",), 0), (("a",), 0), (("ab",), 1), (("abcde",), 4)] + _cases()

@@ -62,6 +62,8 @@ def _cases():
     return out
 
 
+USES = ["bfs.shortest", "bfs.implicit", "dp.bitmask"]
+
 TESTS = [
     ((["with", "example", "science"], "thehat"), 3),
     ((["notice", "possible"], "basicbasic"), -1),
