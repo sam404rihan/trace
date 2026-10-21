@@ -8,5 +8,6 @@ starts Trace on an empty workspace with a fresh browser profile:
     bash tests/browser/fresh.sh 8171 stage_1.mjs
     bash tests/browser/fresh.sh 8172 stage_2.mjs
     bash tests/browser/fresh.sh 8173 stage_3.mjs
+    bash tests/browser/fresh.sh 8174 stage_4.mjs
 
 These aren't part of `python -m unittest`; run them when you change a screen.
