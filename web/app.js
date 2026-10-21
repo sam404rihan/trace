@@ -216,10 +216,10 @@
     const stop = local.get("trace.lastStop", null);
     const [, kind, a, b, c] = (stop && typeof stop.hash === "string" ? stop.hash : "").split("/");
     let t = null;
-    if (kind === "p" && S.problems[a] && topicOf(a) && !solved(a)) {
+    if (kind === "p" && Object.hasOwn(S.problems, a) && topicOf(a) && !solved(a)) {
       const plan = b === "plan" ? (S.plans.plans || []).find((pl) => pl.id === c && planItemsOf(pl).includes(a)) || null : null;
-      t = { kind: "problem", topic: topicOf(a), name: a, plan };
-    } else if (kind === "d" && T.byId[a] && T.byId[a].n !== 99) {
+      if (plan || isUnlocked(topicOf(a), a)) t = { kind: "problem", topic: topicOf(a), name: a, plan };
+    } else if (kind === "d" && Object.hasOwn(T.byId, a) && T.byId[a].n !== 99) {
       const dt = T.byId[a], drill = dt.drills.find((d) => d.id === b), topic = S.topics.find((x) => x.n === dt.n);
       if (drill && topic && !T.DrillProgress.solid(dt, drill)) t = { kind: "drill", topic, dt, drill };
     } else if (kind === "w") {
@@ -230,6 +230,11 @@
     return t ? describeStop(t) : null;
   }
   T.resumeTarget = resumeTarget;
+  // Your place on the course path: where Continue goes, unless that's a study-plan detour.
+  function pathTopic() {
+    const t = resumeTarget();
+    return t && !t.plan ? t.topic : nextUp()?.topic || null;
+  }
 
   function topicOf(name) { return S.topics.find((t) => t.items.includes(name)); }
   // 1-based position of the topic's stage among the course's stages, in course order.
@@ -350,7 +355,7 @@
     const review = T.topics.find((d) => d.n === 99);
     const spot = review && T.spotStatus ? T.spotStatus() : null;
     T.mountRoadmap(app, {
-      stages, hereTopicId: nextUp()?.topic.id || null,
+      stages, hereTopicId: pathTopic()?.id || null,
       extras: [
         h("section", { id: "plans", class: "road-extra" }, plansSection()),
         review ? h("section", { class: "road-extra" },
@@ -381,6 +386,7 @@
     }
     S.progress = (await api("/api/reset-progress", {})).progress;
     T.DrillProgress.reset();
+    try { localStorage.removeItem("trace.lastStop"); } catch { /* storage unavailable */ }
     viewRoadmap();
   }
 
@@ -1018,7 +1024,7 @@
   function renderSide() {
     const hash = decodeURIComponent(location.hash);
     const [, kind, a] = hash.split("/");
-    const activeTopic = kind === "t" ? a : kind === "p" ? topicOf(a)?.id : kind === "d" ? S.topics.find((t) => T.byId[a] && t.n === T.byId[a].n)?.id : null;
+    const activeTopic = kind === "t" || kind === "w" ? a : kind === "p" ? topicOf(a)?.id : kind === "d" ? S.topics.find((t) => T.byId[a] && t.n === T.byId[a].n)?.id : null;
     const activePlan = kind === "plan" ? a : kind === "p" && hash.split("/")[3] === "plan" ? hash.split("/")[4] : null;
     const group = (id, label, kids) => h("section", { class: "side-group" + (closedGroups.has(id) ? " closed" : "") },
       h("button", { type: "button", onclick: (e) => {
@@ -1031,7 +1037,7 @@
       h("a", { class: "side-link" + (done ? " done" : ""), href, "aria-current": current ? "page" : null, title: t }, h("span", { class: "n" }, n), h("span", { class: "t" }, t), h("span", { class: "f" }, f));
     // One stage's topics: the one you're viewing, else your place in the course, else the last stage.
     const viewed = activeTopic && S.topics.find((t) => t.id === activeTopic);
-    const stageName = (viewed || nextUp()?.topic || S.topics[S.topics.length - 1]).stage;
+    const stageName = (viewed || pathTopic() || S.topics[S.topics.length - 1]).stage;
     $("side-nav").replaceChildren(...[
       h("div", { class: "side-list", style: "margin-top:6px" },
         link("#/", icon(ICONS.home), "Home", "", !kind, false),
@@ -1039,11 +1045,11 @@
       group("plans", "Study plans", (S.plans.plans || []).map((pl) => {
         const items = pl.sections.flatMap((sec) => sec.items);
         const done = items.filter(solved).length;
-        return link(`#/plan/${pl.id}`, icon(ICONS.plan), pl.title, `${done}/${items.length}`, activePlan === pl.id, done === items.length);
+        return link(`#/plan/${pl.id}`, icon(ICONS.plan), pl.title, done ? `${done}/${items.length}` : "", activePlan === pl.id, done === items.length);
       })),
       group("stage:" + stageName, stageName, S.topics.filter((t) => t.stage === stageName).map((topic) => {
         const done = topic.items.filter(solved).length;
-        return link(`#/t/${topic.id}`, pad2(topic.n), topicTitle(topic), `${done}/${topic.items.length}`, activeTopic === topic.id, done === topic.items.length);
+        return link(`#/t/${topic.id}`, pad2(topic.n), topicTitle(topic), done ? `${done}/${topic.items.length}` : "", activeTopic === topic.id, done === topic.items.length);
       })),
     ].flat());
     const current = $("side-nav").querySelector('[aria-current="page"]');

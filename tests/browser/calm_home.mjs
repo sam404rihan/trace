@@ -142,6 +142,97 @@ await p.reload(BASE + "/#/t/30_number_theory");
 check("the viewed topic is in the sidebar", await p.eval(`!!document.querySelector('#side-nav a[href="#/t/30_number_theory"][aria-current="page"]')`));
 
 
+// ── Review fixes ──
+const lum = (page, c) => page.eval(`(() => { const el = document.createElement("i"); el.style.color = ${JSON.stringify(c)}; document.body.append(el);
+  const v = getComputedStyle(el).color.match(/[0-9.]+/g).slice(0, 3).map(Number); el.remove();
+  return v.map((x) => { x /= 255; return x <= 0.03928 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4; }).reduce((s, x, i) => s + x * [0.2126, 0.7152, 0.0722][i], 0); })()`);
+await post(p, "/api/reset-progress", {});
+await post(p, "/api/placement", { door: "skip" });
+await p.eval(`localStorage.clear()`);
+await p.reload(BASE + "/#/");
+const course = (await target()).href;                          // the course's next step after a fresh start
+
+// A stored stop on a locked problem never sends you to a lock screen.
+await p.eval(`localStorage.setItem("trace.lastStop", JSON.stringify({ hash: "#/p/max_sum_subarray_k" }))`);
+check("a locked stop falls back", (await target()).href === course, (await target()).href);
+// Odd stored names never break home.
+for (const hash of ["#/d/constructor/x", "#/p/constructor", "#/w/toString"]) {
+  await p.eval(`localStorage.setItem("trace.lastStop", JSON.stringify({ hash: ${JSON.stringify(hash)} }))`);
+  check(`stop ${hash} falls back`, await p.eval(`(() => { try { return Trace.resumeTarget().href; } catch (e) { return "threw " + e.message; } })()`) === course);
+}
+// Reset forgets where you stopped.
+await p.reload(BASE + "/#/p/slide_sum");
+await p.reload(BASE + "/#/roadmap");
+await p.eval(`(() => { const b = [...document.querySelectorAll("#app button")].find((x) => /Reset all progress/.test(x.textContent)); b.click(); b.click(); })()`);
+await new Promise((r) => setTimeout(r, 800));
+check("reset forgets where you stopped", (await p.eval(`localStorage.getItem("trace.lastStop")`)) === null);
+await post(p, "/api/placement", { door: "skip" });
+
+// "You're here" follows where Continue goes, unless that's a study-plan detour.
+await p.reload(BASE + "/#/p/slide_sum");
+await p.reload(BASE + "/#/roadmap");
+check("You're here follows the resume point", (await p.eval(`document.querySelector(".road-here")?.closest("a")?.getAttribute("href")`)) === "#/t/07_sliding_window");
+await p.reload(BASE + "/#/");
+check("sidebar shows the resume point's stage", await p.eval(`!!document.querySelector('#side-nav a[href="#/t/07_sliding_window"]')`));
+await p.reload(BASE + "/#/p/two_sum/plan/blind75");
+await p.reload(BASE + "/#/roadmap");
+const pathTopic = await p.eval(`(() => { const keep = localStorage.getItem("trace.lastStop"); localStorage.removeItem("trace.lastStop");
+  const id = Trace.resumeTarget().topic.id; localStorage.setItem("trace.lastStop", keep); return id; })()`);
+check("a plan detour doesn't move You're here", (await p.eval(`document.querySelector(".road-here")?.closest("a")?.getAttribute("href")`)) === "#/t/" + pathTopic, pathTopic);
+
+// The sidebar doesn't count problems you haven't started.
+await p.reload(BASE + "/#/");
+check("no zero counts in the sidebar", await p.eval(`![...document.querySelectorAll("#side-nav .side-link .f")].some((f) => f.textContent.startsWith("0/"))`));
+// Walkthrough pages keep their topic in the sidebar.
+const wt = await p.eval(`fetch("/api/course").then((r) => r.json()).then((d) => d.topics.filter((t) => t.has_walkthrough).map((t) => t.id).at(-1))`);
+await p.reload(BASE + "/#/w/" + wt);
+check("walkthrough topic is in the sidebar", await p.eval(`!!document.querySelector('#side-nav a[href="#/t/${wt}"][aria-current="page"]')`), wt);
+
+// The starting check's result links to the roadmap, not the one-card home.
+const links = await p.eval(`(async () => {
+  const el = document.createElement("div");
+  const q = { question: "q", options: ["a", "b"], answer: 0, explain: "e" };
+  Trace.mountStart(el, { ready: [], topics: [{ id: "06_two_pointers", stage_n: 2, questions: [q, q] }] },
+    { place: async () => ({ placement: { start: "06_two_pointers", placed_out: [] } }), topicTitle: (id) => id, startHref: () => "#/t/06_two_pointers" });
+  el.querySelectorAll(".door")[2].click();
+  [...el.querySelectorAll("button")].find((b) => b.textContent === "Stop here").click();
+  await new Promise((r) => setTimeout(r, 50));
+  return [...el.querySelectorAll("a")].map((a) => a.textContent + " -> " + a.getAttribute("href")); })()`);
+check("starting check result links to the roadmap", links.some((l) => l.endsWith("-> #/roadmap")) && !links.some((l) => l.endsWith("-> #/")), links.join(" | "));
+
+// Finished home points to the review drill too.
+check("finished home links the review drill", await p.eval(`(() => { const el = document.createElement("div");
+  Trace.mountHome(el, { target: null, started: true, placement: true }); return !!el.querySelector('a[href^="#/d/spot-pattern"]'); })()`));
+
+// Every topic draws itself, not a neighbour's picture.
+check("34 different drawings", (await p.eval(`new Set(Object.values(Trace.ART_KINDS)).size`)) === 34);
+
+// Home: the drawing leads; only the button looks pressable; the kind follows the title.
+await p.reload(BASE + "/#/");
+check("hero card has no pressed edge", (await p.eval(`getComputedStyle(document.querySelector(".hero")).boxShadow`)) === "none");
+check("the drawing is large", await p.eval(`document.querySelector(".hero-art svg").getBoundingClientRect().width >= 0.45 * document.querySelector(".hero").getBoundingClientRect().width`));
+check("the drawing is cropped to what it shows", await p.eval(`(() => { const v = document.querySelector(".hero-art svg").viewBox.baseVal; return v.width < 320 || v.height < 200; })()`));
+check("the next item's title comes first", await p.eval(`document.querySelector(".hero-next").firstElementChild?.tagName === "STRONG"`));
+await p.reload(BASE + "/#/roadmap");
+check("stage markers don't look pressable", await p.eval(`[...document.querySelectorAll(".road-marker")].every((m) => getComputedStyle(m).boxShadow === "none")`));
+check("folded stages wear their own colour", await p.eval(`(() => { const li = document.querySelector('.road-stage[data-state="ahead"]');
+  const probe = document.createElement("i"); probe.style.color = "var(--stage-soft)"; li.append(probe);
+  const want = getComputedStyle(probe).color; probe.remove();
+  return getComputedStyle(li.querySelector(".road-marker")).backgroundColor === want; })()`));
+
+// Dark: stage colours are deepened, and done checks stay visible.
+for (let n = 1; n <= 6; n++) {
+  await p.eval(`document.documentElement.dataset.theme = "light"`); const light = await lum(p, `var(--st${n})`);
+  await p.eval(`document.documentElement.dataset.theme = "dark"`); const dark = await lum(p, `var(--st${n})`);
+  check(`stage ${n} is deeper in dark`, dark <= light, `${light.toFixed(3)} -> ${dark.toFixed(3)}`);
+}
+for (const mode of ["light", "dark"]) {
+  await p.eval(`document.documentElement.dataset.theme = "${mode}"`);
+  const c = await contrast(p, "var(--on-ok)", "var(--ok)");
+  check(`done check is visible (${mode})`, c >= 3, c.toFixed(2));
+}
+await p.eval(`delete document.documentElement.dataset.theme`);
+
 check("no console errors", p.logs.length === 0, p.logs.join(" | "));
 await p.close();
 summary();

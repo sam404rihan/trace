@@ -154,7 +154,7 @@
           h("ul", { class: "start-list" }, placed.map((id) => h("li", {}, topicTitle(id))))] : null,
         h("div", { class: "start-actions" },
           h("a", { class: "btn primary", href: placement.start ? startHref(placement.start) : "#/roadmap" }, placement.start ? "Start here" : "Go to the roadmap"),
-          placement.start ? h("a", { class: "link", href: "#/" }, "See all topics") : null));
+          placement.start ? h("a", { class: "link", href: "#/roadmap" }, "See the roadmap") : null));
     }
 
     function onKey(e) {

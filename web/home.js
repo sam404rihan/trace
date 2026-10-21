@@ -12,15 +12,16 @@
   // target is resumeTarget() from app.js; null when the whole course is done.
   T.mountHome = (host, ctx) => {
     const t = ctx.target;
-    const drawing = (n) => { const svg = T.topicArt(n); svg.classList.add("build"); return svg; };
     if (!t) {
       host.replaceChildren(h("div", { class: "home" },
-        h("section", { class: "hero", "data-stage": "6" },
-          h("div", { class: "hero-art" }, drawing(34)),
+        h("section", { class: "hero", "data-stage": "6", "aria-labelledby": "hero-title" },
           h("div", { class: "hero-text" },
-            h("h1", {}, "You've finished the course"),
+            h("h1", { id: "hero-title" }, "You've finished the course"),
             h("p", { class: "hero-next" }, "Every topic, every problem. Keep it sharp with the review drill, or work through a study plan."),
-            h("a", { class: "btn primary hero-go", href: "#/roadmap" }, "Open the roadmap", go())))));
+            h("a", { class: "btn primary hero-go", href: "#/roadmap" }, "Open the roadmap", go()),
+            h("p", { class: "hero-also" }, h("a", { href: "#/d/spot-pattern/spot" }, "Or start the review drill"))),
+          h("div", { class: "hero-art" }, T.topicArt(34)))));
+      build(host);
       return { unmount() {} };
     }
     host.replaceChildren(h("div", { class: "home" },
@@ -28,9 +29,9 @@
         h("div", { class: "hero-text" },
           h("h1", { id: "hero-title" }, ctx.topicTitle),
           h("p", { class: "hero-stage" }, t.plan ? `From ${t.plan.title}` : `Stage ${ctx.stageNo} · ${ctx.stageName}`),
-          h("p", { class: "hero-next" }, h("span", { class: "hero-kind" }, t.itemLabel), h("strong", {}, t.title)),
+          h("p", { class: "hero-next" }, h("strong", {}, t.title), h("span", { class: "hero-kind" }, t.itemLabel)),
           h("a", { class: "btn primary hero-go", href: t.href }, ctx.started ? "Continue" : "Start", go())),
-        h("div", { class: "hero-art" }, drawing(t.topic.n))),
+        h("div", { class: "hero-art" }, T.topicArt(t.topic.n))),
       h("div", { class: "home-under" },
         h("p", { class: "hero-progress" },
           h("span", { class: "meter", style: `--share:${ctx.topicTotal ? ctx.topicDone / ctx.topicTotal : 0}`, "aria-hidden": "true" }, h("i")),
@@ -38,8 +39,21 @@
         h("a", { class: "home-road", href: "#/roadmap" }, "See the roadmap", go())),
       ctx.placement ? null
         : h("p", { class: "home-check" }, "Not sure where to start? ", h("a", { class: "link", href: "#/start" }, "Take the starting check"))));
+    build(host);
     return { unmount() {} };
   };
+
+  // Crop the drawing to what it actually draws, so it fills the card, then let it build itself in.
+  // Measured before the build-in starts, since the parts begin moved and shrunk.
+  function build(host) {
+    const svg = host.querySelector(".hero-art svg");
+    if (!svg) return;
+    if (svg.isConnected) {
+      const b = svg.getBBox(), pad = 10;
+      if (b.width && b.height) svg.setAttribute("viewBox", `${b.x - pad} ${b.y - pad} ${b.width + 2 * pad} ${b.height + 2 * pad}`);
+    }
+    svg.classList.add("build");
+  }
 
   const check = () => s("svg", { class: "icon", viewBox: "0 0 24 24", "aria-hidden": "true" }, s("path", { d: "M5 12.5l4.5 4.5L19 7.5" }));
   const chevron = () => s("svg", { class: "icon", viewBox: "0 0 24 24", "aria-hidden": "true" }, s("path", { d: "M6 9l6 6 6-6" }));

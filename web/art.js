@@ -190,6 +190,32 @@
       return [part(s("path", { d: "M50 120 L96 40 L190 30 L276 84 L258 168 L120 176 Z", class: "a-hull" })),
         ...P.map(([x, y], i) => node(x, y, 7, null, i < 6 ? "hi" : null))];
     },
+    string: () => {
+      const x = rowX(5, { w: 40, gap: 6 });
+      return [...[0, 1, 2, 3, 4].map((i) => part(note(x(i), 52, i, "dim"))),
+        ...row(["t", "r", "a", "c", "e"], { y: 66, w: 40, gap: 6, tones: { 1: "hi", 2: "hi", 3: "hi" } }),
+        part(s("path", { d: `M${x(1) - 20} 120 v 10 H ${x(3) + 20} v -10`, class: "a-wall" })),
+        part(note(160, 154, "s[1:4] → 'rac'", "hi"))];
+    },
+    coins: () => [
+      part(note(160, 20, "make 41 with the fewest coins")),
+      ...[[25, 26, 60], [10, 20, 132], [5, 16, 194], [1, 12, 246]].map(([v, r, x]) => node(x, 82, r, v, "hi")),
+      part(...arrow(160, 120, 160, 146)),
+      part(note(160, 168, "41 = 25 + 10 + 5 + 1")), part(note(160, 190, "take the biggest coin that fits", "dim"))],
+    triangle: () => {
+      const n = 5, c = 30, x0 = 86, y0 = 22;
+      const cells = [];
+      for (let i = 0; i < n; i++) for (let j = i; j < n; j++)
+        cells.push(cell(x0 + j * (c + 4), y0 + i * (c + 4), c, c, i === j ? 1 : i === 0 && j === n - 1 ? "?" : "", i === j ? "key" : i === 0 && j === n - 1 ? "hi" : null));
+      return [...cells, part(note(118, 178, "dp[i][j] from shorter ranges"))];
+    },
+    negcycle: () => {
+      const P = [[44, 100], [130, 46], [236, 46], [236, 154], [130, 154]];
+      const E = [[0, 1, 3], [1, 2, 2, "hi"], [2, 3, -4, "hi"], [3, 4, 1, "hi"], [4, 1, 0, "hi"]];
+      return [...E.map(([a, b, w, t]) => part(link(P[a], P[b], 17, t), note((P[a][0] + P[b][0]) / 2 + 10, (P[a][1] + P[b][1]) / 2 - 8, w, t))),
+        ...P.map(([x, y], i) => node(x, y, 17, String.fromCharCode(65 + i), i === 0 ? "key" : null)),
+        part(note(184, 102, "loop: −1", "hi"))];
+    },
     digits: () => [
       part(note(160, 16, "count numbers ≤ 4072")),
       ...[4, 0, 7, 2].map((d, i) => cell(70 + i * 46, 34, 40, 44, d, i === 0 ? "hi" : "key")),
@@ -198,10 +224,10 @@
   };
 
   T.ART_KINDS = {
-    1: "curves", 2: "boxes", 3: "array", 4: "buckets", 5: "calls", 6: "array", 7: "window", 8: "prefix", 9: "search",
-    10: "intervals", 11: "intervals", 12: "stack", 13: "queue", 14: "linked", 15: "tree", 16: "bst", 17: "heap", 18: "trie",
+    1: "curves", 2: "boxes", 3: "string", 4: "buckets", 5: "calls", 6: "array", 7: "window", 8: "prefix", 9: "search",
+    10: "intervals", 11: "coins", 12: "stack", 13: "queue", 14: "linked", 15: "tree", 16: "bst", 17: "heap", 18: "trie",
     19: "graph", 20: "dag", 21: "weighted", 22: "decisions", 23: "dp_row", 24: "grid", 25: "bits", 26: "segments",
-    27: "text", 28: "grid", 29: "weighted", 30: "numbers", 31: "hull", 32: "lift", 33: "flow", 34: "digits",
+    27: "text", 28: "triangle", 29: "negcycle", 30: "numbers", 31: "hull", 32: "lift", 33: "flow", 34: "digits",
   };
 
   T.topicArt = (n) => {
