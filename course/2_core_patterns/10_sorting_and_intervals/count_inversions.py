@@ -1,5 +1,5 @@
 """
-Count Inversions                                                              [medium]
+Count Inversions                                                              [easy]
 
 An inversion is a pair i < j with nums[i] > nums[j]. Count them. It measures
 how far from sorted the list is.
@@ -7,7 +7,7 @@ how far from sorted the list is.
 Example:
     count_inversions([2, 4, 1, 3, 5])  ->  3        (2,1) (4,1) (4,3)
 
-Aim for:  O(n log n). The last test has 100,000 numbers.
+Aim for:  O(n log n). The last test has 200,000 numbers.
 Hint:     Merge sort. While merging two sorted halves, whenever you take an element from the RIGHT
           half, every element still waiting in the left half is bigger: add len(left) - i.
           (A Fenwick tree over values works too.)
@@ -46,9 +46,12 @@ def _cases():
     for _ in range(8):
         a = [rng.randint(0, 9) for _ in range(rng.randint(0, 15))]
         out.append(((a,), _brute(a)))
-    big = [rng.randint(0, 10**9) for _ in range(100_000)]
+    big = [rng.randint(0, 10**9) for _ in range(200_000)]
     out.append(((big,), _fast(big)))
     return out
 
+
+TEACHES = ["sort.merge_count"]
+USES = ["recursion.trust", "pointers.two_sequences"]
 
 TESTS = [(([2, 4, 1, 3, 5],), 3), (([1, 2, 3],), 0), (([3, 2, 1],), 3), (([],), 0), (([2, 2],), 0)] + _cases()

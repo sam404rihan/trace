@@ -42,7 +42,7 @@ def _cases():
     return out
 
 
-USES = ["recursion.trust", "pointers.two_sequences", "list.dummy", "list.fast_slow"]
+USES = ["recursion.trust", "pointers.two_sequences", "sort.merge_count", "list.dummy", "list.fast_slow"]
 
 TESTS = [
     (([4, 2, 1, 3],), [1, 2, 3, 4]),

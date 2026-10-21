@@ -381,7 +381,8 @@ class Stage3Audit(AuditBase):
                              "recently_used": ["list.recency"], "cycle_start": ["list.cycle_start"]})
         self.assert_uses({"find_duplicate": ["list.fast_slow", "list.cycle_start"], "lfu_cache": ["list.recency"],
                           "merge_two_lists": ["pointers.two_sequences", "list.dummy"],
-                          "sort_list": ["recursion.trust", "pointers.two_sequences", "list.dummy", "list.fast_slow"]})
+                          "sort_list": ["recursion.trust", "pointers.two_sequences", "sort.merge_count", "list.dummy",
+                                        "list.fast_slow"]})
         for name in ("recently_used", "cycle_start"):
             self.assertEqual(self.problems[name]["difficulty"], "easy", name)
 
@@ -552,6 +553,23 @@ class Stage4Audit(AuditBase):
         big("cheapest_team", lambda a, w: len(a[0]) >= 60)                                     # every team
         big("cheapest_team", lambda a, w: len(a[0]) >= 120 and max(a[1]) - min(a[1]) <= 10)    # backtracking with a prune
         big("bellman_ford", lambda a, w: a[0] >= 300 and len(a[1]) >= 3_000)
+
+
+STAGE_5 = ("26_range_queries", "27_string_matching", "28_advanced_dynamic_programming", "29_advanced_graphs")
+
+
+class Stage5Audit(AuditBase):
+    """Part 2, Stage 5: topics 26-29 fully audited (docs/superpowers/plans/2026-10-21-technique-coverage-stage-5.md)."""
+
+    def test_problems_moved_to_the_topic_of_their_last_prerequisite(self):
+        self.assertEqual(self.problems["count_inversions"]["topic_id"], "10_sorting_and_intervals")
+
+    def test_merge_sort_is_taught_before_sort_list(self):
+        self.assert_teaches({"count_inversions": ["sort.merge_count"]})
+        self.assert_uses({"count_inversions": ["recursion.trust", "pointers.two_sequences"],
+                          "sort_list": ["recursion.trust", "pointers.two_sequences", "sort.merge_count", "list.dummy",
+                                        "list.fast_slow"]})
+        self.assertEqual(self.problems["count_inversions"]["difficulty"], "easy")
 
 
 if __name__ == "__main__":

@@ -489,6 +489,12 @@ TECHNIQUES = {
                    "`best[mask]` can be the answer for exactly that set, for all 2^n masks. Go through the masks in "
                    "increasing order, since adding a thing only adds bits: `best[mask | 1 << s]` builds on `best[mask]`.",
     },
+    "sort.merge_count": {
+        "name": "Merge sort, counting while merging",
+        "explain": "Split the list in half, sort each half recursively, then merge them with one pointer per half. "
+                   "While merging, when the right half's item goes first, it is smaller than every item still "
+                   "waiting on the left, so `len(left) - i` pairs can be counted in one step. It's O(n log n).",
+    },
     "grid.neighbors": {
         "name": "Grid neighbours",
         "explain": "A cell (r, c) has up to four neighbours: (r - 1, c), (r + 1, c), (r, c - 1) and (r, c + 1). "
