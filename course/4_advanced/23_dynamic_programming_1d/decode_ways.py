@@ -40,6 +40,9 @@ def _big():
 
 _LONG, _LONG_WAYS = _big()
 
+TEACHES = ["dp.prefix"]
+USES = ["dp.recurrence"]
+
 STEPS = [
     {
         "title": "Recurse on the first choice",

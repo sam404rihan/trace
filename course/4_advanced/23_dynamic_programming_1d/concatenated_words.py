@@ -73,6 +73,8 @@ def _cases():
     return out
 
 
+USES = ["trie.walk", "dp.prefix"]
+
 TESTS = [
     ((["cat", "cats", "catsdogcats", "dog", "dogcatsdog", "hippopotamuses", "rat", "ratcatdogcat"],),
      ["catsdogcats", "dogcatsdog", "ratcatdogcat"]),

@@ -1,5 +1,5 @@
 """
-Palindromic Substrings                                                        [medium]
+Palindromic Substrings                                                        [easy]
 
 Count the substrings of s that are palindromes. Substrings at different
 positions count separately, even if they're the same text.
@@ -8,8 +8,10 @@ Example:
     palindromic_substrings("abc")  ->  3      "a", "b", "c"
     palindromic_substrings("aaa")  ->  6      "a" ×3, "aa" ×2, "aaa"
 
-Hint:     The same expand-around-centre idea as Longest Palindromic Substring: every successful
-          expansion step is one more palindrome. Count them.
+Aim for:  O(n²) at worst, far less on most strings. The last test has 100,000 random letters:
+          checking every substring times out.
+Hint:     Every palindrome has a centre: a letter, or the gap between two letters. From each of the
+          2n - 1 centres, grow outwards while both ends match; every step that works is one more palindrome.
 """
 
 
@@ -35,4 +37,24 @@ def _cases():
     return out
 
 
-TESTS = [(("abc",), 3), (("aaa",), 6), (("",), 0), (("racecar",), 10)] + _cases()
+def _fast(s):
+    count = 0
+    for centre in range(2 * len(s) - 1):
+        lo, hi = centre // 2, centre // 2 + centre % 2
+        while lo >= 0 and hi < len(s) and s[lo] == s[hi]:
+            count += 1
+            lo, hi = lo - 1, hi + 1
+    return count
+
+
+def _big():
+    import random
+    rng = random.Random(2302)
+    s = "".join(rng.choice("ab") for _ in range(100_000))
+    return (s,), _fast(s)
+
+
+TEACHES = ["palin.expand"]
+USES = []
+
+TESTS = [(("abc",), 3), (("aaa",), 6), (("",), 0), (("racecar",), 10)] + _cases() + [_big()]

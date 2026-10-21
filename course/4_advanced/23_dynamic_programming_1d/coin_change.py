@@ -1,5 +1,5 @@
 """
-Coin Change                                               [medium] · dynamic programming
+Coin Change                                                                   [easy]
 
 Given coin denominations `coins` (unlimited supply of each) and an `amount`,
 return the fewest coins that add up to exactly `amount`, or -1 if it can't
@@ -19,6 +19,9 @@ Hint:     Greedy (always take the biggest coin) fails — see the [1, 3, 4] test
 def coin_change(coins: list[int], amount: int) -> int:
     raise NotImplementedError  # replace this line with your solution
 
+
+TEACHES = ["dp.amounts"]
+USES = ["dp.recurrence"]
 
 TESTS = [
     (([1, 2, 5], 11), 3),

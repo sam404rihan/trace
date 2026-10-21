@@ -73,6 +73,8 @@ def _cases():
     return out
 
 
+USES = ["dp.prefix"]
+
 TESTS = [
     (("*",), 9),
     (("1*",), 18),

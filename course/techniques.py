@@ -400,6 +400,42 @@ TECHNIQUES = {
                    "to the one just tried at the SAME depth: `if i > start and nums[i] == nums[i - 1]: continue`. "
                    "The same value deeper down is still allowed, so no answer is lost and none is repeated.",
     },
+    "dp.recurrence": {
+        "name": "Building answers from smaller ones",
+        "explain": "Write the answer for position i in terms of answers for smaller positions, like "
+                   "`best[i] = max(best[i - 1], best[i - 2] + x)`. Fill them in from the smallest up, so each one is "
+                   "ready when it's needed. If only the last two are ever used, two variables are enough.",
+    },
+    "dp.prefix": {
+        "name": "DP over prefixes",
+        "explain": "To count or check ways to build a string piece by piece, let `ways[i]` describe the first i "
+                   "characters. Work it out from shorter prefixes by asking what the LAST piece could be: one digit, "
+                   "two digits, a word ending at i. `ways[0]` is the empty start.",
+    },
+    "dp.amounts": {
+        "name": "DP over amounts",
+        "explain": "When you can use items again and again to make a total, let `best[x]` be the answer for the "
+                   "amount x. Fill x from 0 upwards: `best[x]` comes from `best[x - c]` for each item c that fits, "
+                   "plus one more c. Plain recursion recomputes the same amounts over and over.",
+    },
+    "dp.lis": {
+        "name": "Longest increasing subsequence with tails",
+        "explain": "Keep `tails`, where `tails[k]` is the smallest possible last value of an increasing subsequence "
+                   "of length k + 1. It stays sorted, so for each x, binary search for the first tail >= x and "
+                   "replace it with x, or append x if there's none. The answer is `len(tails)`: O(n log n).",
+    },
+    "palin.expand": {
+        "name": "Expanding around a centre",
+        "explain": "Every palindrome has a centre: a letter, or the gap between two letters, so a string of n letters "
+                   "has 2n - 1 centres. From each centre, grow outwards while the letters on both ends match. Each "
+                   "step that succeeds is one more palindrome.",
+    },
+    "dp.knapsack01": {
+        "name": "0/1 knapsack: reachable sums",
+        "explain": "To pick a subset that hits a total, keep which sums are reachable, starting with just 0. For each "
+                   "item x, every reachable s makes s + x reachable too. In an array, loop s DOWNWARDS so x isn't "
+                   "used twice in one round. It's O(items × total), not 2^items.",
+    },
     "grid.neighbors": {
         "name": "Grid neighbours",
         "explain": "A cell (r, c) has up to four neighbours: (r - 1, c), (r + 1, c), (r, c - 1) and (r, c + 1). "

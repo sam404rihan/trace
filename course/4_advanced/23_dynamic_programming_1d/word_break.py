@@ -20,6 +20,8 @@ def word_break(s: str, words: list[str]) -> bool:
     raise NotImplementedError  # replace this line with your solution
 
 
+USES = ["hash.set_lookup", "dp.prefix"]
+
 TESTS = [
     (("leetcode", ["leet", "code"]), True),
     (("applepenapple", ["apple", "pen"]), True),

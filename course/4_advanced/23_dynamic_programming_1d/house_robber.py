@@ -17,6 +17,8 @@ def house_robber(nums: list[int]) -> int:
     raise NotImplementedError  # replace this line with your solution
 
 
+USES = ["dp.recurrence"]
+
 TESTS = [
     (([1, 2, 3, 1],), 4),
     (([2, 7, 9, 3, 1],), 12),

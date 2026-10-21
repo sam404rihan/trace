@@ -497,5 +497,17 @@ class Stage4Audit(AuditBase):
             self.assertEqual(self.problems[name]["difficulty"], "easy", name)
 
 
+    def test_topic_23(self):
+        self.assert_audited("23_dynamic_programming_1d")
+        self.assert_teaches({"robber_step": ["dp.recurrence"], "decode_ways": ["dp.prefix"], "coin_change": ["dp.amounts"],
+                             "longest_increasing_subsequence": ["dp.lis"], "palindromic_substrings": ["palin.expand"],
+                             "partition_equal_subset": ["dp.knapsack01"]})
+        self.assert_uses({"concatenated_words": ["trie.walk", "dp.prefix"], "russian_doll": ["dp.lis"],
+                          "longest_palindrome_substring": ["palin.expand"], "max_product_subarray": ["greedy.kadane"],
+                          "word_break": ["hash.set_lookup", "dp.prefix"]})
+        for name in ("coin_change", "longest_increasing_subsequence", "palindromic_substrings", "partition_equal_subset"):
+            self.assertEqual(self.problems[name]["difficulty"], "easy", name)
+
+
 if __name__ == "__main__":
     unittest.main()

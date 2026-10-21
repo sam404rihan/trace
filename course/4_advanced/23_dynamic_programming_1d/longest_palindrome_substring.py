@@ -37,4 +37,6 @@ def _cases():
     return [((s,), _describe(s)) for s in ("".join(rng.choice("ab") for _ in range(rng.randint(1, 20))) for _ in range(8))]
 
 
+USES = ["palin.expand"]
+
 TESTS = [((s,), _describe(s)) for s in ("babad", "cbbd", "a", "racecarxyz", "abcd", "aaaa", "forgeeksskeegfor")] + _cases()

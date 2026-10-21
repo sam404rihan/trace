@@ -22,6 +22,9 @@ def robber_step(prev2: int, prev1: int, x: int) -> int:
     raise NotImplementedError  # replace this line with your solution
 
 
+TEACHES = ["dp.recurrence"]
+USES = []
+
 TESTS = [
     ((4, 5, 3), 7),
     ((4, 9, 3), 9),

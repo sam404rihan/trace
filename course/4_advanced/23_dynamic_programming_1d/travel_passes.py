@@ -72,4 +72,6 @@ _CASES = [
     _big(),
 ]
 
+USES = ["bfs.path", "dp.recurrence"]
+
 TESTS = [(case, f"(cost {_cheapest(*case)}, any cheapest plan)") for case in _CASES]

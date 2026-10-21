@@ -1,5 +1,5 @@
 """
-Partition Equal Subset Sum                                                    [medium]
+Partition Equal Subset Sum                                                    [easy]
 
 Can the positive integers in nums be split into two groups with equal sums?
 
@@ -36,6 +36,9 @@ def _cases():
         out.append((args, _brute(*args)))
     return out
 
+
+TEACHES = ["dp.knapsack01"]
+USES = []
 
 TESTS = [(([1, 5, 11, 5],), True), (([1, 2, 3, 5],), False), (([2],), False), (([3, 3],), True),
          (([100] * 100 + [50, 50],), True)] + _cases()

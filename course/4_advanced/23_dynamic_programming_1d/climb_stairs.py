@@ -19,6 +19,8 @@ def climb_stairs(n: int) -> int:
     raise NotImplementedError  # replace this line with your solution
 
 
+USES = ["recursion.memo", "dp.recurrence"]
+
 TESTS = [
     ((1,), 1),
     ((2,), 2),
