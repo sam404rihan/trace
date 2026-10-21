@@ -663,7 +663,7 @@ body.side-closed .side { visibility: hidden; }
 .side-link:hover { background: var(--fill-2); color: var(--ink); }
 .side-link[aria-current="page"] { background: var(--accent-soft); color: var(--accent); font-weight: 500; }
 .side-link[aria-current="page"] .n { color: var(--accent); }
-.side-link .n { font: 500 11px var(--mono); color: var(--ink-3); }
+.side-link .n { font: 500 11px var(--mono); color: var(--ink-3); display: grid; place-items: center start; }
 .side-link .t { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .side-link .f { font: 500 11px var(--mono); color: var(--ink-3); }
 .side-link.done .f { color: var(--ok); }

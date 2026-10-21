@@ -132,6 +132,15 @@ check("retake and reset are on the roadmap", await p.eval(`[...document.querySel
   && !!document.querySelector('#app a[href="#/start"]')`));
 check("roadmap crumb", (await p.eval(`document.querySelector("#crumbs").textContent`)).includes("Roadmap"));
 
+// ── A quieter sidebar ──
+await p.reload(BASE + "/#/");
+check("sidebar links the roadmap", await p.eval(`!!document.querySelector('#side-nav a[href="#/roadmap"]')`));
+check("sidebar lists one stage's topics", (await p.eval(`document.querySelectorAll('#side-nav a[href^="#/t/"]').length`)) <= 7);
+check("sidebar keeps the study plans", (await p.eval(`document.querySelectorAll('#side-nav a[href^="#/plan/"]').length`)) === 3);
+check("sidebar icons are drawn, not characters", await p.eval(`[...document.querySelectorAll("#side-nav .side-link .n")].every(n => n.querySelector("svg") || /^[0-9]+$/.test(n.textContent.trim()))`));
+await p.reload(BASE + "/#/t/30_number_theory");
+check("the viewed topic is in the sidebar", await p.eval(`!!document.querySelector('#side-nav a[href="#/t/30_number_theory"][aria-current="page"]')`));
+
 
 check("no console errors", p.logs.length === 0, p.logs.join(" | "));
 await p.close();

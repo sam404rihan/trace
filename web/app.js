@@ -38,6 +38,9 @@
     left: "M15 6l-6 6 6 6",
     right: "M9 6l6 6-6 6",
     lock: ["M6 11h12v9H6z", "M8.5 11V8a3.5 3.5 0 0 1 7 0v3"],
+    home: ["M4 11l8-6.5 8 6.5", "M6.5 9.5V19h11V9.5"],
+    road: ["M6 20c0-5 12-3 12-8S8 9 8 4", "M6 20h.01", "M8 4h.01"],
+    plan: ["M8 6h11", "M8 12h11", "M8 18h11", "M4.5 6h.01", "M4.5 12h.01", "M4.5 18h.01"],
   };
 
   // inline `code`
@@ -1026,23 +1029,22 @@
       h("div", { class: "side-list" }, kids));
     const link = (href, n, t, f, current, done) =>
       h("a", { class: "side-link" + (done ? " done" : ""), href, "aria-current": current ? "page" : null, title: t }, h("span", { class: "n" }, n), h("span", { class: "t" }, t), h("span", { class: "f" }, f));
-    const stages = [];
-    for (const topic of S.topics) {
-      let st = stages.find((x) => x.name === topic.stage);
-      if (!st) stages.push((st = { name: topic.stage, topics: [] }));
-      st.topics.push(topic);
-    }
+    // One stage's topics: the one you're viewing, else your place in the course, else the last stage.
+    const viewed = activeTopic && S.topics.find((t) => t.id === activeTopic);
+    const stageName = (viewed || nextUp()?.topic || S.topics[S.topics.length - 1]).stage;
     $("side-nav").replaceChildren(...[
-      h("div", { class: "side-list", style: "margin-top:6px" }, link("#/", "⌂", "Home", "", !kind || kind === "", false)),
+      h("div", { class: "side-list", style: "margin-top:6px" },
+        link("#/", icon(ICONS.home), "Home", "", !kind, false),
+        link("#/roadmap", icon(ICONS.road), "Roadmap", "", kind === "roadmap", false)),
       group("plans", "Study plans", (S.plans.plans || []).map((pl) => {
         const items = pl.sections.flatMap((sec) => sec.items);
         const done = items.filter(solved).length;
-        return link(`#/plan/${pl.id}`, "≡", pl.title, `${done}/${items.length}`, activePlan === pl.id, done === items.length);
+        return link(`#/plan/${pl.id}`, icon(ICONS.plan), pl.title, `${done}/${items.length}`, activePlan === pl.id, done === items.length);
       })),
-      stages.map((st) => group("stage:" + st.name, st.name, st.topics.map((topic) => {
+      group("stage:" + stageName, stageName, S.topics.filter((t) => t.stage === stageName).map((topic) => {
         const done = topic.items.filter(solved).length;
         return link(`#/t/${topic.id}`, pad2(topic.n), topicTitle(topic), `${done}/${topic.items.length}`, activeTopic === topic.id, done === topic.items.length);
-      }))),
+      })),
     ].flat());
     const current = $("side-nav").querySelector('[aria-current="page"]');
     if (current) current.scrollIntoView({ block: "nearest" });
