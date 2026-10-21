@@ -14,3 +14,11 @@ starts Trace on an empty workspace with a fresh browser profile:
     bash tests/browser/fresh.sh 8177 calm_home.mjs
 
 These aren't part of `python -m unittest`; run them when you change a screen.
+
+Two helpers take screenshots for looking at, not checks:
+
+    bash tests/browser/fresh.sh 8178 screens.mjs "$(pwd)/.impeccable/review" home,roadmap,t/06_two_pointers
+    bash tests/browser/fresh.sh 8178 drawings.mjs "$(pwd)/.impeccable/review/sheet"
+
+`screens.mjs` captures each named page (without the `#/`, which Git Bash rewrites) at 1440 and 390
+wide, light and dark. `drawings.mjs` puts all 34 topic drawings on one sheet per theme.
