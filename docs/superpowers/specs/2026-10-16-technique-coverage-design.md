@@ -29,16 +29,16 @@ audit in Part 2 confirms and completes this list.
 | 14 Linked lists | finding where a cycle starts (`has_cycle` only detects one) | `find_duplicate` (fixed: the new `cycle_start` teaches it) |
 | 17 Heaps | two heaps for the median | `median_finder`, `sliding_window_median` (fixed: `median_finder`, now easy, teaches it) |
 | | lazy deletion | `sliding_window_median`, `skyline`, `task_scheduler` (fixed: the new `max_bag` teaches it) |
-| 21 Weighted graphs | Prim's minimum spanning tree | `min_cost_connect_points` |
-| | Dijkstra on the worst step of a path ("bottleneck") | `swim_rising_water` |
-| | Euler path (Hierholzer) | `reconstruct_itinerary` |
-| | DP over (time, node) states | `min_cost_in_time` |
-| 24 DP 2D | interval DP | `burst_balloons` |
-| | two walkers at once | `cherry_pickup_ii` |
-| | DP run backwards from the goal | `dungeon_game` |
-| | memoised DFS on a grid | `longest_increasing_path` |
-| 25 Bit tricks | DP over bitmasks | `min_xor_sum` |
-| | building an answer bit by bit with prefixes | `max_xor_pair` |
+| 21 Weighted graphs | Prim's minimum spanning tree | `min_cost_connect_points` (fixed: the new `mst_cost` teaches spanning trees) |
+| | Dijkstra on the worst step of a path ("bottleneck") | `swim_rising_water` (kept as `swim_rising_water`'s own insight: it doesn't recur) |
+| | Euler path (Hierholzer) | `reconstruct_itinerary` (fixed: the new `euler_path` teaches it) |
+| | DP over (time, node) states | `min_cost_in_time` (fixed: the reference is Dijkstra over (cost, time, city) states, taught by `bfs.state` and `cheapest_path`) |
+| 24 DP 2D | interval DP | `burst_balloons` (fixed: the new `matrix_chain` teaches it) |
+| | two walkers at once | `cherry_pickup_ii` (kept as `cherry_pickup_ii`'s own insight) |
+| | DP run backwards from the goal | `dungeon_game` (kept as `dungeon_game`'s own insight) |
+| | memoised DFS on a grid | `longest_increasing_path` (fixed: memoisation (05) and grid neighbours (19) cover it) |
+| 25 Bit tricks | DP over bitmasks | `min_xor_sum` (fixed: the new `cheapest_team` teaches it) |
+| | building an answer bit by bit with prefixes | `max_xor_pair` (kept as `max_xor_pair`'s own insight) |
 
 **2. Problems that rely on a later topic**
 
@@ -53,7 +53,7 @@ audit in Part 2 confirms and completes this list.
 | `word_search_ii` (18) | grid DFS + backtracking | 19, 22 (fixed: moved there) |
 | `concatenated_words` (18) | DP | 23 (fixed: moved there) |
 | `shortest_path_all_keys` (19) | bitmasks | 25 |
-| `largest_factor_component` (20) | prime factorisation | 30 Number theory |
+| `largest_factor_component` (20) | prime factorisation | 30 Number theory (fixed: moved there) |
 
 **3. Basic versions sorted after their users.** Problems of the same difficulty are ordered by
 title, which is arbitrary for teaching. In Queues, the monotonic-deque problem

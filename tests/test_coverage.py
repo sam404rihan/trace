@@ -456,5 +456,16 @@ class Stage3Audit(AuditBase):
         big("k_smallest_sums", lambda a, w: min(len(a[0]), len(a[1]), a[2]) >= 100_000)          # k * k sums
 
 
+STAGE_4 = ("20_topological_sort_and_union_find", "21_weighted_graphs", "22_backtracking",
+           "23_dynamic_programming_1d", "24_dynamic_programming_2d", "25_bit_tricks")
+
+
+class Stage4Audit(AuditBase):
+    """Part 2, Stage 4: topics 20-25 fully audited (docs/superpowers/plans/2026-10-21-technique-coverage-stage-4.md)."""
+
+    def test_problems_moved_to_the_topic_of_their_last_prerequisite(self):
+        self.assertEqual(self.problems["largest_factor_component"]["topic_id"], "30_number_theory")
+
+
 if __name__ == "__main__":
     unittest.main()
