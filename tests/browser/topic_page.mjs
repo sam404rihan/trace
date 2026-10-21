@@ -61,7 +61,8 @@ const lowContrast = (p, sel) => p.eval(`(() => {
     if (ratio < 4.5 || faded) out.push(el.tagName + "." + el.className + " '" + el.textContent.trim().slice(0, 24) + "' " + ratio.toFixed(2) + (faded ? " faded" : ""));
   }
   return [...new Set(out)].slice(0, 10); })()`);
-const shown = (p, sel) => p.eval(`[...document.querySelectorAll(${JSON.stringify(sel)})].filter((e) => e.getClientRects().length).length`);
+// Rendered rows: inside a shut <details> Chrome keeps the boxes but hides them, so ask checkVisibility.
+const shown = (p, sel) => p.eval(`[...document.querySelectorAll(${JSON.stringify(sel)})].filter((e) => e.checkVisibility()).length`);
 
 const p = await open(BASE + "/");
 await post(p, "/api/placement", { door: "skip" });
@@ -94,7 +95,7 @@ check("techniques are listed", (await p.eval(`document.querySelectorAll(".tech-l
 check("the lesson sheet is there", await p.eval(`!!document.querySelector("#app details.sheet")`));
 check("no wall of rows", (await shown(p, "#app .item")) <= 6, String(await shown(p, "#app .item")));
 check("a folded rung opens to its items", await p.eval(`(() => { const r = [...document.querySelectorAll("#app details.rung")].find((d) => !d.open && d.querySelector(".item"));
-  if (!r) return false; r.querySelector("summary").click(); return r.open && [...r.querySelectorAll(".item")].every((i) => i.getClientRects().length); })()`));
+  if (!r) return false; r.querySelector("summary").click(); return r.open && [...r.querySelectorAll(".item")].every((i) => i.checkVisibility()); })()`));
 check("rung markers are drawn", await p.eval(`[...document.querySelectorAll(".rung-dot")].every((d) => d.querySelector("svg") || /^[0-9]+$/.test(d.textContent.trim()))`));
 check("no glyph icons on the topic page", (await glyphsIn(p, "#app .topic-hero, #app details.rung > summary, #app .item, #app details.sheet > summary, #app details.fold > summary")).length === 0,
   (await glyphsIn(p, "#app .topic-hero, #app details.rung > summary, #app .item, #app details.sheet > summary, #app details.fold > summary")).join(" | "));

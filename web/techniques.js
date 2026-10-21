@@ -44,9 +44,14 @@
   T.topicTechniques = (topic, ctx) => {
     const ids = ctx.taughtIn(topic);
     if (!ids.length) return null;
-    return [h("h2", { class: "section-title" }, "Techniques in this topic"),
-      h("div", { class: "items tech-list" }, ids.map((id) => h("a", { class: "item" + (ctx.known(id) ? " solved" : ""), href: ctx.teacherHref(id) },
-        h("span", { class: "state" }), h("span", { class: "t" }, ctx.techniques[id].name),
-        h("span", { class: "meta" }, ctx.teacherTitle(id)), h("span"))))];
+    // Folded on the topic page: a reference to look things up in, not another list to work through.
+    const chevron = s("svg", { class: "icon", viewBox: "0 0 24 24", "aria-hidden": "true" }, s("path", { d: "M6 9l6 6 6-6" }));
+    return h("details", { class: "fold tech-fold" },
+      h("summary", {}, h("span", { class: "fold-title" }, "Techniques in this topic"),
+        h("span", { class: "fold-sub" }, `${ids.filter(ctx.known).length} of ${ids.length} learned`), chevron),
+      h("div", { class: "fold-body" },
+        h("div", { class: "items tech-list" }, ids.map((id) => h("a", { class: "item" + (ctx.known(id) ? " solved" : ""), href: ctx.teacherHref(id) },
+          h("span", { class: "state" }), h("span", { class: "t" }, ctx.techniques[id].name),
+          h("span", { class: "meta" }, ctx.teacherTitle(id)), h("span"))))));
   };
 })();

@@ -188,23 +188,36 @@ body.ws #app { overflow: hidden; }
 .ladder-bar i.part { background: color-mix(in srgb, var(--ok) 45%, var(--fill-2)); }
 .ladder-bar .gap { width: 6px; }
 
-/* topic page */
-.topic-top { display: flex; align-items: baseline; gap: 14px; }
-.topic-top .num { font: 500 14px var(--mono); color: var(--ink-3); }
+/* topic page: the ladder, folded. Each rung is one row on a rail; the rung you're on is open. */
 .facts { display: grid; grid-template-columns: 1fr 1fr; gap: 20px 36px; margin: 28px 0 0; padding: 20px 22px; background: var(--fill); border-radius: var(--radius); }
 .facts dt { font-size: 12.5px; font-weight: 600; color: var(--ink-3); }
 .facts dd { margin: 4px 0 0; color: var(--ink-2); }
 
-.rungs { margin-top: 8px; }
-.rung { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 16px; position: relative; padding-bottom: 26px; }
-.rung::before { content: ""; position: absolute; left: 13px; top: 30px; bottom: 2px; width: 1.5px; background: var(--line); }
+.rungs { display: grid; gap: 2px; }
+.rung { position: relative; }
+.rung::before { content: ""; position: absolute; left: 25px; top: 42px; bottom: -6px; width: 1.5px; background: var(--line-2); }
 .rung:last-child::before { display: none; }
+.rung > summary, .plan-section > summary, details.fold > summary { list-style: none; cursor: pointer; }
+.rung > summary::-webkit-details-marker, .plan-section > summary::-webkit-details-marker, details.fold > summary::-webkit-details-marker { display: none; }
+.rung > summary {
+  display: grid; grid-template-columns: 28px minmax(0, 1fr) auto 18px; align-items: center; gap: 14px;
+  padding: 10px 12px; border-radius: 14px;
+}
+.rung > summary:hover, .plan-section > summary:hover { background: var(--fill); }
 .rung-dot { width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid var(--line-2); display: grid; place-items: center; font: 600 12px var(--mono); color: var(--ink-3); background: var(--bg); position: relative; z-index: 1; }
-.rung.done .rung-dot { background: var(--ok); border-color: var(--ok); color: #fff; }
+.rung-dot .icon { width: 15px; height: 15px; stroke-width: 3; }
+.rung.done .rung-dot { background: var(--ok); border-color: var(--ok); color: var(--on-ok); }
 .rung.current .rung-dot { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
-.rung-head { display: flex; align-items: baseline; gap: 10px; margin-top: 3px; flex-wrap: wrap; }
-.rung-head h3 { margin: 0; font-size: 17px; font-weight: 600; letter-spacing: -0.01em; }
-.rung-head p { margin: 0; color: var(--ink-3); font-size: 14px; }
+.rung-head { display: flex; align-items: baseline; gap: 2px 10px; flex-wrap: wrap; min-width: 0; }
+.rung-title { font-size: 17px; font-weight: 600; letter-spacing: -0.01em; }
+.rung-sub { color: var(--ink-3); font-size: 14px; }
+.rung-count { font: 500 13px var(--mono); color: var(--ink-3); white-space: nowrap; }
+/* one chevron for every fold: points down while shut, up while open */
+:is(.rung, .plan-section, details.fold) > summary > .icon { width: 18px; height: 18px; stroke-width: 2.2; color: var(--ink-3); transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
+:is(.rung, .plan-section, details.fold)[open] > summary > .icon { transform: rotate(180deg); }
+@media (prefers-reduced-motion: reduce) { :is(.rung, .plan-section, details.fold) > summary > .icon, .side-group > button .icon, .step-group > summary .icon { transition: none; } }
+.rung-body { padding: 4px 12px 16px 54px; }
+.rung-body .items, .rung-body .drill-chips { margin-top: 0; }
 .items { margin-top: 10px; display: grid; gap: 6px; }
 .item {
   display: grid; grid-template-columns: 20px minmax(0, 1fr) auto auto; align-items: center; gap: 12px;
@@ -218,11 +231,14 @@ body.ws #app { overflow: hidden; }
 .item .meta { color: var(--ink-3); font-size: 13px; }
 .item .state { width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid var(--line-2); display: grid; place-items: center; }
 .item.solved .state { background: var(--ok); border-color: var(--ok); }
-.item.solved .state::after { content: ""; width: 7px; height: 4px; border: 2px solid #fff; border-top: 0; border-right: 0; transform: rotate(-45deg) translate(1px, -1px); }
+.item.solved .state::after { content: ""; width: 7px; height: 4px; border: 2px solid var(--on-ok); border-top: 0; border-right: 0; transform: rotate(-45deg) translate(1px, -1px); }
 .item.partial .state { border-color: var(--ok); background: conic-gradient(var(--ok) calc(var(--p) * 1%), transparent 0); }
-.item.locked { color: var(--ink-3); opacity: 0.7; }
-.item.locked .t { color: var(--ink-3); }
+.item.locked, .item.locked .t { color: var(--ink-3); }   /* quieter by colour; opacity would drop it below 4.5:1 */
 .item.locked .state { border-style: dashed; }
+.lock-meta { display: inline-flex; align-items: center; gap: 6px; }
+/* the next step, marked where it sits on the ladder: the current-step ring */
+.item.next, .chip-link.next { background: var(--bg); box-shadow: inset 0 0 0 1.5px var(--accent); }
+.item.next:hover, .chip-link.next:hover { background: var(--accent-soft); }
 .drill-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
 .chip-link { display: inline-flex; align-items: center; gap: 9px; padding: 8px 14px; border-radius: 999px; background: var(--fill); text-decoration: none; font-size: 14px; font-weight: 500; }
 .chip-link:hover { background: var(--fill-2); }
@@ -231,18 +247,25 @@ body.ws #app { overflow: hidden; }
 .pips i.on { background: var(--ok); }
 
 .badge { display: inline-flex; align-items: center; height: 22px; padding: 0 9px; border-radius: 999px; font-size: 12px; font-weight: 500; background: var(--fill-2); color: var(--ink-2); white-space: nowrap; }
-.badge.easy { color: var(--ok); background: var(--ok-soft); }
-.badge.medium { color: var(--warn); background: color-mix(in srgb, var(--warn) 12%, transparent); }
-.badge.hard { color: var(--bad); background: var(--bad-soft); }
+/* state text nudged toward the ink (darker in light, lighter in dark) so it clears 4.5:1 on its tint and on a row */
+.badge.easy { color: color-mix(in srgb, var(--ok) 82%, var(--ink)); background: var(--ok-soft); }
+.badge.medium { color: color-mix(in srgb, var(--warn) 78%, var(--ink)); background: color-mix(in srgb, var(--warn) 12%, transparent); }
+.badge.hard { color: color-mix(in srgb, var(--bad) 82%, var(--ink)); background: var(--bad-soft); }
 .badge.snippet, .badge.guided, .badge.build, .badge.read { color: var(--accent); background: var(--accent-soft); }
 
-details.sheet { margin-top: 44px; background: var(--fill); border-radius: var(--radius); }
+/* folds: the technique list and the cheat sheet, shut until you want them */
+.folds { display: grid; gap: 8px; }
+details.fold { background: var(--fill); border-radius: var(--radius); }
+details.fold > summary { display: grid; grid-template-columns: minmax(0, 1fr) auto 18px; align-items: center; gap: 12px; padding: 14px 18px; border-radius: var(--radius); }
+details.fold > summary:hover { background: var(--fill-2); }
+details.fold[open] > summary:hover { background: none; }
+.fold-title { font-weight: 600; }
+.fold-sub { color: var(--ink-2); font-size: 14px; }
+.fold-body { padding: 2px 18px 18px; }
+.fold .item { background: var(--bg); }
+.fold .item:hover { background: var(--fill-2); }
 .sheet .prose pre, .sheet .run-out { background: var(--bg); }
-details.sheet > summary { cursor: pointer; padding: 14px 18px; font-weight: 600; list-style: none; display: flex; align-items: center; gap: 10px; }
-details.sheet > summary::-webkit-details-marker { display: none; }
-details.sheet > summary::before { content: "›"; display: inline-block; transition: transform 0.15s; color: var(--ink-3); font-size: 18px; line-height: 1; }
-details.sheet[open] > summary::before { transform: rotate(90deg); }
-.sheet-body { padding: 0 22px 22px; }
+.run-title { font-size: 14px; margin: 22px 0 8px; }
 
 /* markdown-ish prose */
 .prose { color: var(--ink); max-width: 72ch; }
@@ -722,7 +745,6 @@ button, .crumbs, .tabs, .stepper, .ws-bar, .drill-tabs, .badge, .console-bar, .r
 
 /* ── Home: Today card, placed-out topics ────────────── */
 .badge.placed { color: var(--accent); background: var(--accent-soft); margin-left: 8px; vertical-align: 2px; }
-.placed-note { margin: 14px 0 0; padding: 10px 14px; border-radius: var(--radius); background: var(--accent-soft); color: var(--accent); font-size: 15px; }
 .home-foot { margin-top: 48px; display: flex; gap: 24px; flex-wrap: wrap; align-items: center; }
 
 /* ── How to work a problem ───────────────────────────── */
@@ -1052,4 +1074,59 @@ body.contest .main { grid-template-rows: minmax(0, 1fr); }
   .contest-end { margin-left: auto; }
   .contest-opt { flex: 1 1 100%; }
   .contest-lock h2 { font-size: 24px; }
+}
+
+/* ── Topic and plan pages: home's hero at page scale ─── */
+/* A lead card in the page's stage colour (stage 1 for plans, which have none), the drawing on one side and
+   one next step on the other; the rest of the page folds away under it. */
+.lead { padding: 32px 32px 34px 40px; gap: 20px 32px; }
+.lead h1 { font-size: clamp(30px, 3.6vw, 40px); line-height: 1.08; letter-spacing: -0.03em; }
+.lead .hero-next { margin-top: 20px; font-size: 17.5px; }
+.lead .hero-go { margin-top: 22px; }
+.lead .hero-art .art { max-height: 230px; }
+.topic-under { display: flex; align-items: center; justify-content: space-between; gap: 10px 24px; flex-wrap: wrap; margin: 22px 8px 0; }
+.under-note { margin: 0; color: var(--accent); font-size: 14.5px; font-weight: 500; }
+.topic-page .lede, .plan-page .lede { margin-top: 36px; }
+.plan-note { margin: 10px 0 0; color: var(--ink-3); font-size: 14px; max-width: 62ch; }
+.plan-foot { margin: 40px 0 0; color: var(--ink-3); font-size: 14px; max-width: 72ch; }
+
+/* plan sections: one row each, the section with your next problem open */
+.plan-sections { display: grid; }
+.plan-section { border-top: 1px solid var(--line); }
+.plan-section:last-child { border-bottom: 1px solid var(--line); }
+.plan-section > summary {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto 18px; align-items: center; gap: 16px;
+  padding: 13px 12px; margin: 2px 0; border-radius: 14px;
+}
+.plan-section-name { font-size: 16.5px; font-weight: 600; }
+.plan-section .items { margin: 0; padding: 2px 0 16px; }
+
+/* roadmap extras (plans, contest, review): rows like the roadmap's stops, each with a drawn mark */
+.road-extra .topic-list { gap: 6px; }
+.road-extra .topic-row { grid-template-columns: 36px minmax(0, 1fr) auto; gap: 12px; padding: 10px 14px 10px 10px; border-radius: 14px; background: var(--fill); }
+.road-extra .topic-row:hover { background: var(--fill-2); }
+.road-extra .topic-row.disabled:hover { background: var(--fill); }
+.road-extra .topic-row .num { width: 36px; height: 36px; border-radius: 11px; display: grid; place-items: center; background: var(--bg); color: var(--ink-2); }
+.road-extra .topic-row .num.done { background: var(--ok); color: var(--on-ok); }
+.road-extra .topic-row .num .icon { width: 18px; height: 18px; }
+.road-extra .topic-row .name { font-weight: 600; }
+/* one line of description; the whole of it leads the plan's own page */
+.road-extra .topic-row .sub { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 1; overflow: hidden; }
+
+@media (max-width: 760px) {
+  .lead { padding: 22px 20px 24px; }
+  .lead .hero-art .art { max-height: 170px; }
+}
+@media (max-width: 600px) {
+  .rung > summary { grid-template-columns: 28px minmax(0, 1fr) auto 18px; gap: 10px; padding: 10px 6px; }
+  .rung::before { left: 19px; }
+  .rung-body { padding: 4px 0 14px; }
+  .item { grid-template-columns: 20px minmax(0, 1fr) auto; }
+  .item { row-gap: 2px; }
+  .item .meta { grid-column: 2; grid-row: 2; }
+  .plan-section > summary { padding: 12px 6px; }
+  .road-extra .topic-row { grid-template-columns: 36px minmax(0, 1fr); }
+  .road-extra .topic-row > :last-child { grid-column: 2; }
+  .road-extra .topic-row .sub { -webkit-line-clamp: 2; }
+  .road-extra .plan-meter { justify-content: start; }
 }
