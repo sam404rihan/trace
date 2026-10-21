@@ -254,6 +254,10 @@
     return h("figure", { class: "svgfig" }, s("svg", { viewBox: `0 0 ${W} ${H}`, width: W, class: "graph" }, defs, edges, weights, nodes));
   };
 
+  // A queen on a board: drawn, so it matches the tiles. Cells with the "queen" class show it in place of their text.
+  const queen = () => s("svg", { class: "piece", viewBox: "0 0 24 24", role: "img", "aria-label": "queen" },
+    s("path", { d: "M3.5 8.5l4.6 3.9L12 5l3.9 7.4 4.6-3.9-1.9 9.5H5.4z" }), s("rect", { x: 5, y: 18.6, width: 14, height: 2.6, rx: 1.3 }));
+
   // Grid. cell(r,c) -> {t, cls, pick (key)}; o: rowHead[], colHead[], size
   V.grid = (R, C, cell, o = {}) => {
     const kids = [];
@@ -265,9 +269,10 @@
       if (o.colHead || o.rowHead) kids.push(h("span", { class: "ghead" }, o.rowHead ? o.rowHead[r] : ""));
       for (let c = 0; c < C; c++) {
         const d = cell(r, c) || {};
+        const t = /(^| )queen( |$)/.test(d.cls || "") ? queen() : d.t ?? "";
         kids.push(d.pick != null
-          ? h("button", { type: "button", class: "gcell " + (d.cls || ""), "data-pick": d.pick }, d.t ?? "")
-          : h("span", { class: "gcell " + (d.cls || "") }, d.t ?? ""));
+          ? h("button", { type: "button", class: "gcell " + (d.cls || ""), "data-pick": d.pick }, t)
+          : h("span", { class: "gcell " + (d.cls || "") }, t));
       }
     }
     const heads = o.colHead || o.rowHead ? 1 : 0;

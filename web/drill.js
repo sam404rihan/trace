@@ -3,7 +3,10 @@
    runs the question loop, and records clean runs in localStorage. */
 (function () {
   const T = window.Trace;
-  const { h } = T;
+  const { h, s } = T;
+  const icon = (d) => s("svg", { class: "icon", viewBox: "0 0 24 24", "aria-hidden": "true" }, s("path", { d }));
+  const checkIcon = () => icon("M5 12.5l4.5 4.5L19 7.5");
+  const crossIcon = () => icon("M6.5 6.5l11 11M17.5 6.5l-11 11");
 
   // ── drill progress (per browser) ───────────────────────────────────────────
   const GOAL = 2; // clean runs that make a drill "solid"
@@ -65,7 +68,7 @@
 
     function start() {
       clearTimeout(sess && sess.timer);
-      sess = { slips: 0, ask: null, done: false, revealed: false, streak: 0, last: null, missed: false, auto: 0, playing: false, timer: null };
+      sess = { slips: 0, steps: 0, ask: null, done: false, revealed: false, streak: 0, last: null, missed: false, auto: 0, playing: false, timer: null };
       els.blurb.textContent = drill.blurb;
       els.view.replaceChildren();
       setFeedback("");
@@ -116,6 +119,7 @@
         sess.playing = false;
         if (sess.ask !== ask) return;
         sess.ask = null;
+        sess.steps++;
         step(value);
       }, AUTO_MS);
     }
@@ -131,6 +135,7 @@
         const note = typeof ask.note === "function" ? ask.note(value) : ask.note;
         setFeedback(note || "", "ok");
         sess.ask = null;
+        sess.steps++;
         step(value);
       } else {
         sess.slips++;
@@ -172,10 +177,16 @@
       const clean = sess.slips === 0;
       const r = Progress.record(topic, drill, clean);
       const left = Math.max(0, GOAL - r.clean);
+      // The finish line: a check that pops in for a clean run, then the clean runs so far, drawn as tiles.
+      const track = h("span", { class: "solid-track", "aria-hidden": "true" },
+        T.range(GOAL).map((k) => h("i", { class: k < r.clean ? "on" + (clean && k === Math.min(r.clean, GOAL) - 1 ? " new" : "") : "" }, k < r.clean ? checkIcon() : null)));
       els.prompt.replaceChildren(
-        h("p", { class: "result " + (clean ? "clean" : "") }, clean ? "Clean run." : `Done, with ${sess.slips} slip${sess.slips > 1 ? "s" : ""}.`),
+        h("div", { class: "result-head" + (clean ? " clean" : "") },
+          clean ? h("span", { class: "clean-mark", "aria-hidden": "true" }, checkIcon()) : null,
+          h("p", { class: "result" + (clean ? " clean" : "") }, clean ? "Clean run." : `Done, with ${sess.slips} slip${sess.slips > 1 ? "s" : ""}.`)),
         result.summary ? h("p", { class: "summary" }, result.summary) : null,
-        h("p", { class: "summary dim" }, left ? `${left} more clean run${left > 1 ? "s" : ""} make this drill solid.` : "This drill is solid."));
+        h("div", { class: "solid-line" }, track,
+          h("p", { class: "summary dim" }, left ? `${left} more clean run${left > 1 ? "s make" : " makes"} this drill solid.` : "This drill is solid.")));
       const next = h("button", { type: "button", class: "opt primary", onclick: start }, h("kbd", {}, "Enter"), h("span", {}, "Next example"));
       els.options.replaceChildren(next);
       els.slips.textContent = "";
@@ -185,7 +196,8 @@
     }
 
     function setFeedback(text, tone) {
-      els.feedback.textContent = text;
+      const mark = text && tone === "ok" ? checkIcon() : text && tone === "bad" ? crossIcon() : null;
+      els.feedback.replaceChildren(...(mark ? [mark, h("span", {}, text)] : [text]));
       els.feedback.className = "feedback" + (tone && text ? " " + tone : "");
     }
 
@@ -220,7 +232,7 @@
     // Read-only view of the run, for the browser checks.
     container.drillState = () => ({
       answer: sess.ask && sess.ask.answer, options: sess.ask && sess.ask.options ? sess.ask.options.map((o) => String(o.value)) : null,
-      done: sess.done, auto: sess.auto, playing: sess.playing,
+      done: sess.done, auto: sess.auto, playing: sess.playing, steps: sess.steps, slips: sess.slips,
     });
 
     start();
