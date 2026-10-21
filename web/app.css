@@ -1,56 +1,85 @@
-/* Trace: calm and clean. Content sits on soft filled surfaces, not boxes. One accent for
-   actions and "where you are", green for passing, orange-red for failing. */
+/* Trace: bright and friendly. A clean light ground; each stage owns one saturated colour that paints
+   whole regions (the home hero, the primary button, the "you are here"). Chunky buttons press down.
+   Green is passing, orange-red is failing. Per stage: --stN fill, --stN-ink pressed edge,
+   --stN-soft tint, --on-stN text on the fill, --stN-text that colour as text on the page. */
 :root {
   --bg: #ffffff;
-  --panel: #fafafa;
-  --sunk: #f4f4f5;
-  --line: #e9e9ec;
-  --line-2: #dadade;
-  --ink: #1a1a1d;
-  --ink-2: #57575f;
-  --ink-3: #8e8e97;
-  --accent: #4f5fe0;
-  --accent-soft: #eceffd;
-  --accent-ink: #ffffff;
-  --fill: #f6f7fb;
-  --fill-2: #eceef5;
-  --ok: #17803d;
-  --ok-soft: #e9f6ee;
+  --panel: #f8f8fb;
+  --sunk: #f2f2f6;
+  --line: #e8e8ef;
+  --line-2: #d6d6e0;
+  --ink: #17161f;
+  --ink-2: #4f4d5c;
+  --ink-3: #6f6c7d;
+  --fill: #f4f4f8;
+  --fill-2: #e9e9f0;
+  --ok: #13803f;
+  --ok-soft: #e4f6ea;
   --bad: #c4410c;
-  --bad-soft: #fdf0ea;
-  --warn: #a16207;
-  --mark: #ffe17a;              /* highlighter: the decision on a drill board */
+  --bad-soft: #fdeee7;
+  --warn: #9a5b00;
+  --mark: #ffd23f;              /* highlighter: the decision on a drill board */
   --mark-ink: #2b2300;
-  --mark-soft: #fff6cf;
+  --mark-soft: #fff4c7;
 
-  --pa: #3f5bd8; --pb: #c0368c; --pc: #0f8a7e; --pd: #d0701a;
-  --pa-soft: #e6ebfc; --pb-soft: #f8e3ef; --pc-soft: #ddf2ef; --pd-soft: #fbeadb;
+  --st1: #3d5afe; --st1-ink: #2a3fc4; --st1-soft: #e8ecff; --on-st1: #ffffff; --st1-text: #2f47d6;
+  --st2: #ffc22e; --st2-ink: #d99a00; --st2-soft: #fff4d6; --on-st2: #2a1f00; --st2-text: #8a5a00;
+  --st3: #1fbf8f; --st3-ink: #12916b; --st3-soft: #dcf7ee; --on-st3: #03261b; --st3-text: #0b7353;
+  --st4: #ff6a45; --st4-ink: #d9482a; --st4-soft: #ffe9e2; --on-st4: #2b0b02; --st4-text: #b8391b;
+  --st5: #7c4dff; --st5-ink: #5a2fd6; --st5-soft: #efe8ff; --on-st5: #ffffff; --st5-text: #6a3fd6;
+  --st6: #f0508a; --st6-ink: #cc2f68; --st6-soft: #ffe5ef; --on-st6: #2b0414; --st6-text: #b8245a;
+  --on-text: #ffffff;           /* text on a --stN-text fill */
+
+  /* drill-board marks: stage colours, so the boards match the course */
+  --pa: var(--st1-text); --pb: var(--st6-text); --pc: var(--st3-text); --pd: var(--st4-text);
+  --pa-soft: var(--st1-soft); --pb-soft: var(--st6-soft); --pc-soft: var(--st3-soft); --pd-soft: var(--st4-soft);
 
   --sans: "Schibsted Grotesk", "Segoe UI", system-ui, sans-serif;
   --mono: "IBM Plex Mono", "Cascadia Mono", Consolas, monospace;
-  --radius: 12px;
+  --radius: 16px;
+  --radius-lg: 28px;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #111113; --panel: #161618; --sunk: #1c1c1f; --line: #26262a; --line-2: #33333a;
-    --ink: #ececef; --ink-2: #a9a9b2; --ink-3: #74747d;
-    --accent: #8e9bff; --accent-soft: #1f2445; --accent-ink: #0d0f1f; --fill: #1b1c22; --fill-2: #24262e; --ok: #4ccf7f; --ok-soft: #13291c; --bad: #ff8a5c; --bad-soft: #33190f;
+    --bg: #121216; --panel: #17171c; --sunk: #1d1d23; --line: #27272f; --line-2: #36363f;
+    --ink: #efeef4; --ink-2: #b4b2c0; --ink-3: #8c8a99;
+    --fill: #1c1c23; --fill-2: #26262f; --ok: #4ccf7f; --ok-soft: #12291b; --bad: #ff8a5c; --bad-soft: #33190f;
     --warn: #e6b450; --mark: #f2cc4b; --mark-ink: #221b00; --mark-soft: #3a3214;
-    --pa: #8ea2ff; --pb: #f07cc0; --pc: #4fd1c1; --pd: #f5a25a;
-    --pa-soft: #1f2747; --pb-soft: #3d1d32; --pc-soft: #12332f; --pd-soft: #3b2919;
+    --st1: #6f86ff; --st1-ink: #4a5fd6; --st1-soft: #1c2350; --on-st1: #0b1030; --st1-text: #9aabff;
+    --st2: #ffcf5a; --st2-ink: #d9a42a; --st2-soft: #3a2e0e; --on-st2: #2a1f00; --st2-text: #ffd77a;
+    --st3: #3fd6a6; --st3-ink: #22a87e; --st3-soft: #0f3328; --on-st3: #03261b; --st3-text: #6fe3bd;
+    --st4: #ff8a6b; --st4-ink: #e0603f; --st4-soft: #3d1a10; --on-st4: #2b0b02; --st4-text: #ffa58c;
+    --st5: #a98bff; --st5-ink: #8364ec; --st5-soft: #2a1f4d; --on-st5: #170a3a; --st5-text: #bfa8ff;
+    --st6: #ff79a8; --st6-ink: #e0517f; --st6-soft: #401426; --on-st6: #2b0414; --st6-text: #ff9cc0;
+    --on-text: #0d0f1f;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #111113; --panel: #161618; --sunk: #1c1c1f; --line: #26262a; --line-2: #33333a;
-  --ink: #ececef; --ink-2: #a9a9b2; --ink-3: #74747d;
-  --accent: #8e9bff; --accent-soft: #1f2445; --accent-ink: #0d0f1f; --fill: #1b1c22; --fill-2: #24262e; --ok: #4ccf7f; --ok-soft: #13291c; --bad: #ff8a5c; --bad-soft: #33190f;
+  --bg: #121216; --panel: #17171c; --sunk: #1d1d23; --line: #27272f; --line-2: #36363f;
+  --ink: #efeef4; --ink-2: #b4b2c0; --ink-3: #8c8a99;
+  --fill: #1c1c23; --fill-2: #26262f; --ok: #4ccf7f; --ok-soft: #12291b; --bad: #ff8a5c; --bad-soft: #33190f;
   --warn: #e6b450; --mark: #f2cc4b; --mark-ink: #221b00; --mark-soft: #3a3214;
-  --pa: #8ea2ff; --pb: #f07cc0; --pc: #4fd1c1; --pd: #f5a25a;
-  --pa-soft: #1f2747; --pb-soft: #3d1d32; --pc-soft: #12332f; --pd-soft: #3b2919;
+  --st1: #6f86ff; --st1-ink: #4a5fd6; --st1-soft: #1c2350; --on-st1: #0b1030; --st1-text: #9aabff;
+  --st2: #ffcf5a; --st2-ink: #d9a42a; --st2-soft: #3a2e0e; --on-st2: #2a1f00; --st2-text: #ffd77a;
+  --st3: #3fd6a6; --st3-ink: #22a87e; --st3-soft: #0f3328; --on-st3: #03261b; --st3-text: #6fe3bd;
+  --st4: #ff8a6b; --st4-ink: #e0603f; --st4-soft: #3d1a10; --on-st4: #2b0b02; --st4-text: #ffa58c;
+  --st5: #a98bff; --st5-ink: #8364ec; --st5-soft: #2a1f4d; --on-st5: #170a3a; --st5-text: #bfa8ff;
+  --st6: #ff79a8; --st6-ink: #e0517f; --st6-soft: #401426; --on-st6: #2b0414; --st6-text: #ff9cc0;
+  --on-text: #0d0f1f;
   color-scheme: dark;
 }
+
+/* The page's stage (body[data-stage], set by the router; stage 1 when a page has none). Any element can
+   carry its own data-stage, like the home hero. --accent is the stage colour as text and outlines. */
+:root, [data-stage="1"] { --stage: var(--st1); --stage-ink: var(--st1-ink); --stage-soft: var(--st1-soft); --on-stage: var(--on-st1); --stage-text: var(--st1-text); }
+[data-stage="2"] { --stage: var(--st2); --stage-ink: var(--st2-ink); --stage-soft: var(--st2-soft); --on-stage: var(--on-st2); --stage-text: var(--st2-text); }
+[data-stage="3"] { --stage: var(--st3); --stage-ink: var(--st3-ink); --stage-soft: var(--st3-soft); --on-stage: var(--on-st3); --stage-text: var(--st3-text); }
+[data-stage="4"] { --stage: var(--st4); --stage-ink: var(--st4-ink); --stage-soft: var(--st4-soft); --on-stage: var(--on-st4); --stage-text: var(--st4-text); }
+[data-stage="5"] { --stage: var(--st5); --stage-ink: var(--st5-ink); --stage-soft: var(--st5-soft); --on-stage: var(--on-st5); --stage-text: var(--st5-text); }
+[data-stage="6"] { --stage: var(--st6); --stage-ink: var(--st6-ink); --stage-soft: var(--st6-soft); --on-stage: var(--on-st6); --stage-text: var(--st6-text); }
+:root, [data-stage] { --accent: var(--stage-text); --accent-soft: var(--stage-soft); --accent-ink: var(--on-text); }
 
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
@@ -74,19 +103,24 @@ kbd { font-size: 11px; padding: 1px 5px; border: 1px solid var(--line-2); border
 /* ── Buttons ─────────────────────────────────────────── */
 .btn {
   display: inline-flex; align-items: center; gap: 8px;
-  height: 36px; padding: 0 18px;
-  border: 0; border-radius: 999px;
+  height: 38px; padding: 0 18px;
+  border: 0; border-radius: 12px;
   background: var(--fill); color: var(--ink);
-  font-weight: 500; font-size: 14px;
+  font-weight: 600; font-size: 14px;
   cursor: pointer; white-space: nowrap; text-decoration: none;
+  box-shadow: 0 3px 0 var(--fill-2);
+  transition: transform 0.08s ease-out, box-shadow 0.08s ease-out, filter 0.15s;
 }
-.btn:hover { background: var(--fill-2); }
-.btn.primary, .btn.run { background: var(--accent); color: var(--accent-ink); }
-.btn.primary:hover, .btn.run:hover { filter: brightness(1.06); background: var(--accent); }
-.btn.ghost { background: none; color: var(--ink-2); }
-.btn.ghost:hover { background: var(--fill); color: var(--ink); }
-.btn.small { height: 30px; padding: 0 12px; font-size: 13px; }
-.btn[disabled] { opacity: 0.55; cursor: progress; }
+.btn:hover { background: var(--fill-2); box-shadow: 0 3px 0 var(--line-2); }
+.btn:active { transform: translateY(3px); box-shadow: 0 0 0 var(--line-2); }
+.btn.primary, .btn.run { background: var(--stage); color: var(--on-stage); box-shadow: 0 4px 0 var(--stage-ink); font-weight: 700; }
+.btn.primary:hover, .btn.run:hover { background: var(--stage); filter: brightness(1.05); box-shadow: 0 4px 0 var(--stage-ink); }
+.btn.primary:active, .btn.run:active { transform: translateY(4px); box-shadow: 0 0 0 var(--stage-ink); }
+.btn.ghost { background: none; color: var(--ink-2); box-shadow: none; }
+.btn.ghost:hover { background: var(--fill); color: var(--ink); box-shadow: none; }
+.btn.small { height: 32px; padding: 0 13px; font-size: 13px; border-radius: 10px; }
+.btn[disabled] { opacity: 0.55; cursor: progress; transform: none; }
+@media (prefers-reduced-motion: reduce) { .btn { transition: none; } .btn:active { transform: none; } }
 .btn kbd { border-color: currentColor; color: inherit; opacity: 0.6; }
 .link { border: 0; background: none; padding: 0; color: var(--accent); cursor: pointer; text-decoration: none; font-weight: 500; }
 .link:hover { text-decoration: underline; text-underline-offset: 3px; }

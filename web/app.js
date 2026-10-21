@@ -197,6 +197,9 @@
   }
 
   function topicOf(name) { return S.topics.find((t) => t.items.includes(name)); }
+  // 1-based position of the topic's stage among the course's stages, in course order.
+  const stageNames = () => [...new Set(S.topics.map((t) => t.stage))];
+  const stageOf = (topic) => stageNames().indexOf(topic.stage) + 1;
   function nextItem(name) {
     const topic = topicOf(name);
     const i = topic.items.indexOf(name);
@@ -1125,6 +1128,10 @@
     document.body.classList.remove("ws");
     app.scrollTop = 0;
     const [, kind, a, b, c] = decodeURIComponent(location.hash).split("/");
+    const viewed = kind === "t" || kind === "w" ? S.topics.find((t) => t.id === a)
+      : kind === "p" ? topicOf(a) : kind === "d" && T.byId[a] ? S.topics.find((t) => t.n === T.byId[a].n) : null;
+    if (viewed) document.body.dataset.stage = stageOf(viewed);
+    else delete document.body.dataset.stage;
     try {
       renderSide();
       if (kind === "t") return await viewTopic(a);
@@ -1150,6 +1157,8 @@
       S.progress = data.progress;
       S.plans = data.plans || S.plans;
       S.techniques = data.techniques || {};
+      T.stageOf = stageOf;
+      T.stageNames = stageNames();
       showDocker(data.docker);
     } catch (err) {
       app.replaceChildren(h("div", { class: "page" }, h("h1", {}, "Can't reach Trace's engine"),
