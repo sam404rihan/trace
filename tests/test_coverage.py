@@ -647,7 +647,6 @@ class Stage6Audit(AuditBase):
         for name in ("extended_gcd", "prime_factors"):
             self.assertEqual(self.problems[name]["difficulty"], "easy", name)
 
-
     def test_topic_31(self):
         self.assert_audited("31_geometry")
         self.assert_teaches({"orientation": ["geo.cross"], "convex_hull": ["geo.hull"], "polygon_area": ["geo.shoelace"]})
@@ -655,18 +654,17 @@ class Stage6Audit(AuditBase):
                           "rectangle_area_ii": ["intervals.merge", "intervals.sort_by_start"],
                           "max_points_on_line": ["hash.group_key"], "segments_intersect": ["geo.cross"]})
 
-
     def test_topic_32(self):
         self.assert_audited("32_advanced_trees")
         self.assert_teaches({"lift_jump": ["tree.lift_jump"], "tree_ancestor": ["tree.lift_table"],
                              "subtree_sizes": ["tree.bfs_order"], "lca_queries": ["tree.lca"],
                              "min_edge_reversals": ["tree.reroot"]})
         self.assert_uses({"sum_of_distances": ["tree.bfs_order", "tree.reroot"],
-                          "path_weight_queries": ["prefix.sums", "tree.lift_table", "tree.lca"],
-                          "family_tree": ["tree.lift_table", "tree.bfs_order", "tree.lca"]})
+                          "path_weight_queries": ["prefix.sums", "tree.lift_jump", "tree.lift_table", "tree.bfs_order",
+                                                  "tree.lca"],
+                          "family_tree": ["tree.lift_jump", "tree.lift_table", "tree.bfs_order", "tree.lca"]})
         for name in ("lca_queries", "min_edge_reversals"):
             self.assertEqual(self.problems[name]["difficulty"], "easy", name)
-
 
     def test_topic_33(self):
         self.assert_audited("33_network_flow")
@@ -676,7 +674,6 @@ class Stage6Audit(AuditBase):
                           "schedule_interviews": ["flow.augment", "flow.model"]})
         for name in ("min_cut_edges", "max_staffing"):
             self.assertEqual(self.problems[name]["difficulty"], "easy", name)
-
 
     def test_topic_34(self):
         self.assert_audited("34_digit_dp_and_speedups")
@@ -699,6 +696,11 @@ class Stage6Audit(AuditBase):
         big("lca_queries", lambda a, w: len(a[0]) >= 50_000 and len(a[1]) >= 50_000)    # walk up one by one
         big("min_edge_reversals", lambda a, w: a[0] >= 20_000)                      # BFS from every node
         big("subtree_sizes", lambda a, w: a[0] >= 100_000)                          # recursion: too deep
+
+    def test_explanations_cover_the_steps_learners_trip_on(self):
+        explain = {k: t["explain"] for k, t in server.parse_techniques(server.TECHNIQUES_FILE).items()}
+        self.assertIn("is -1", explain["tree.lift_table"])              # the root has no parent to jump from
+        self.assertIn("lower[:-1] + upper[:-1]", explain["geo.hull"])   # each chain ends where the other starts
 
     def test_lca_big_tests_meet_far_above_both_nodes(self):
         # Lifting to equal depth, then stepping both nodes up one parent at a time, must time out:

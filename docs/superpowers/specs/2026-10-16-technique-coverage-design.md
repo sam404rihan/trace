@@ -276,8 +276,9 @@ topic, Graph traversal, the pilot audit found five, plus one re-ranked problem (
 - `tests/test_coverage.py` builds small fake courses. Each one tests a single rule: unknown id, no
   teacher or two teachers, a teacher of the wrong kind, a teacher later in the same topic, a teacher in a
   later topic, a cross-topic teacher in an earlier topic (allowed), a teacher with a bad chain, the
-  same id taught and used, and an unaudited problem giving a warning only.
-- A real-course test: zero errors across the course, and zero warnings in Graph traversal.
+  same id taught and used, and an unaudited problem (a warning during Part 2, an error since Stage 6).
+- A real-course test: zero errors across the course. (During Part 2 it also checked zero warnings in
+  Graph traversal; with the strict rule there are no warnings left.)
 - `--check` passes, including the five new problems' solutions and starters.
 - Browser checks (headless, as in Phase 1):
   - the box on a teaching problem;

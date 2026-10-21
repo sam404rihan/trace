@@ -578,7 +578,8 @@ TECHNIQUES = {
         "name": "Convex hull (monotone chain)",
         "explain": "Sort the points. Walk left to right building the bottom chain: before adding a point, pop the "
                    "last one while the last two and the new point don't make a left turn. Do the same right to left "
-                   "for the top chain, then join them. O(n log n) for the sort.",
+                   "for the top chain. Each chain ends where the other starts, so join them as "
+                   "`lower[:-1] + upper[:-1]`. O(n log n) for the sort.",
     },
     "geo.shoelace": {
         "name": "The shoelace formula",
@@ -594,7 +595,8 @@ TECHNIQUES = {
     "tree.lift_table": {
         "name": "Building a lifting table",
         "explain": "Row 0 of the table is each node's parent. Each next row doubles the jump: "
-                   "`up[j][v] = up[j - 1][up[j - 1][v]]`, the 2^(j-1)-th ancestor of the 2^(j-1)-th ancestor. About "
+                   "`up[j][v] = up[j - 1][up[j - 1][v]]`, the 2^(j-1)-th ancestor of the 2^(j-1)-th ancestor. The "
+                   "root's parent is -1, so check first: when `up[j - 1][v]` is -1, `up[j][v]` is -1 too. About "
                    "log n rows cover any jump, in O(n log n) time and space.",
     },
     "tree.bfs_order": {

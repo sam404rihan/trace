@@ -121,7 +121,7 @@ def _cases():
     return out
 
 
-USES = ["prefix.sums", "tree.lift_table", "tree.lca"]
+USES = ["prefix.sums", "tree.lift_jump", "tree.lift_table", "tree.bfs_order", "tree.lca"]
 
 TESTS = [
     ((7, [[0, 1, 1], [1, 2, 1], [2, 3, 1], [3, 4, 2], [4, 5, 2], [5, 6, 2]], [[0, 3], [3, 6], [2, 6], [0, 6]]),
