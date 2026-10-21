@@ -1,0 +1,1035 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-21T18:38:23+05:30",
+  "title": "Design System: Trace",
+  "extensions": {
+    "colorMeta": {
+      "ground": {
+        "role": "neutral",
+        "displayName": "Paper White",
+        "canonical": "#ffffff",
+        "dark": "#121216",
+        "tonalRamp": [
+          "#404040",
+          "#737373",
+          "#a6a6a6",
+          "#d9d9d9",
+          "#ffffff",
+          "#ffffff",
+          "#ffffff",
+          "#ffffff"
+        ]
+      },
+      "panel": {
+        "role": "neutral",
+        "displayName": "Sidebar Mist",
+        "canonical": "#f8f8fb",
+        "dark": "#17171c",
+        "tonalRamp": [
+          "#3e3e3f",
+          "#707071",
+          "#a1a1a3",
+          "#d3d3d5",
+          "#f9f9fc",
+          "#fbfbfd",
+          "#fdfdfe",
+          "#fefeff"
+        ]
+      },
+      "sunk": {
+        "role": "neutral",
+        "displayName": "Well",
+        "canonical": "#f2f2f6",
+        "dark": "#1d1d23",
+        "tonalRamp": [
+          "#3c3c3e",
+          "#6d6d6f",
+          "#9d9da0",
+          "#ceced1",
+          "#f5f5f8",
+          "#f8f8fa",
+          "#fbfbfc",
+          "#fefefe"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "#e8e8ef",
+        "dark": "#27272f",
+        "tonalRamp": [
+          "#3a3a3c",
+          "#68686c",
+          "#97979b",
+          "#c5c5cb",
+          "#ededf2",
+          "#f2f2f6",
+          "#f8f8fa",
+          "#fdfdfd"
+        ]
+      },
+      "line-strong": {
+        "role": "neutral",
+        "displayName": "Firm Hairline",
+        "canonical": "#d6d6e0",
+        "dark": "#36363f",
+        "tonalRamp": [
+          "#363638",
+          "#606065",
+          "#8b8b92",
+          "#b6b6be",
+          "#dedee6",
+          "#e8e8ee",
+          "#f3f3f6",
+          "#fbfbfc"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#17161f",
+        "dark": "#efeef4",
+        "tonalRamp": [
+          "#060608",
+          "#0a0a0e",
+          "#0f0e14",
+          "#14131a",
+          "#45454c",
+          "#7f7f84",
+          "#b9b9bc",
+          "#e8e8e9"
+        ]
+      },
+      "ink-muted": {
+        "role": "neutral",
+        "displayName": "Ink Muted",
+        "canonical": "#4f4d5c",
+        "dark": "#b4b2c0",
+        "tonalRamp": [
+          "#141317",
+          "#242329",
+          "#33323c",
+          "#43414e",
+          "#72717d",
+          "#9e9da5",
+          "#cacace",
+          "#ededef"
+        ]
+      },
+      "ink-faint": {
+        "role": "neutral",
+        "displayName": "Ink Faint",
+        "canonical": "#6f6c7d",
+        "dark": "#8c8a99",
+        "tonalRamp": [
+          "#1c1b1f",
+          "#323138",
+          "#484651",
+          "#5e5c6a",
+          "#8c8997",
+          "#b0aeb8",
+          "#d4d3d8",
+          "#f1f0f2"
+        ]
+      },
+      "fill": {
+        "role": "neutral",
+        "displayName": "Fill",
+        "canonical": "#f4f4f8",
+        "dark": "#1c1c23",
+        "tonalRamp": [
+          "#3d3d3e",
+          "#6e6e70",
+          "#9f9fa1",
+          "#cfcfd3",
+          "#f6f6f9",
+          "#f9f9fb",
+          "#fcfcfd",
+          "#fefefe"
+        ]
+      },
+      "fill-strong": {
+        "role": "neutral",
+        "displayName": "Fill Strong",
+        "canonical": "#e9e9f0",
+        "dark": "#26262f",
+        "tonalRamp": [
+          "#3a3a3c",
+          "#69696c",
+          "#97979c",
+          "#c6c6cc",
+          "#ededf3",
+          "#f3f3f7",
+          "#f8f8fa",
+          "#fdfdfe"
+        ]
+      },
+      "ok": {
+        "role": "secondary",
+        "displayName": "Pass Green",
+        "canonical": "#13803f",
+        "dark": "#4ccf7f",
+        "tonalRamp": [
+          "#052010",
+          "#093a1c",
+          "#0c5329",
+          "#106d36",
+          "#429965",
+          "#7db995",
+          "#b8d9c5",
+          "#e7f2ec"
+        ]
+      },
+      "on-ok": {
+        "role": "secondary",
+        "displayName": "On Ok",
+        "canonical": "#ffffff",
+        "dark": "#0b2a17",
+        "tonalRamp": [
+          "#404040",
+          "#737373",
+          "#a6a6a6",
+          "#d9d9d9",
+          "#ffffff",
+          "#ffffff",
+          "#ffffff",
+          "#ffffff"
+        ]
+      },
+      "ok-soft": {
+        "role": "secondary",
+        "displayName": "Ok Soft",
+        "canonical": "#e4f6ea",
+        "dark": "#12291b",
+        "tonalRamp": [
+          "#393e3a",
+          "#676f69",
+          "#94a098",
+          "#c2d1c7",
+          "#e9f8ee",
+          "#f0faf3",
+          "#f7fcf9",
+          "#fcfefd"
+        ]
+      },
+      "bad": {
+        "role": "secondary",
+        "displayName": "Rust Fail",
+        "canonical": "#c4410c",
+        "dark": "#ff8a5c",
+        "tonalRamp": [
+          "#311003",
+          "#581d05",
+          "#7f2a08",
+          "#a7370a",
+          "#d0673d",
+          "#df9679",
+          "#edc6b6",
+          "#f9ece7"
+        ]
+      },
+      "bad-soft": {
+        "role": "secondary",
+        "displayName": "Bad Soft",
+        "canonical": "#fdeee7",
+        "dark": "#33190f",
+        "tonalRamp": [
+          "#3f3c3a",
+          "#726b68",
+          "#a49b96",
+          "#d7cac4",
+          "#fdf1ec",
+          "#fef6f2",
+          "#fefaf8",
+          "#fffdfd"
+        ]
+      },
+      "warn": {
+        "role": "secondary",
+        "displayName": "Amber Caution",
+        "canonical": "#9a5b00",
+        "dark": "#e6b450",
+        "tonalRamp": [
+          "#261700",
+          "#452900",
+          "#643b00",
+          "#834d00",
+          "#ae7c33",
+          "#c7a573",
+          "#e1ceb2",
+          "#f5efe6"
+        ]
+      },
+      "mark": {
+        "role": "tertiary",
+        "displayName": "Highlighter Yellow",
+        "canonical": "#ffd23f",
+        "dark": "#f2cc4b",
+        "tonalRamp": [
+          "#403410",
+          "#735e1c",
+          "#a68829",
+          "#d9b236",
+          "#ffdb65",
+          "#ffe695",
+          "#fff2c5",
+          "#fffaec"
+        ]
+      },
+      "mark-ink": {
+        "role": "tertiary",
+        "displayName": "Mark Ink",
+        "canonical": "#2b2300",
+        "dark": "#221b00",
+        "tonalRamp": [
+          "#0b0900",
+          "#131000",
+          "#1c1700",
+          "#251e00",
+          "#554f33",
+          "#8a8673",
+          "#bfbdb2",
+          "#eae9e6"
+        ]
+      },
+      "mark-soft": {
+        "role": "tertiary",
+        "displayName": "Mark Soft",
+        "canonical": "#fff4c7",
+        "dark": "#3a3214",
+        "tonalRamp": [
+          "#403d32",
+          "#736e5a",
+          "#a69f81",
+          "#d9cfa9",
+          "#fff6d2",
+          "#fff9e0",
+          "#fffcee",
+          "#fffef9"
+        ]
+      },
+      "st1": {
+        "role": "primary",
+        "displayName": "Ultramarine",
+        "canonical": "#3d5afe",
+        "dark": "#3346d6",
+        "tonalRamp": [
+          "#0f1640",
+          "#1b2872",
+          "#283aa5",
+          "#344cd8",
+          "#647bfe",
+          "#94a4fe",
+          "#c5ceff",
+          "#eceeff"
+        ]
+      },
+      "st1-ink": {
+        "role": "primary",
+        "displayName": "Ultramarine Edge",
+        "canonical": "#2a3fc4",
+        "dark": "#23319c",
+        "tonalRamp": [
+          "#0a1031",
+          "#131c58",
+          "#1b297f",
+          "#2436a7",
+          "#5565d0",
+          "#8a95df",
+          "#bfc5ed",
+          "#eaecf9"
+        ]
+      },
+      "st1-soft": {
+        "role": "primary",
+        "displayName": "Ultramarine Tint",
+        "canonical": "#e8ecff",
+        "dark": "#1c2350",
+        "tonalRamp": [
+          "#3a3b40",
+          "#686a73",
+          "#9799a6",
+          "#c5c9d9",
+          "#edf0ff",
+          "#f2f5ff",
+          "#f8f9ff",
+          "#fdfdff"
+        ]
+      },
+      "on-st1": {
+        "role": "primary",
+        "displayName": "Text on Ultramarine",
+        "canonical": "#ffffff",
+        "dark": "#ffffff",
+        "tonalRamp": [
+          "#404040",
+          "#737373",
+          "#a6a6a6",
+          "#d9d9d9",
+          "#ffffff",
+          "#ffffff",
+          "#ffffff",
+          "#ffffff"
+        ]
+      },
+      "st1-text": {
+        "role": "primary",
+        "displayName": "Ultramarine Text",
+        "canonical": "#2f47d6",
+        "dark": "#9aabff",
+        "tonalRamp": [
+          "#0c1236",
+          "#152060",
+          "#1f2e8b",
+          "#283cb6",
+          "#596cde",
+          "#8d9ae8",
+          "#c1c8f3",
+          "#eaedfb"
+        ]
+      },
+      "st2": {
+        "role": "primary",
+        "displayName": "Sunflower",
+        "canonical": "#ffc22e",
+        "dark": "#e5a91f",
+        "tonalRamp": [
+          "#40300c",
+          "#735715",
+          "#a67e1e",
+          "#d9a527",
+          "#ffce58",
+          "#ffdd8c",
+          "#ffedc0",
+          "#fff9ea"
+        ]
+      },
+      "st2-ink": {
+        "role": "primary",
+        "displayName": "Sunflower Edge",
+        "canonical": "#d99a00",
+        "dark": "#a87a0c",
+        "tonalRamp": [
+          "#362600",
+          "#624500",
+          "#8d6400",
+          "#b88300",
+          "#e1ae33",
+          "#eac773",
+          "#f4e1b2",
+          "#fbf5e6"
+        ]
+      },
+      "st2-soft": {
+        "role": "primary",
+        "displayName": "Sunflower Tint",
+        "canonical": "#fff4d6",
+        "dark": "#3a2e0e",
+        "tonalRamp": [
+          "#403d36",
+          "#736e60",
+          "#a69f8b",
+          "#d9cfb6",
+          "#fff6de",
+          "#fff9e8",
+          "#fffcf3",
+          "#fffefb"
+        ]
+      },
+      "on-st2": {
+        "role": "primary",
+        "displayName": "Text on Sunflower",
+        "canonical": "#2a1f00",
+        "dark": "#2a1f00",
+        "tonalRamp": [
+          "#0a0800",
+          "#130e00",
+          "#1b1400",
+          "#241a00",
+          "#554c33",
+          "#8a8473",
+          "#bfbcb2",
+          "#eae9e6"
+        ]
+      },
+      "st2-text": {
+        "role": "primary",
+        "displayName": "Sunflower Text",
+        "canonical": "#8a5a00",
+        "dark": "#ffd77a",
+        "tonalRamp": [
+          "#221600",
+          "#3e2800",
+          "#5a3a00",
+          "#754c00",
+          "#a17b33",
+          "#bfa473",
+          "#dcceb2",
+          "#f3eee6"
+        ]
+      },
+      "st3": {
+        "role": "primary",
+        "displayName": "Mint",
+        "canonical": "#1fbf8f",
+        "dark": "#17a57b",
+        "tonalRamp": [
+          "#083024",
+          "#0e5640",
+          "#147c5d",
+          "#1aa27a",
+          "#4ccca5",
+          "#84dcc1",
+          "#bcecdd",
+          "#e9f9f4"
+        ]
+      },
+      "st3-ink": {
+        "role": "primary",
+        "displayName": "Mint Edge",
+        "canonical": "#12916b",
+        "dark": "#0e7556",
+        "tonalRamp": [
+          "#04241b",
+          "#084130",
+          "#0c5e46",
+          "#0f7b5b",
+          "#41a789",
+          "#7dc2ae",
+          "#b8ded3",
+          "#e7f4f0"
+        ]
+      },
+      "st3-soft": {
+        "role": "primary",
+        "displayName": "Mint Tint",
+        "canonical": "#dcf7ee",
+        "dark": "#0f3328",
+        "tonalRamp": [
+          "#373e3c",
+          "#636f6b",
+          "#8fa19b",
+          "#bbd2ca",
+          "#e3f9f1",
+          "#ecfbf6",
+          "#f4fdfa",
+          "#fcfefd"
+        ]
+      },
+      "on-st3": {
+        "role": "primary",
+        "displayName": "Text on Mint",
+        "canonical": "#03261b",
+        "dark": "#03261b",
+        "tonalRamp": [
+          "#010a07",
+          "#01110c",
+          "#021912",
+          "#032017",
+          "#355149",
+          "#748882",
+          "#b3bebb",
+          "#e6e9e8"
+        ]
+      },
+      "st3-text": {
+        "role": "primary",
+        "displayName": "Mint Text",
+        "canonical": "#0b7353",
+        "dark": "#6fe3bd",
+        "tonalRamp": [
+          "#031d15",
+          "#053425",
+          "#074b36",
+          "#096247",
+          "#3c8f75",
+          "#79b2a0",
+          "#b6d5cb",
+          "#e7f1ee"
+        ]
+      },
+      "st4": {
+        "role": "primary",
+        "displayName": "Coral",
+        "canonical": "#ff6a45",
+        "dark": "#e8583a",
+        "tonalRamp": [
+          "#401a11",
+          "#73301f",
+          "#a6452d",
+          "#d95a3b",
+          "#ff886a",
+          "#ffad99",
+          "#ffd2c7",
+          "#fff0ec"
+        ]
+      },
+      "st4-ink": {
+        "role": "primary",
+        "displayName": "Coral Edge",
+        "canonical": "#d9482a",
+        "dark": "#a93a21",
+        "tonalRamp": [
+          "#36120a",
+          "#622013",
+          "#8d2f1b",
+          "#b83d24",
+          "#e16d55",
+          "#ea9a8a",
+          "#f4c8bf",
+          "#fbedea"
+        ]
+      },
+      "st4-soft": {
+        "role": "primary",
+        "displayName": "Coral Tint",
+        "canonical": "#ffe9e2",
+        "dark": "#3d1a10",
+        "tonalRamp": [
+          "#403a38",
+          "#736966",
+          "#a69793",
+          "#d9c6c0",
+          "#ffede8",
+          "#fff3ef",
+          "#fff8f6",
+          "#fffdfc"
+        ]
+      },
+      "on-st4": {
+        "role": "primary",
+        "displayName": "Text on Coral",
+        "canonical": "#2b0b02",
+        "dark": "#2b0b02",
+        "tonalRamp": [
+          "#0b0300",
+          "#130501",
+          "#1c0701",
+          "#250902",
+          "#553c35",
+          "#8a7974",
+          "#bfb6b3",
+          "#eae7e6"
+        ]
+      },
+      "st4-text": {
+        "role": "primary",
+        "displayName": "Coral Text",
+        "canonical": "#b8391b",
+        "dark": "#ffa58c",
+        "tonalRamp": [
+          "#2e0e07",
+          "#531a0c",
+          "#782512",
+          "#9c3017",
+          "#c66149",
+          "#d89282",
+          "#eac4bb",
+          "#f8ebe8"
+        ]
+      },
+      "st5": {
+        "role": "primary",
+        "displayName": "Electric Violet",
+        "canonical": "#7c4dff",
+        "dark": "#6a3ff0",
+        "tonalRamp": [
+          "#1f1340",
+          "#382373",
+          "#5132a6",
+          "#6941d9",
+          "#9671ff",
+          "#b79dff",
+          "#d8caff",
+          "#f2edff"
+        ]
+      },
+      "st5-ink": {
+        "role": "primary",
+        "displayName": "Electric Violet Edge",
+        "canonical": "#5a2fd6",
+        "dark": "#4a25b8",
+        "tonalRamp": [
+          "#160c36",
+          "#281560",
+          "#3a1f8b",
+          "#4c28b6",
+          "#7b59de",
+          "#a48de8",
+          "#cec1f3",
+          "#eeeafb"
+        ]
+      },
+      "st5-soft": {
+        "role": "primary",
+        "displayName": "Electric Violet Tint",
+        "canonical": "#efe8ff",
+        "dark": "#2a1f4d",
+        "tonalRamp": [
+          "#3c3a40",
+          "#6c6873",
+          "#9b97a6",
+          "#cbc5d9",
+          "#f2edff",
+          "#f6f2ff",
+          "#faf8ff",
+          "#fdfdff"
+        ]
+      },
+      "on-st5": {
+        "role": "primary",
+        "displayName": "Text on Electric Violet",
+        "canonical": "#ffffff",
+        "dark": "#ffffff",
+        "tonalRamp": [
+          "#404040",
+          "#737373",
+          "#a6a6a6",
+          "#d9d9d9",
+          "#ffffff",
+          "#ffffff",
+          "#ffffff",
+          "#ffffff"
+        ]
+      },
+      "st5-text": {
+        "role": "primary",
+        "displayName": "Electric Violet Text",
+        "canonical": "#6a3fd6",
+        "dark": "#bfa8ff",
+        "tonalRamp": [
+          "#1a1036",
+          "#301c60",
+          "#45298b",
+          "#5a36b6",
+          "#8865de",
+          "#ad95e8",
+          "#d2c5f3",
+          "#f0ecfb"
+        ]
+      },
+      "st6": {
+        "role": "primary",
+        "displayName": "Bubblegum Pink",
+        "canonical": "#f0508a",
+        "dark": "#e0457e",
+        "tonalRamp": [
+          "#3c1422",
+          "#6c243e",
+          "#9c345a",
+          "#cc4475",
+          "#f373a1",
+          "#f79fbf",
+          "#facadc",
+          "#feeef3"
+        ]
+      },
+      "st6-ink": {
+        "role": "primary",
+        "displayName": "Bubblegum Pink Edge",
+        "canonical": "#cc2f68",
+        "dark": "#a32a57",
+        "tonalRamp": [
+          "#330c1a",
+          "#5c152f",
+          "#851f44",
+          "#ad2858",
+          "#d65986",
+          "#e38dac",
+          "#f0c1d2",
+          "#faeaf0"
+        ]
+      },
+      "st6-soft": {
+        "role": "primary",
+        "displayName": "Bubblegum Pink Tint",
+        "canonical": "#ffe5ef",
+        "dark": "#401426",
+        "tonalRamp": [
+          "#40393c",
+          "#73676c",
+          "#a6959b",
+          "#d9c3cb",
+          "#ffeaf2",
+          "#fff1f6",
+          "#fff7fa",
+          "#fffcfd"
+        ]
+      },
+      "on-st6": {
+        "role": "primary",
+        "displayName": "Text on Bubblegum Pink",
+        "canonical": "#2b0414",
+        "dark": "#2b0414",
+        "tonalRamp": [
+          "#0b0105",
+          "#130209",
+          "#1c030d",
+          "#250311",
+          "#553643",
+          "#8a757e",
+          "#bfb4b8",
+          "#eae6e8"
+        ]
+      },
+      "st6-text": {
+        "role": "primary",
+        "displayName": "Bubblegum Pink Text",
+        "canonical": "#b8245a",
+        "dark": "#ff9cc0",
+        "tonalRamp": [
+          "#2e0916",
+          "#531028",
+          "#78173a",
+          "#9c1f4c",
+          "#c6507b",
+          "#d887a4",
+          "#eabdce",
+          "#f8e9ee"
+        ]
+      },
+      "on-text": {
+        "role": "neutral",
+        "displayName": "On Text",
+        "canonical": "#ffffff",
+        "dark": "#0d0f1f",
+        "tonalRamp": [
+          "#404040",
+          "#737373",
+          "#a6a6a6",
+          "#d9d9d9",
+          "#ffffff",
+          "#ffffff",
+          "#ffffff",
+          "#ffffff"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Topic name in the home hero only. 800 resolves to the 700 vendored face."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Page titles; scaled per surface (23 to 40px)."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Roadmap stage names; rung titles at 17px/600."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Reading pages; prose at 17px/1.65 capped at 72ch."
+      },
+      "body-ui": {
+        "displayName": "Body (chrome)",
+        "purpose": "App default text size."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Sentence-case section titles in ink-faint; 12.5px and 11.5px variants."
+      },
+      "code": {
+        "displayName": "Code",
+        "purpose": "Editor, code blocks and numbers that are data."
+      }
+    },
+    "shadows": [
+      {
+        "name": "pressed-edge-default",
+        "value": "0 3px 0 var(--fill-2)",
+        "purpose": "Default buttons."
+      },
+      {
+        "name": "pressed-edge-stage",
+        "value": "0 4px 0 var(--stage-ink)",
+        "purpose": "Primary and run buttons; the current roadmap stop."
+      },
+      {
+        "name": "pressed-edge-hero",
+        "value": "0 5px 0 var(--stage-ink)",
+        "purpose": "Hero Continue button."
+      },
+      {
+        "name": "tile-edge",
+        "value": "drop-shadow(0 3px 0 var(--stage-ink))",
+        "purpose": "Cells and nodes in topic drawings (CSS filter)."
+      },
+      {
+        "name": "palette-float",
+        "value": "0 24px 60px -20px rgba(0,0,0,0.35)",
+        "purpose": "Ctrl K palette over a rgba(10,10,14,0.28) scrim."
+      },
+      {
+        "name": "drawer-float",
+        "value": "8px 0 30px -12px rgba(0,0,0,0.3)",
+        "purpose": "Sidebar as a mobile overlay."
+      }
+    ],
+    "motion": [
+      {
+        "name": "press",
+        "value": "transform 0.08s ease-out, box-shadow 0.08s ease-out",
+        "purpose": "Buttons sink by their edge height on :active; off under reduced motion."
+      },
+      {
+        "name": "art-build",
+        "value": "0.6s cubic-bezier(0.16, 1, 0.3, 1); delay calc(var(--i) * 45ms + 120ms); from opacity 0, translateY(10px) scale(0.8)",
+        "purpose": "The one authored moment: the home drawing builds in; off under reduced motion."
+      },
+      {
+        "name": "ease-out-expo",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Drawing build-in and the roadmap fold chevron."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "road-compact",
+        "value": "600px"
+      },
+      {
+        "name": "hero-stack",
+        "value": "760px"
+      },
+      {
+        "name": "shell-drawer",
+        "value": "900px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The stage-coloured action; sits on a stage-ink edge and sinks when pressed.",
+      "html": "<button class=\"ds-btn-primary\">Run tests</button>",
+      "css": ".ds-btn-primary{display:inline-flex;align-items:center;gap:8px;height:38px;padding:0 18px;border:0;border-radius:12px;font:700 14px \"Schibsted Grotesk\",\"Segoe UI\",system-ui,sans-serif;cursor:pointer;background:var(--stage,#3d5afe);color:var(--on-stage,#fff);box-shadow:0 4px 0 var(--stage-ink,#2a3fc4);transition:transform .08s ease-out,box-shadow .08s ease-out,filter .15s}.ds-btn-primary:hover{filter:brightness(1.05)}.ds-btn-primary:active{transform:translateY(4px);box-shadow:0 0 0 var(--stage-ink,#2a3fc4)}.ds-btn-primary:focus-visible{outline:2px solid var(--accent,#2f47d6);outline-offset:2px}@media (prefers-reduced-motion:reduce){.ds-btn-primary{transition:none}.ds-btn-primary:active{transform:none}}"
+    },
+    {
+      "name": "Default Button",
+      "kind": "button",
+      "refersTo": "button-default",
+      "description": "Neutral action on a fill face with a 3px fill-strong edge.",
+      "html": "<button class=\"ds-btn-default\">Reset code</button>",
+      "css": ".ds-btn-default{display:inline-flex;align-items:center;gap:8px;height:38px;padding:0 18px;border:0;border-radius:12px;background:var(--fill,#f4f4f8);color:var(--ink,#17161f);font:600 14px \"Schibsted Grotesk\",\"Segoe UI\",system-ui,sans-serif;cursor:pointer;box-shadow:0 3px 0 var(--fill-2,#e9e9f0);transition:transform .08s ease-out,box-shadow .08s ease-out}.ds-btn-default:hover{background:var(--fill-2,#e9e9f0);box-shadow:0 3px 0 var(--line-2,#d6d6e0)}.ds-btn-default:active{transform:translateY(3px);box-shadow:0 0 0 var(--line-2,#d6d6e0)}.ds-btn-default:focus-visible{outline:2px solid var(--accent,#2f47d6);outline-offset:2px}"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Quiet secondary action: no face, no edge.",
+      "html": "<button class=\"ds-btn-ghost\">Show hint</button>",
+      "css": ".ds-btn-ghost{display:inline-flex;align-items:center;height:38px;padding:0 18px;border:0;border-radius:12px;background:none;color:var(--ink-2,#4f4d5c);font:600 14px \"Schibsted Grotesk\",\"Segoe UI\",system-ui,sans-serif;cursor:pointer}.ds-btn-ghost:hover{background:var(--fill,#f4f4f8);color:var(--ink,#17161f)}.ds-btn-ghost:focus-visible{outline:2px solid var(--accent,#2f47d6);outline-offset:2px}"
+    },
+    {
+      "name": "Hero Card",
+      "kind": "custom",
+      "refersTo": "hero-card",
+      "description": "The whole home screen: stage slab, topic title, stage line below it, next item, Continue on a ground face.",
+      "html": "<section class=\"ds-hero\"><h1>Two pointers</h1><p class=\"ds-hero-stage\">Stage 2 · Core patterns</p><p class=\"ds-hero-next\"><strong>Is It a Subsequence?</strong><span>Easy problem</span></p><a class=\"ds-hero-go\" href=\"#\">Continue <svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M5 12h13M13 6l6 6-6 6\"/></svg></a></section>",
+      "css": ".ds-hero{padding:44px 44px 44px 52px;background:var(--st2,#ffc22e);color:var(--on-st2,#2a1f00);border-radius:28px;font-family:\"Schibsted Grotesk\",\"Segoe UI\",system-ui,sans-serif}.ds-hero h1{margin:0;font-size:clamp(34px,4.6vw,56px);line-height:1.02;letter-spacing:-.035em;font-weight:800}.ds-hero-stage{margin:12px 0 0;font-size:15px;font-weight:600}.ds-hero-next{margin:26px 0 0;font-size:19px;line-height:1.4;display:flex;flex-direction:column;gap:2px}.ds-hero-next span{font-size:15px;font-weight:500}.ds-hero-go{display:inline-flex;align-items:center;gap:8px;margin-top:30px;height:54px;padding:0 26px;border-radius:16px;font-size:18px;font-weight:800;text-decoration:none;background:var(--bg,#fff);color:var(--ink,#17161f);box-shadow:0 5px 0 var(--st2-ink,#d99a00);transition:transform .08s ease-out,box-shadow .08s ease-out}.ds-hero-go:active{transform:translateY(5px);box-shadow:0 0 0 var(--st2-ink,#d99a00)}.ds-hero-go:focus-visible{outline:3px solid var(--on-st2,#2a1f00);outline-offset:4px}"
+    },
+    {
+      "name": "Roadmap Stop",
+      "kind": "card",
+      "refersTo": "road-stop",
+      "description": "A topic on the roadmap path; the current one takes the stage fill and edge.",
+      "html": "<div class=\"ds-stops\"><a class=\"ds-stop ds-here\" href=\"#\"><span class=\"ds-n\">06</span><span class=\"ds-t\">Two pointers</span><span class=\"ds-pill\">You’re here</span><span class=\"ds-p\">2/12</span></a><a class=\"ds-stop\" href=\"#\"><span class=\"ds-n\">07</span><span class=\"ds-t\">Sliding window</span><span></span><span class=\"ds-p\">0/13</span></a></div>",
+      "css": ".ds-stops{display:grid;gap:6px;font-family:\"Schibsted Grotesk\",\"Segoe UI\",system-ui,sans-serif}.ds-stop{display:grid;grid-template-columns:36px minmax(0,1fr) auto auto;align-items:center;gap:12px;padding:10px 14px 10px 10px;border-radius:14px;background:var(--fill,#f4f4f8);color:var(--ink,#17161f);text-decoration:none}.ds-stop:hover{background:var(--fill-2,#e9e9f0)}.ds-n{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;font:600 13px \"IBM Plex Mono\",Consolas,monospace;background:var(--bg,#fff);color:var(--ink-2,#4f4d5c)}.ds-t{font-weight:600;font-size:16px}.ds-p{font:500 13px \"IBM Plex Mono\",Consolas,monospace;color:var(--ink-3,#6f6c7d)}.ds-here{background:var(--st2,#ffc22e);color:var(--on-st2,#2a1f00);box-shadow:0 4px 0 var(--st2-ink,#d99a00)}.ds-here .ds-n{background:var(--on-st2,#2a1f00);color:var(--st2,#ffc22e)}.ds-here .ds-p{color:inherit}.ds-pill{font-size:12.5px;font-weight:800;padding:3px 10px;border-radius:999px;background:color-mix(in srgb,var(--on-st2,#2a1f00) 16%,transparent)}.ds-stop:focus-visible{outline:2px solid var(--st2-text,#8a5a00);outline-offset:2px}"
+    },
+    {
+      "name": "Sidebar Navigation",
+      "kind": "nav",
+      "refersTo": "nav-link",
+      "description": "Quiet panel nav; the current link is accent on accent-soft.",
+      "html": "<nav class=\"ds-side\"><a class=\"ds-link\" href=\"#\"><span class=\"ds-ln\">05</span><span>Arrays and strings</span><span class=\"ds-lf\">4/9</span></a><a class=\"ds-link\" aria-current=\"page\" href=\"#\"><span class=\"ds-ln\">06</span><span>Two pointers</span><span class=\"ds-lf\">2/12</span></a><a class=\"ds-link\" href=\"#\"><span class=\"ds-ln\">07</span><span>Sliding window</span><span></span></a></nav>",
+      "css": ".ds-side{width:236px;padding:8px;background:var(--panel,#f8f8fb);font-family:\"Schibsted Grotesk\",\"Segoe UI\",system-ui,sans-serif}.ds-link{display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:6px;align-items:center;padding:6px 10px;border-radius:8px;text-decoration:none;font-size:13.5px;color:var(--ink-2,#4f4d5c)}.ds-link:hover{background:var(--fill-2,#e9e9f0);color:var(--ink,#17161f)}.ds-link[aria-current=\"page\"]{background:var(--st2-soft,#fff4d6);color:var(--st2-text,#8a5a00);font-weight:500}.ds-ln,.ds-lf{font:500 11px \"IBM Plex Mono\",Consolas,monospace;color:var(--ink-3,#6f6c7d)}.ds-link[aria-current=\"page\"] .ds-ln{color:inherit}.ds-link:focus-visible{outline:2px solid var(--st2-text,#8a5a00);outline-offset:2px}"
+    },
+    {
+      "name": "Search Field",
+      "kind": "input",
+      "refersTo": "",
+      "description": "The Go to anything pill that opens the Ctrl K palette.",
+      "html": "<button class=\"ds-search\"><svg viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\"><circle cx=\"11\" cy=\"11\" r=\"6.5\"/><path d=\"M16 16l4.5 4.5\"/></svg><span>Go to anything</span><kbd>Ctrl K</kbd></button>",
+      "css": ".ds-search{display:flex;align-items:center;gap:8px;width:228px;height:34px;padding:0 12px;border:0;border-radius:999px;background:var(--bg,#fff);color:var(--ink-3,#6f6c7d);font:13px \"Schibsted Grotesk\",\"Segoe UI\",system-ui,sans-serif;cursor:pointer;box-shadow:inset 0 0 0 1px var(--line,#e8e8ef)}.ds-search:hover{color:var(--ink-2,#4f4d5c);box-shadow:inset 0 0 0 1px var(--line-2,#d6d6e0)}.ds-search span{flex:1;text-align:left}.ds-search kbd{font:11px \"IBM Plex Mono\",Consolas,monospace;padding:1px 5px;border:1px solid var(--line-2,#d6d6e0);border-radius:4px}.ds-search:focus-visible{outline:2px solid var(--accent,#2f47d6);outline-offset:2px}"
+    },
+    {
+      "name": "Badges",
+      "kind": "chip",
+      "refersTo": "badge",
+      "description": "Pill labels: difficulty in state colours, rung kinds in the accent.",
+      "html": "<span class=\"ds-badge ds-easy\">Easy</span> <span class=\"ds-badge ds-medium\">Medium</span> <span class=\"ds-badge ds-hard\">Hard</span> <span class=\"ds-badge ds-kind\">Snippet</span>",
+      "css": ".ds-badge{display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:999px;font:500 12px \"Schibsted Grotesk\",\"Segoe UI\",system-ui,sans-serif;background:var(--fill-2,#e9e9f0);color:var(--ink-2,#4f4d5c)}.ds-easy{color:var(--ok,#13803f);background:var(--ok-soft,#e4f6ea)}.ds-medium{color:var(--warn,#9a5b00);background:color-mix(in srgb,var(--warn,#9a5b00) 12%,transparent)}.ds-hard{color:var(--bad,#c4410c);background:var(--bad-soft,#fdeee7)}.ds-kind{color:var(--accent,#2f47d6);background:var(--accent-soft,#e8ecff)}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Drawn Next Step",
+    "overview": "Trace is a clean, bright study room with one coloured thing in it at a time. The ground is plain white (near-black in the dark rendition), the chrome is quiet greys, and colour arrives in whole regions: the home hero is a single slab of the current stage's colour holding a drawing of the topic's actual data structure and one Continue button. Everything else (the roadmap, the problem list, the study plans) is a calm step away, never on the same screen as the next step.\n\nThe course has six stages, and each stage owns one saturated colour. The page you are on takes its stage's colour (the router sets it on the body), so the accent, the primary button, the \"you are here\" stop and the current sidebar link all speak in that colour and change as you move through the course. The drawings are built in code from rounded, toy-like tiles with a darker under-edge, laid on the stage colour with a partner stage colour marking the part the eye should land on. Buttons share that tactile material: they sit on a darker edge and sink into it when pressed.\n\nDensity is low on home and the roadmap, comfortable on reading pages, and working-tool dense only in the problem workspace (editor, console, tests). The product is fully offline, so every face is vendored and nothing is fetched.",
+    "keyCharacteristics": [
+      "White (or near-black) ground; colour paints whole regions, not trims.",
+      "Six stage colours, each a five-token family; the page wears its stage.",
+      "Data structures drawn in code-built SVG, never raster illustrations.",
+      "Generous rounding (12px buttons, 16px surfaces, 28px hero).",
+      "A pressed bottom edge on pressables and on drawing tiles; flat everywhere else.",
+      "One authored motion: the home drawing builds itself in."
+    ],
+    "rules": [
+      {
+        "name": "The Stage Owns the Page Rule",
+        "body": "A page wears exactly one stage colour, the stage of the thing being viewed, set as `data-stage` on the body (or on a component such as the hero). `--accent` is that stage's `--stN-text`; never hard-code a stage hex in a component. Partner colours appear only inside drawings.",
+        "section": "colors"
+      },
+      {
+        "name": "The 4.5 Floor Rule",
+        "body": "Every text pair in the stage families clears 4.5:1 in both themes: on-stN on stN, stN-text on ground, stN-text on stN-soft, and on-text on stN-text. A new stage colour or new pairing is not added until it passes all four.",
+        "section": "colors"
+      },
+      {
+        "name": "The Deepen, Never Lighten Rule",
+        "body": "In dark, a stage fill is a darker, slightly less luminous version of its light self; contrast is gained by lightening the `-text` tint, never by brightening the fill.",
+        "section": "colors"
+      },
+      {
+        "name": "The Vendored Faces Rule",
+        "body": "Only the two families in `web/vendor/fonts` may appear. Trace runs offline; a face that is not vendored is a face that falls back to Segoe UI.",
+        "section": "typography"
+      },
+      {
+        "name": "The Weight Ceiling Note",
+        "body": "The vendored grotesk is declared at 400 to 700. The 800 used by the hero title, the hero button and roadmap stage names resolves to the 700 face; heavier type needs a vendored face declared at that weight, not a bigger number.",
+        "section": "typography"
+      },
+      {
+        "name": "The Mono Is Data Rule",
+        "body": "Plex Mono is for code and for numbers that are data (topic numbers, `2/12`, indices, drawing values). Prose and headings never set in mono.",
+        "section": "typography"
+      },
+      {
+        "name": "The Pressed Edge Rule",
+        "body": "The solid, unblurred bottom edge belongs to things you press (buttons, the current roadmap stop) and to the tiles of a drawing, which are the world's toy-block material. It never goes on containers: the hero card, fact panels, list rows, sheets, roadmap markers and badges stay flat. On press the element translates down by the edge height and the edge collapses to 0 (disabled under reduced motion).",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** take colour from the stage tokens (`--stage`, `--stage-ink`, `--stage-soft`, `--on-stage`, `--accent`) and let `data-stage` choose the stage.",
+      "**Do** check any new text pair against 4.5:1 in both themes before shipping it.",
+      "**Do** draw data structures in code-built SVG with the existing atoms, the stage colour as ground and one partner colour for the focal part.",
+      "**Do** quieten drawing notes by weight (500 instead of 600), not by opacity.",
+      "**Do** give anything pressable that carries a pressed edge a matching press-down on `:active`, and drop the transform under reduced motion.",
+      "**Do** keep home to one hero, one progress line and one link; depth lives on the roadmap.",
+      "**Do** use 16px stroked SVG icons (1.8px stroke, round caps) for interface icons."
+    ],
+    "donts": [
+      "**Don't** put the pressed edge on containers: the hero card, rows, fact panels, sheets, roadmap markers or badges.",
+      "**Don't** set opacity on text to make it quieter; it drops pairs below 4.5:1.",
+      "**Don't** lighten a stage fill for dark mode; deepen the fill and lift the `-text` tint.",
+      "**Don't** load fonts, icons or images from a network; everything is vendored for offline use.",
+      "**Don't** place a small coloured label (eyebrow or kicker) above a heading; context such as the stage line goes below the title.",
+      "**Don't** add a second authored animation; hover effects stay to colour and fill changes.",
+      "**Don't** use raster or stock illustration where a drawing of the structure belongs."
+    ]
+  }
+}
