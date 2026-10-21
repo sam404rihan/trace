@@ -436,6 +436,30 @@ TECHNIQUES = {
                    "item x, every reachable s makes s + x reachable too. In an array, loop s DOWNWARDS so x isn't "
                    "used twice in one round. It's O(items × total), not 2^items.",
     },
+    "dp.two_strings": {
+        "name": "A table over two prefixes",
+        "explain": "For two strings, let `dp[i][j]` be the answer for the first i letters of a and the first j of b. "
+                   "If `a[i - 1] == b[j - 1]`, the two letters can pair up: build on `dp[i - 1][j - 1]`. Otherwise "
+                   "drop a letter from one string: `dp[i - 1][j]` or `dp[i][j - 1]`.",
+    },
+    "dp.grid": {
+        "name": "DP on a grid",
+        "explain": "When you only move right or down, a cell's answer comes from the cell above and the cell to its "
+                   "left. Fill the grid row by row. One row is enough: before you update `row[c]` it still holds "
+                   "the cell above, and `row[c - 1]` is the cell to the left.",
+    },
+    "dp.states": {
+        "name": "A few states per step",
+        "explain": "When each step can leave you in one of a few situations (holding a share, just sold, resting), "
+                   "keep the best total for each state. Every day, work out today's states from yesterday's, all "
+                   "at once. It's O(n), with a handful of variables.",
+    },
+    "dp.interval": {
+        "name": "DP over intervals",
+        "explain": "When the answer for a run i..j depends on how it splits, let `cost[i][j]` be the answer for that "
+                   "run and try every split point k: the parts i..k and k+1..j are shorter runs. So fill the table "
+                   "by length, shortest runs first. It's usually O(n³).",
+    },
     "grid.neighbors": {
         "name": "Grid neighbours",
         "explain": "A cell (r, c) has up to four neighbours: (r - 1, c), (r + 1, c), (r, c - 1) and (r, c + 1). "

@@ -19,6 +19,8 @@ def knapsack(weights: list[int], values: list[int], capacity: int) -> int:
     raise NotImplementedError  # replace this line with your solution
 
 
+USES = ["dp.knapsack01"]
+
 TESTS = [
     (([1, 3, 4, 5], [1, 4, 5, 7], 7), 9),
     (([10, 20, 30], [60, 100, 120], 50), 220),

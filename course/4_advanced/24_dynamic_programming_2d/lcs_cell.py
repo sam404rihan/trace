@@ -21,6 +21,9 @@ def lcs_cell(dp: list[list[int]], a: str, b: str, i: int, j: int) -> int:
     raise NotImplementedError  # replace this line with your solution
 
 
+TEACHES = ["dp.two_strings"]
+USES = []
+
 TESTS = [
     (([[0, 0], [0, 0], [0, 0]], "AB", "B", 2, 1), 1),
     (([[0, 0, 0], [0, 1, 1], [0, 1, 0]], "AC", "AB", 2, 2), 1),

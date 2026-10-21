@@ -19,6 +19,8 @@ def longest_common_subsequence(a: str, b: str) -> int:
     raise NotImplementedError  # replace this line with your solution
 
 
+USES = ["dp.two_strings"]
+
 TESTS = [
     (("abcde", "ace"), 3),
     (("abc", "abc"), 3),

@@ -20,6 +20,8 @@ def edit_distance(a: str, b: str) -> int:
     raise NotImplementedError  # replace this line with your solution
 
 
+USES = ["dp.two_strings"]
+
 TESTS = [
     (("horse", "ros"), 3),
     (("intention", "execution"), 5),

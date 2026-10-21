@@ -48,4 +48,6 @@ def _cases():
     return out
 
 
+USES = ["dp.interval"]
+
 TESTS = [(([3, 1, 5, 8],), 167), (([1, 5],), 10), (([],), 0), (([7],), 7)] + _cases()

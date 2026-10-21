@@ -509,5 +509,15 @@ class Stage4Audit(AuditBase):
             self.assertEqual(self.problems[name]["difficulty"], "easy", name)
 
 
+    def test_topic_24(self):
+        self.assert_audited("24_dynamic_programming_2d")
+        self.assert_teaches({"lcs_cell": ["dp.two_strings"], "min_path_sum": ["dp.grid"], "stock_cooldown": ["dp.states"],
+                             "matrix_chain": ["dp.interval"]})
+        self.assert_uses({"burst_balloons": ["dp.interval"], "target_sum": ["dp.knapsack01"], "coin_change_ii": ["dp.amounts"],
+                          "longest_increasing_path": ["recursion.memo", "grid.neighbors"], "diff_lines": ["bfs.path", "dp.two_strings"]})
+        for name in ("stock_cooldown", "matrix_chain"):
+            self.assertEqual(self.problems[name]["difficulty"], "easy", name)
+
+
 if __name__ == "__main__":
     unittest.main()

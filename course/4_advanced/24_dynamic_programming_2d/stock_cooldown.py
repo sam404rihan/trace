@@ -1,5 +1,5 @@
 """
-Best Time to Buy and Sell Stock with Cooldown                                 [medium]
+Best Time to Buy and Sell Stock with Cooldown                                 [easy]
 
 prices[i] is the stock price on day i. You can make as many trades as you
 like, holding at most one share at a time, but after you SELL you must wait one
@@ -8,7 +8,7 @@ day (cooldown) before buying again. Return the maximum profit.
 Example:
     stock_cooldown([1, 2, 3, 0, 2])  ->  3      buy, sell, cooldown, buy, sell
 
-Aim for:  O(n): a small state machine.
+Aim for:  O(n): a small state machine. The last test has 100,000 days.
 Hint:     Three states at the end of each day: holding a share, just sold (cooldown next), and
           resting (free to buy). holding = max(holding, resting - price), sold = holding + price,
           resting = max(resting, sold). Update them from the previous day's values.
@@ -47,4 +47,21 @@ def _cases():
     return out
 
 
-TESTS = [(([1, 2, 3, 0, 2],), 3), (([1],), 0), (([5, 4, 3],), 0), (([1, 4, 2],), 3), (([2, 1, 4],), 3)] + _cases()
+def _fast(prices):
+    holding, sold, resting = float("-inf"), 0, 0
+    for p in prices:
+        holding, sold, resting = max(holding, resting - p), holding + p, max(resting, sold)
+    return max(sold, resting)
+
+
+def _big():
+    import random
+    rng = random.Random(2402)
+    prices = [rng.randint(0, 10**4) for _ in range(100_000)]
+    return (prices,), _fast(prices)
+
+
+TEACHES = ["dp.states"]
+USES = []
+
+TESTS = [(([1, 2, 3, 0, 2],), 3), (([1],), 0), (([5, 4, 3],), 0), (([1, 4, 2],), 3), (([2, 1, 4],), 3)] + _cases() + [_big()]

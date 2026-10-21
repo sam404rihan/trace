@@ -67,4 +67,6 @@ _CASES = [
     _big(),
 ]
 
+USES = ["bfs.path", "dp.two_strings"]
+
 TESTS = [(case, f"a minimal diff keeping {_lcs(*case)} line(s)") for case in _CASES]

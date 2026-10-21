@@ -18,6 +18,8 @@ def unique_paths(m: int, n: int) -> int:
     raise NotImplementedError  # replace this line with your solution
 
 
+USES = ["dp.grid"]
+
 TESTS = [
     ((3, 7), 28),
     ((3, 2), 3),

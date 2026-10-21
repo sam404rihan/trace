@@ -34,6 +34,9 @@ def _big():
 
 _GRID, _BEST = _big()
 
+TEACHES = ["dp.grid"]
+USES = []
+
 STEPS = [
     {
         "title": "Recurse from the end",

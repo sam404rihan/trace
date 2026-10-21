@@ -39,4 +39,6 @@ def _cases():
     return out
 
 
+USES = ["dp.two_strings"]
+
 TESTS = [(("rabbbit", "rabbit"), 3), (("babgbag", "bag"), 5), (("abc", ""), 1), (("", "a"), 0), (("aaaa", "aa"), 6)] + _cases()
