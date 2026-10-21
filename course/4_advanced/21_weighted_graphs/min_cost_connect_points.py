@@ -19,6 +19,8 @@ def min_cost_connect_points(points: list[list[int]]) -> int:
     raise NotImplementedError  # replace this line with your solution
 
 
+USES = ["heap.lazy_delete", "graph.mst"]
+
 TESTS = [
     (([[0, 0], [2, 2], [3, 10], [5, 2], [7, 0]],), 20),
     (([[3, 12], [-2, 5], [-4, 1]],), 18),

@@ -476,5 +476,16 @@ class Stage4Audit(AuditBase):
         self.assertEqual(self.problems["groups_after_each"]["difficulty"], "easy")
 
 
+    def test_topic_21(self):
+        self.assert_audited("21_weighted_graphs")
+        self.assert_teaches({"relax": ["sp.relax"], "cheapest_path": ["sp.dijkstra"], "mst_cost": ["graph.mst"],
+                             "euler_path": ["graph.euler"]})
+        self.assert_uses({"min_cost_connect_points": ["heap.lazy_delete", "graph.mst"],
+                          "reconstruct_itinerary": ["graph.euler"], "min_cost_in_time": ["bfs.state", "sp.dijkstra"],
+                          "swim_rising_water": ["grid.neighbors", "sp.dijkstra"], "route_planner": ["bfs.path", "sp.dijkstra"]})
+        for name in ("mst_cost", "euler_path"):
+            self.assertEqual(self.problems[name]["difficulty"], "easy", name)
+
+
 if __name__ == "__main__":
     unittest.main()

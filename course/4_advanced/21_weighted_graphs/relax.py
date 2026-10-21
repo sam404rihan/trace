@@ -21,6 +21,9 @@ def relax(dist: dict, u, v, w: int) -> dict:
     raise NotImplementedError  # replace this line with your solution
 
 
+TEACHES = ["sp.relax"]
+USES = []
+
 TESTS = [
     (({"A": 0, "B": 5}, "A", "B", 3), {"A": 0, "B": 3}),
     (({"A": 0, "B": 2}, "A", "B", 3), {"A": 0, "B": 2}),

@@ -63,6 +63,8 @@ def _cases():
 _ROADS = [[0, 1, 10], [1, 2, 10], [2, 5, 10], [0, 3, 1], [3, 4, 10], [4, 5, 15]]
 _FEES = [5, 1, 2, 20, 20, 3]
 
+USES = ["bfs.state", "sp.dijkstra"]
+
 TESTS = [
     ((30, _ROADS, _FEES), 11),
     ((29, _ROADS, _FEES), 48),

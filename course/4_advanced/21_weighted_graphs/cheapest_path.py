@@ -43,6 +43,9 @@ def _big():
 
 _N, _EDGES, _DST, _COST = _big()
 
+TEACHES = ["sp.dijkstra"]
+USES = ["heap.lazy_delete", "graph.adjacency", "sp.relax"]
+
 STEPS = [
     {
         "title": "Make it work",

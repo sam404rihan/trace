@@ -364,6 +364,30 @@ TECHNIQUES = {
                    "connected, so this link closes a cycle. Otherwise point one root at the other: two groups became "
                    "one. Counting the merges tells you how many groups are left.",
     },
+    "sp.relax": {
+        "name": "Relaxing an edge",
+        "explain": "Keep `dist`, the best distance found so far to each node. For an edge u → v of weight w, if "
+                   "`dist[u] + w` beats `dist[v]`, update dist[v]. Every shortest-path algorithm is this one step, "
+                   "repeated in a clever order.",
+    },
+    "sp.dijkstra": {
+        "name": "Dijkstra's algorithm",
+        "explain": "With no negative weights, pop the closest unsettled node from a min-heap of `(distance, node)`; "
+                   "its distance is now final. Relax its edges, pushing every improvement. Skip a popped entry whose "
+                   "distance is worse than the one already recorded: it's out of date.",
+    },
+    "graph.mst": {
+        "name": "Minimum spanning tree",
+        "explain": "To connect every node as cheaply as possible, take the cheapest edges first and skip any edge "
+                   "that joins two nodes already connected (Kruskal: sort the edges, check with union-find). Prim "
+                   "does the same from one node outward with a heap. Either way, n - 1 edges connect n nodes.",
+    },
+    "graph.euler": {
+        "name": "Using every edge once (Hierholzer)",
+        "explain": "To find a route that uses every edge exactly once, keep a stack. While the node on top has an "
+                   "unused edge, take it and push where it leads. When it has none, pop it onto the route. Reverse "
+                   "the route at the end. Loops you would get stuck in are spliced in automatically.",
+    },
     "grid.neighbors": {
         "name": "Grid neighbours",
         "explain": "A cell (r, c) has up to four neighbours: (r - 1, c), (r + 1, c), (r, c - 1) and (r, c + 1). "

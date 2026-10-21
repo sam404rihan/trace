@@ -93,4 +93,6 @@ def _describe(roads, start, end):
     return (-1, []) if best == -1 else f"({best}, any fastest route)"
 
 
+USES = ["bfs.path", "sp.dijkstra"]
+
 TESTS = [(case, _describe(*case)) for case in _CASES]

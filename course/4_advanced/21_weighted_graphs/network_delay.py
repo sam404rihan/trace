@@ -19,6 +19,8 @@ def network_delay(times: list[list[int]], n: int, k: int) -> int:
     raise NotImplementedError  # replace this line with your solution
 
 
+USES = ["sp.dijkstra"]
+
 TESTS = [
     (([[2, 1, 1], [2, 3, 1], [3, 4, 1]], 4, 2), 2),
     (([[1, 2, 1]], 2, 1), 1),
