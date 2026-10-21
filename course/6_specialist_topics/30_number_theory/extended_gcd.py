@@ -1,5 +1,5 @@
 """
-Extended Euclid                                                               [medium]
+Extended Euclid                                                               [easy]
 
 Return (g, x, y) where g = gcd(a, b) and a·x + b·y = g. Many (x, y) pairs work;
 any of them is accepted.
@@ -40,6 +40,9 @@ def _cases():
         pairs.append((k * rng.randint(1, 10**9), k * rng.randint(1, 10**9)))
     return [((a, b), gcd(a, b)) for a, b in pairs]
 
+
+TEACHES = ["nt.mod_inverse"]
+USES = []
 
 TESTS = [((30, 18), 6), ((7, 0), 7), ((0, 9), 9), ((1, 1), 1), ((240, 46), 2), ((17, 5), 1),
          ((832_040, 514_229), 1)] + _cases()

@@ -80,6 +80,8 @@ def _cases():
     return out
 
 
+USES = ["uf.find", "uf.union", "nt.trial_division"]
+
 TESTS = [
     (([4, 6, 15, 35],), 4),
     (([20, 50, 9, 63],), 2),

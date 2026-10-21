@@ -64,6 +64,8 @@ def _cases():
     return out
 
 
+USES = ["nt.mod_inverse"]
+
 TESTS = [
     (([2, 3, 2], [3, 5, 7]), 23),
     (([1, 3], [4, 6]), 9),

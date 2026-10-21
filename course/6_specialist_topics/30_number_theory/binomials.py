@@ -55,5 +55,7 @@ def _small():
     return ((qs,), [comb(n, k) % MOD for n, k in qs])
 
 
+USES = ["nt.fast_pow", "nt.mod_inverse"]
+
 TESTS = [(([(5, 2), (10, 0), (6, 6)],), [10, 1, 1]), (([(100, 50)],), [538992043]), (([(0, 0)],), [1]),
          (([],), []), _small(), _big()]

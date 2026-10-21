@@ -544,6 +544,30 @@ TECHNIQUES = {
                    "reachable. Relax every edge n - 1 times, as in Bellman-Ford. If any edge can still be relaxed in "
                    "one more round, some cycle has a negative total: nothing else keeps getting cheaper.",
     },
+    "nt.fast_pow": {
+        "name": "Fast power by squaring",
+        "explain": "To compute `base ** exp % mod`, walk the bits of exp from the lowest. Keep squaring the base "
+                   "(mod mod), and multiply it into the result whenever the current bit is 1. That's O(log exp) "
+                   "multiplications instead of exp. Python's `pow(base, exp, mod)` does the same.",
+    },
+    "nt.sieve": {
+        "name": "Sieve of Eratosthenes",
+        "explain": "To find every prime below n, start with all numbers marked prime. For each p from 2 while "
+                   "p * p < n, if p is still marked, cross out p * p, p * p + p, ... Everything left marked is "
+                   "prime. It's about O(n log log n), and the same loop can record each number's smallest prime factor.",
+    },
+    "nt.mod_inverse": {
+        "name": "Dividing modulo m",
+        "explain": "Dividing by b modulo m means multiplying by its inverse x, where `b * x % m == 1`. It exists "
+                   "when gcd(b, m) == 1. Extended Euclid finds it from `b * x + m * y == 1`. When m is prime, "
+                   "Fermat gives it directly: `pow(b, m - 2, m)`, and Python's `pow(b, -1, m)` works for any m.",
+    },
+    "nt.trial_division": {
+        "name": "Factoring by trial division",
+        "explain": "To factor n, try divisors d = 2, 3, 4, ... while d * d <= n, dividing each one out as often as it "
+                   "goes in. Composite d never divide what's left, since their prime factors went first. Whatever is "
+                   "left above 1 at the end is a prime factor bigger than the square root. It's O(sqrt(n)).",
+    },
     "grid.neighbors": {
         "name": "Grid neighbours",
         "explain": "A cell (r, c) has up to four neighbours: (r - 1, c), (r + 1, c), (r, c - 1) and (r, c + 1). "

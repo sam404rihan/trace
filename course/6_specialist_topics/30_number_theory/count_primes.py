@@ -15,6 +15,9 @@ def count_primes(n: int) -> int:
 
 _SMALL = [(10, 4), (20, 8), (30, 10), (100, 25), (1000, 168)]
 
+TEACHES = ["nt.sieve"]
+USES = []
+
 STEPS = [
     {
         "title": "Make it work",

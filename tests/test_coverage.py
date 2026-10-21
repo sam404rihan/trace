@@ -631,5 +631,22 @@ class Stage5Audit(AuditBase):
         self.assertIn("after a match", explain)
 
 
+STAGE_6 = ("30_number_theory", "31_geometry", "32_advanced_trees", "33_network_flow", "34_digit_dp_and_speedups")
+
+
+class Stage6Audit(AuditBase):
+    """Part 2, Stage 6: topics 30-34 fully audited (docs/superpowers/plans/2026-10-21-technique-coverage-stage-6.md)."""
+
+    def test_topic_30(self):
+        self.assert_audited("30_number_theory")
+        self.assert_teaches({"mod_pow": ["nt.fast_pow"], "count_primes": ["nt.sieve"], "extended_gcd": ["nt.mod_inverse"],
+                             "prime_factors": ["nt.trial_division"]})
+        self.assert_uses({"binomials": ["nt.fast_pow", "nt.mod_inverse"], "euler_phi": ["nt.trial_division"],
+                          "largest_factor_component": ["uf.find", "uf.union", "nt.trial_division"],
+                          "factorize_all": ["nt.sieve"], "chinese_remainder": ["nt.mod_inverse"]})
+        for name in ("extended_gcd", "prime_factors"):
+            self.assertEqual(self.problems[name]["difficulty"], "easy", name)
+
+
 if __name__ == "__main__":
     unittest.main()
