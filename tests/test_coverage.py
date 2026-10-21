@@ -668,5 +668,15 @@ class Stage6Audit(AuditBase):
             self.assertEqual(self.problems[name]["difficulty"], "easy", name)
 
 
+    def test_topic_33(self):
+        self.assert_audited("33_network_flow")
+        self.assert_teaches({"max_flow": ["flow.augment"], "min_cut_edges": ["flow.min_cut"], "max_staffing": ["flow.model"]})
+        self.assert_uses({"project_selection": ["flow.augment", "flow.min_cut", "flow.model"],
+                          "min_cost_flow": ["sp.bellman_ford", "flow.augment"],
+                          "schedule_interviews": ["flow.augment", "flow.model"]})
+        for name in ("min_cut_edges", "max_staffing"):
+            self.assertEqual(self.problems[name]["difficulty"], "easy", name)
+
+
 if __name__ == "__main__":
     unittest.main()

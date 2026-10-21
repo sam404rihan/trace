@@ -1,5 +1,5 @@
 """
-Staff the Projects                                                            [medium]
+Staff the Projects                                                            [easy]
 
 Worker i can join at most limit[i] projects. Project j needs need[j] people. can lists
 the (worker, project) pairs where the worker has the right skills. A worker fills at
@@ -69,6 +69,9 @@ def _cases():
         out.append(((limit, need, can), _model(limit, need, can)))
     return out
 
+
+TEACHES = ["flow.model"]
+USES = ["flow.augment"]
 
 TESTS = [(([2, 1], [1, 2], [(0, 0), (0, 1), (1, 1)]), 3), (([1, 1], [2], [(0, 0)]), 1), (([3], [1, 1, 1, 1], [(0, 0), (0, 1), (0, 2), (0, 3)]), 3),
          (([], [2], []), 0), (([1, 1, 1], [0, 2], [(0, 0), (1, 0), (2, 1), (0, 1)]), 2)] + _cases()

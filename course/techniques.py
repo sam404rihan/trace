@@ -615,6 +615,24 @@ TECHNIQUES = {
                    "move the root along each edge from parent to child. Usually only that edge's contribution "
                    "changes, so `answer[child]` comes from `answer[parent]` in O(1). Two passes in all: O(n).",
     },
+    "flow.augment": {
+        "name": "Max flow by augmenting paths",
+        "explain": "Keep the spare capacity of every edge, with a reverse edge that starts at 0. While BFS finds a "
+                   "path from source to sink through spare capacity, push its smallest spare amount along it, taking "
+                   "it off each edge and adding it to the reverse edge, so later paths can undo it.",
+    },
+    "flow.min_cut": {
+        "name": "The minimum cut",
+        "explain": "When max flow finishes, the nodes still reachable from the source through spare capacity are one "
+                   "side of a cheapest cut. The full edges leaving that side form the cut, and their capacities add "
+                   "up to exactly the max flow, so no cheaper way to separate source from sink exists.",
+    },
+    "flow.model": {
+        "name": "Modelling a problem as flow",
+        "explain": "Many assignment problems are a flow network: source → each person (capacity: how many they can "
+                   "take) → each allowed choice (capacity 1) → sink (capacity: how many each choice needs). Each unit "
+                   "of max flow is one assignment, and the capacities enforce every rule at once.",
+    },
     "grid.neighbors": {
         "name": "Grid neighbours",
         "explain": "A cell (r, c) has up to four neighbours: (r - 1, c), (r + 1, c), (r, c - 1) and (r, c + 1). "

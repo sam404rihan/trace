@@ -119,6 +119,8 @@ def _with_traps(seed, nc, ni, ns, per_c, per_i, lim, traps):
 
 _EXAMPLE = ({"ana": ["mon 9", "mon 10"], "bo": ["mon 9"], "cy": ["mon 9"]}, {"kim": (2, ["mon 9", "mon 10"]), "lee": (1, ["mon 10"])})
 
+USES = ["flow.augment", "flow.model"]
+
 TESTS = [(_EXAMPLE, 2), (({}, {"kim": (3, ["mon 9"])}), 0), (({"ana": ["mon 9"]}, {}), 0),
          (({"ana": ["mon 9"], "bo": ["mon 9"]}, {"kim": (5, ["mon 9"]), "lee": (0, ["mon 9"])}), 1),
          (({"ana": ["mon 9"], "bo": ["mon 9"]}, {"kim": (5, ["mon 9"]), "lee": (1, ["mon 9"])}), 2),

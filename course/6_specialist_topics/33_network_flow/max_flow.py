@@ -75,6 +75,9 @@ def _layers(seed, L, W):
     return n, edges, s, t
 
 
+TEACHES = ["flow.augment"]
+USES = ["bfs.shortest", "bfs.path"]
+
 STEPS = [
     {
         "title": "Make it work",

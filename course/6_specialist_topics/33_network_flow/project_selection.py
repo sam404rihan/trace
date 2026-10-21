@@ -101,6 +101,8 @@ def _cases():
     return out
 
 
+USES = ["flow.augment", "flow.min_cut", "flow.model"]
+
 TESTS = [
     (([10, -4, -3], [(0, 1), (0, 2)]), 3),
     (([5, -8, 6, -2], [(0, 1), (2, 3)]), 4),

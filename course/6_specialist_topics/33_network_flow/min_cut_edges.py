@@ -1,5 +1,5 @@
 """
-Cheapest Way to Cut the Network                                                 [hard]
+Cheapest Way to Cut the Network                                               [easy]
 
 A network has n nodes and directed edges (u, v, cost). Choose a set of edges whose
 removal leaves no path from s to t, with the smallest possible total cost. Return the
@@ -88,6 +88,9 @@ def _cases():
         out.append(((n, edges, 0, n - 1), _maxflow(n, edges, 0, n - 1)[0]))
     return out
 
+
+TEACHES = ["flow.min_cut"]
+USES = ["flow.augment"]
 
 TESTS = [((4, [(0, 1, 3), (0, 2, 2), (1, 3, 1), (2, 3, 6), (1, 2, 4)], 0, 3), 5), ((3, [(0, 1, 4)], 0, 2), 0),
          ((2, [(0, 1, 2), (0, 1, 3)], 0, 1), 5), ((3, [(0, 1, 9), (1, 2, 1), (2, 0, 5)], 0, 2), 1)] + _cases()
