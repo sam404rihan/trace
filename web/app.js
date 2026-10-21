@@ -43,6 +43,12 @@
     road: ["M9 5L4 7v12l5-2 6 2 5-2V5l-5 2z", "M9 5v12", "M15 7v12"],
     plan: ["M8 6h11", "M8 12h11", "M8 18h11", "M4.5 6h.01", "M4.5 12h.01", "M4.5 18h.01"],
     contest: T.CONTEST_ICON,
+    down: "M6 9l6 6 6-6",
+    cross: ["M7.5 7.5l9 9", "M16.5 7.5l-9 9"],
+    code: ["M9 7l-5 5 5 5", "M15 7l5 5-5 5"],
+    idea: ["M9.5 18h5", "M10.5 21h3", "M12 3a6 6 0 0 0-3.6 10.8c.7.5 1.1 1.3 1.1 2.2h5c0-.9.4-1.7 1.1-2.2A6 6 0 0 0 12 3z"],
+    review: ["M19.5 10A8 8 0 0 0 5.6 6.4", "M5 3v4h4", "M4.5 14a8 8 0 0 0 13.9 3.6", "M19 21v-4h-4"],
+    go: ["M5 12h13", "M13 6l6 6-6 6"],
   };
 
   // inline `code`
@@ -261,7 +267,7 @@
   function crumbs(...parts) {
     const kids = [];
     parts.forEach((p, i) => {
-      if (i) kids.push(h("span", { class: "sep" }, "/"));
+      if (i) kids.push(h("span", { class: "sep", "aria-hidden": "true" }, icon(ICONS.right)));
       kids.push(p.href ? h("a", { href: p.href }, p.label) : h("span", { class: "here" }, p.label));
     });
     $("crumbs").replaceChildren(...kids);
@@ -376,11 +382,11 @@
           h("h2", { class: "section-title" }, "Review"),
           h("div", { class: "topic-list" }, spot && !spot.ready
             ? h("div", { class: "topic-row disabled" },
-              h("span", { class: "num" }, "★"),
+              h("span", { class: "num" }, icon(ICONS.review)),
               h("span", { class: "name" }, review.title, h("span", { class: "sub" }, `Opens after four pattern topics (${spot.have} of ${spot.need}).`)),
               h("span"))
             : h("a", { class: "topic-row", href: `#/d/${review.id}/${review.drills[0].id}` },
-              h("span", { class: "num" }, "★"),
+              h("span", { class: "num" }, icon(ICONS.review)),
               h("span", { class: "name" }, review.title, h("span", { class: "sub" }, "Read a problem, name the technique. Mixes the topics you've started.")),
               h("span", { class: "ladder-bar" }, T.pips(T.DrillProgress.rec(review, review.drills[0]).clean))))) : null,
         h("p", { class: "home-foot" },
@@ -823,7 +829,7 @@
             const state = k < done ? "done" : k === done ? "current" : "locked";
             const open = state === "current";
             return h("section", { class: "step " + state },
-              h("div", { class: "step-head" }, h("span", { class: "step-num" }, k < done ? "✓" : k + 1),
+              h("div", { class: "step-head" }, h("span", { class: "step-num" }, k < done ? icon(ICONS.check) : k + 1),
                 h("span", { class: "step-title" }, s.title),
                 h("span", { class: "step-tag" }, state === "done" ? "passed" : state === "locked" ? "locked" : `${s.tests} tests`)),
               open ? h("div", { class: "step-body" }, h("p", {}, inline(s.text)),
@@ -1045,7 +1051,8 @@
       const testRow = (t) => {
         const bad = ["fail", "error", "timeout"].includes(t.status);
         const det = h("details", { class: "test " + t.status, open: bad && !firstFail ? true : null },
-          h("summary", {}, h("span", { class: "dot" }), h("span", { class: "call" }, t.call),
+          h("summary", {}, h("span", { class: "dot", "aria-hidden": "true" }, t.status === "pass" ? icon(ICONS.check) : bad ? icon(ICONS.cross) : null),
+            h("span", { class: "call" }, t.call),
             h("span", { class: "ms" }, t.status === "pass" ? `${t.ms} ms` : t.status)),
           h("div", { class: "test-detail" },
             h("div", { class: "kv-line" }, h("span", {}, "expected"), h("code", {}, t.expected)),
@@ -1066,8 +1073,8 @@
           const ok = group.every((t) => t.status === "pass");
           const last = k === groups.length - 1;
           kids.push(h("details", { class: "step-group", open: !ok || last ? true : null },
-            h("summary", { class: "board-label", style: "margin:12px 2px 6px;cursor:pointer" },
-              `Step ${k + 1}: ${p.steps[k].title}   ${group.filter((t) => t.status === "pass").length} of ${group.length} passed`),
+            h("summary", {}, icon(ICONS.down), h("span", { class: "sg-title" }, `Step ${k + 1}: ${p.steps[k].title}`),
+              h("span", { class: "sg-count" }, `${group.filter((t) => t.status === "pass").length} of ${group.length} passed`)),
             group.map(testRow)));
         });
       } else {
@@ -1130,11 +1137,12 @@
     const activeTopic = kind === "t" || kind === "w" ? a : kind === "p" ? topicOf(a)?.id : kind === "d" ? S.topics.find((t) => T.byId[a] && t.n === T.byId[a].n)?.id : null;
     const activePlan = kind === "plan" ? a : kind === "p" && hash.split("/")[3] === "plan" ? hash.split("/")[4] : null;
     const group = (id, label, kids) => h("section", { class: "side-group" + (closedGroups.has(id) ? " closed" : "") },
-      h("button", { type: "button", onclick: (e) => {
-        e.currentTarget.parentElement.classList.toggle("closed");
-        closedGroups.has(id) ? closedGroups.delete(id) : closedGroups.add(id);
+      h("button", { type: "button", "aria-expanded": String(!closedGroups.has(id)), onclick: (e) => {
+        const closed = e.currentTarget.parentElement.classList.toggle("closed");
+        e.currentTarget.setAttribute("aria-expanded", String(!closed));
+        closed ? closedGroups.add(id) : closedGroups.delete(id);
         local.set("trace.closedGroups", [...closedGroups]);
-      } }, label),
+      } }, h("span", {}, label), icon(ICONS.down)),
       h("div", { class: "side-list" }, kids));
     const link = (href, n, t, f, current, done) =>
       h("a", { class: "side-link" + (done ? " done" : ""), href, "aria-current": current ? "page" : null, title: t }, h("span", { class: "n" }, n), h("span", { class: "t" }, t), h("span", { class: "f" }, f));
@@ -1179,15 +1187,16 @@
 
   function paletteEntries() {
     const out = [];
-    for (const pl of S.plans.plans || []) out.push({ k: "≡", t: pl.title, m: "Study plan", href: `#/plan/${pl.id}` });
+    // k: a topic's number (data, so mono), or the name of a drawn icon for everything else
+    for (const pl of S.plans.plans || []) out.push({ icon: "plan", t: pl.title, m: "Study plan", href: `#/plan/${pl.id}` });
     for (const topic of S.topics) {
       out.push({ k: pad2(topic.n), t: topicTitle(topic), m: "Topic", href: `#/t/${topic.id}` });
       for (const n of topic.items) {
         const pr = S.problems[n];
-        out.push({ k: kindLabel(pr)[0], t: pr.title, m: `${kindLabel(pr)} · ${topicTitle(topic)}`.replace(" · ", ", "), href: `#/p/${n}`, solved: solved(n) });
+        out.push({ icon: "code", t: pr.title, m: `${kindLabel(pr)}, ${topicTitle(topic)}`, href: `#/p/${n}`, solved: solved(n) });
       }
     }
-    for (const dt of T.topics) for (const d of dt.drills) out.push({ k: "◇", t: d.name, m: `Drill, ${dt.title}`, href: `#/d/${dt.id}/${d.id}` });
+    for (const dt of T.topics) for (const d of dt.drills) out.push({ icon: "idea", t: d.name, m: `Drill, ${dt.title}`, href: `#/d/${dt.id}/${d.id}` });
     return out;
   }
 
@@ -1214,7 +1223,10 @@
     palette.list.replaceChildren(...(palette.shown.length ? palette.shown.map((e, i) =>
       h("li", { role: "option", class: e.solved ? "solved" : "", "aria-selected": String(i === palette.at), onclick: () => openEntry(e),
         onmousemove: () => { if (palette.at !== i) { palette.at = i; renderPalette(); } } },
-        h("span", { class: "pk" }, e.k), h("span", { class: "pt" }, e.t), h("span", { class: "pm" }, e.m)))
+        h("span", { class: "pk", "aria-hidden": e.icon ? "true" : null }, e.icon ? icon(ICONS[e.icon]) : e.k),
+        h("span", { class: "pt" }, h("span", {}, e.t),
+          e.solved ? h("span", { class: "ps" }, icon(ICONS.check), h("span", { class: "sr-only" }, "solved")) : null),
+        h("span", { class: "pm" }, e.m)))
       : [h("li", { class: "palette-empty" }, "Nothing matches. Try part of a problem name, or its initials.")]));
     palette.list.querySelector('[aria-selected="true"]')?.scrollIntoView({ block: "nearest" });
   }
