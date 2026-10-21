@@ -74,12 +74,12 @@ class Rules(unittest.TestCase):
         c = course(("01_a", [("p", "solo", "easy", "t.x", ["t.x", "t.y"])]))
         self.assertIn("p: USES must be a list of technique ids", run(c)[0])
 
-    def test_unaudited_is_a_warning_only(self):
+    def test_unaudited_is_an_error(self):
         c = course(("01_a", [("snip", "snippet", "", [], ["t.x", "t.y"]), ("old", "solo", "hard", [], [])]))
         c[1]["old"]["audited"] = False
         errors, warnings = run(c)
-        self.assertEqual(errors, [])
-        self.assertEqual(warnings, ["old (01_a): not audited yet"])
+        self.assertEqual(errors, ["old (01_a): not audited: give it a USES list"])
+        self.assertEqual(warnings, [])
 
 
 class RealCourse(unittest.TestCase):

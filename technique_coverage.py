@@ -11,14 +11,15 @@ def is_basic(p):
 def check_coverage(topics, problems, techniques):
     """topics: course order, each {"id", "items"} with items in ladder order. problems: name ->
     {"kind", "difficulty", "uses", "teaches", "audited", "topic_id"}. techniques: id -> {...}.
-    Returns (errors, warnings) as plain-English lines."""
+    Returns (errors, warnings) as plain-English lines. Since Part 2 finished, an unaudited problem is
+    an error, so warnings is always empty; it stays in the return value for the callers."""
     errors, warnings = [], []
     order = {name: i for i, name in enumerate(n for t in topics for n in t["items"])}
     tags, teachers = {"uses": {}, "teaches": {}}, {}
     for name in order:
         p = problems[name]
         if not p["audited"]:
-            warnings.append(f"{name} ({p['topic_id']}): not audited yet")
+            errors.append(f"{name} ({p['topic_id']}): not audited: give it a USES list")
         for field in ("uses", "teaches"):
             ids = p[field]
             if not isinstance(ids, list) or not all(isinstance(x, str) for x in ids):

@@ -1185,8 +1185,8 @@ def check(only=None):
         else:
             errors, warnings = check_coverage(topics, problems, techniques)
             failures += bool(errors)
-            print(f"  {'FAIL' if errors else 'ok  '} {label:<50} {len(techniques):>2} techniques, "
-                  f"{len(warnings)} problem(s) not audited yet")
+            print(f"  {'FAIL' if errors else 'ok  '} {label:<50} {len(techniques):>2} techniques"
+                  + ("" if errors else ", every problem audited"))
             for line in errors:
                 print("        ", line)
     print("\nAll good." if not failures else f"\n{failures} problem(s).")

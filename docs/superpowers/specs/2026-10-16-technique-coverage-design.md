@@ -1,6 +1,6 @@
 # Technique coverage: never meet a technique for the first time inside a problem
 
-**Status:** draft for review, 2026-10-16.
+**Status:** done. Part 1 and all six stages of Part 2 are merged.
 **Scope:** two parts, each with its own implementation plan:
 
 1. **Machinery.** A technique registry, per-problem tags, a coverage check, and the learner-facing
@@ -184,8 +184,8 @@ rules:
    breaks this rule, so the check catches cycles too.
    Rule 4 applies to teachers' own `USES` as well, so every chain of prerequisites is valid.
 5. No problem lists the same id in both `TEACHES` and `USES`.
-6. **Audit progress.** A problem that isn't audited yet produces a warning, not a failure. Once
-   Part 2 finishes, unaudited problems become failures too.
+6. **Every problem is audited.** A problem with neither field is an error. (During Part 2 this
+   was a warning; it turned strict when Stage 6 finished.)
 
 ### The check
 
@@ -193,10 +193,9 @@ New `coverage.py`: a pure function `check_coverage(topics, problems, techniques)
 warnings)`, which returns plain-English lines that name the problem, the technique and the rule.
 For example: "rotting_oranges uses bfs.multi_source, but its teacher comes later in the same topic".
 
-- `python server.py --check` runs it and fails on any error. Warnings are printed with a count
-  ("212 problems not yet audited").
-- A unit test runs it on the real course and requires zero errors. Once Part 2 finishes, it also
-  requires zero warnings.
+- `python server.py --check` runs it and fails on any error, an unaudited problem included.
+- A unit test runs it on the real course and requires zero errors, which now covers unaudited
+  problems.
 - `server.py` loads the registry with a `parse_techniques()` that validates its shape, and
   `/api/course` adds `"techniques": {id: {"name", "explain", "teacher"}}`. Each problem summary
   gains `"uses"` and `"teaches"`.
@@ -301,7 +300,7 @@ One plan per stage (Stages 1–6, then Stage 0 when Phase 4 adds it). For each t
 Cross-topic dependencies are fixed in the earlier topic, by moving the problem or teaching the
 basic earlier. A technique from a later topic is never allowed.
 
-When the last stage is done, rule 6 turns strict: the unit test requires zero unaudited problems.
+Rule 6 turned strict when Stage 6 finished: the unit test now requires zero unaudited problems.
 
 ## Success criteria
 
