@@ -727,6 +727,30 @@ class Stage6Audit(AuditBase):
             best = max(best, far(depths(calls[0][1]), pairs))
         self.assertGreaterEqual(best, 12_000, "family_tree")     # counts common_ancestor only; distance and relation climb too
 
+    def test_max_staffing_tests_reject_greedy_seat_filling(self):
+        # Solving max_staffing marks flow.model learned, so filling seats greedily must fail a test.
+        def greedy(worker_key, project_key, tie):
+            def solve(limit, need, can):
+                opts = [sorted({j for i, j in can if i == w}) for w in range(len(limit))]
+                cands = [sum(1 for i, j in set(can) if j == p) for p in range(len(need))]
+                left, seats, total = list(limit), list(need), 0
+                for w in sorted(range(len(limit)), key=lambda w: (worker_key(w, limit, opts), tie * w)):
+                    for p in sorted(opts[w], key=lambda p: (project_key(p, seats, cands), tie * p)):
+                        if left[w] and seats[p] > 0:
+                            left[w], seats[p], total = left[w] - 1, seats[p] - 1, total + 1
+                return total
+            return solve
+
+        workers = {"in order": lambda w, L, o: w, "fewest options": lambda w, L, o: len(o[w])}
+        projects = {"in order": lambda p, s, c: p, "most seats left": lambda p, s, c: -s[p],
+                    "fewest candidates": lambda p, s, c: c[p]}
+        cases = self.cases_of("max_staffing")
+        for wname, wkey in workers.items():
+            for pname, pkey in projects.items():
+                for tie in (1, -1):     # break ties by lowest index, then by highest
+                    solve = greedy(wkey, pkey, tie)
+                    self.assertTrue(any(solve(*args) != want for args, want in cases), (wname, pname, tie))
+
 
 if __name__ == "__main__":
     unittest.main()

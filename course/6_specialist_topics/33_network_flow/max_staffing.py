@@ -67,6 +67,10 @@ def _cases():
         need = [rng.randint(0, 6) for _ in range(P)]
         can = list({(rng.randrange(W), rng.randrange(P)) for _ in range(m)})
         out.append(((limit, need, can), _model(limit, need, can)))
+    for W, P in ((300, 300), (400, 350)):        # one seat each, two options each: greedy choices block each other
+        limit, need = [1] * W, [1] * P
+        can = list({(i, rng.randrange(P)) for i in range(W) for _ in range(2)})
+        out.append(((limit, need, can), _model(limit, need, can)))
     return out
 
 
@@ -74,4 +78,7 @@ TEACHES = ["flow.model"]
 USES = ["flow.augment"]
 
 TESTS = [(([2, 1], [1, 2], [(0, 0), (0, 1), (1, 1)]), 3), (([1, 1], [2], [(0, 0)]), 1), (([3], [1, 1, 1, 1], [(0, 0), (0, 1), (0, 2), (0, 3)]), 3),
-         (([], [2], []), 0), (([1, 1, 1], [0, 2], [(0, 0), (1, 0), (2, 1), (0, 1)]), 2)] + _cases()
+         (([], [2], []), 0), (([1, 1, 1], [0, 2], [(0, 0), (1, 0), (2, 1), (0, 1)]), 2),
+         # traps for greedy seat filling: an early choice blocks the only seat someone else could take
+         (([1, 1, 1, 1], [1, 1, 2], [(0, 2), (1, 1), (1, 2), (2, 0), (3, 0), (3, 1)]), 4),
+         (([1, 1, 1], [1, 1, 1], [(0, 1), (0, 2), (1, 0), (1, 2), (2, 0), (2, 1)]), 3)] + _cases()
