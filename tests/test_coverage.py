@@ -600,10 +600,11 @@ class Stage5Audit(AuditBase):
 
     def test_topic_29(self):
         self.assert_audited("29_advanced_graphs")
-        self.assert_teaches({"floyd_step": ["sp.floyd"]})
+        self.assert_teaches({"floyd_step": ["sp.floyd"], "has_negative_cycle": ["sp.negative_cycle"]})
         self.assert_uses({"city_fewest_reachable": ["sp.floyd"], "has_negative_cycle": ["sp.bellman_ford"],
                           "cracking_safe": ["graph.euler"], "critical_mst_edges": ["uf.find", "uf.union", "graph.mst"],
-                          "find_arbitrage": ["bfs.path", "sp.bellman_ford"]})
+                          "find_arbitrage": ["bfs.path", "sp.bellman_ford", "sp.negative_cycle"]})
+        self.assertEqual(self.problems["has_negative_cycle"]["difficulty"], "easy")
 
     def test_every_stage_5_topic_keeps_two_hard_problems(self):
         for topic_id in STAGE_5:
@@ -617,6 +618,17 @@ class Stage5Audit(AuditBase):
         big("count_inversions", lambda a, w: len(a[0]) >= 200_000)        # O(n²) pairs, or insort
         big("rank_transform", lambda a, w: len(a[0]) >= 100_000)          # count smaller values per number
         big("range_max_updates", lambda ops, w: len(ops) >= 60_000)       # max() over the range
+        big("range_max_updates", lambda ops, w: sum(op[0] == "max_range" and op[2] - op[1] < 32 for op in ops) >= 10_000)
+        big("has_negative_cycle", lambda a, w: a[0] >= 400 and len(a[1]) >= 4_000 and w is True)    # Floyd: O(n³)
+        big("has_negative_cycle", lambda a, w: a[0] >= 400 and len(a[1]) >= 4_000 and w is False)
+
+    def test_teacher_hints_stay_in_their_topic(self):
+        # A teaching problem's hint must not send the learner to a later topic's technique.
+        self.assertNotIn("Fenwick", self.problems["count_inversions"]["hint"])
+
+    def test_kmp_explanation_covers_the_step_after_a_match(self):
+        explain = server.parse_techniques(server.TECHNIQUES_FILE)["str.kmp"]["explain"]
+        self.assertIn("after a match", explain)
 
 
 if __name__ == "__main__":

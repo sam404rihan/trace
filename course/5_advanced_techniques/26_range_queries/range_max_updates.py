@@ -64,7 +64,7 @@ def _big():
             res.append(None)
         else:
             l = rng.randrange(n)
-            r = rng.randrange(l, n)
+            r = rng.randrange(l, n) if rng.random() < 0.5 else min(n - 1, l + rng.randrange(32))   # long and short ranges
             lo, hi, best = l + size, r + size + 1, 0
             while lo < hi:
                 if lo & 1:

@@ -10,7 +10,6 @@ Example:
 Aim for:  O(n log n). The last test has 200,000 numbers.
 Hint:     Merge sort. While merging two sorted halves, whenever you take an element from the RIGHT
           half, every element still waiting in the left half is bigger: add len(left) - i.
-          (A Fenwick tree over values works too.)
 """
 
 

@@ -529,13 +529,20 @@ TECHNIQUES = {
         "name": "Matching with the prefix function (KMP)",
         "explain": "To find a pattern in a text, build the pattern's prefix function, then walk the text once keeping "
                    "k, how much of the pattern matches right now. On a mismatch, fall back with `k = pi[k - 1]` "
-                   "instead of starting over; when k reaches the pattern's length, that's a match. O(text + pattern).",
+                   "instead of starting over. When k reaches the pattern's length, record a match, and fall back "
+                   "the same way after a match too, so overlapping matches aren't missed. O(text + pattern).",
     },
     "sp.floyd": {
         "name": "Floyd–Warshall",
         "explain": "For the shortest path between every pair of nodes, allow each node k as a stopover in turn: for "
                    "every pair (i, j), `dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j])`. Once every k has "
                    "had its turn, dist holds every shortest distance. It's O(n³).",
+    },
+    "sp.negative_cycle": {
+        "name": "Detecting a negative cycle",
+        "explain": "Start every distance at 0, as if one extra node had a free edge to every node, so every cycle is "
+                   "reachable. Relax every edge n - 1 times, as in Bellman-Ford. If any edge can still be relaxed in "
+                   "one more round, some cycle has a negative total: nothing else keeps getting cheaper.",
     },
     "grid.neighbors": {
         "name": "Grid neighbours",
