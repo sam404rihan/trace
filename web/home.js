@@ -41,16 +41,10 @@
     return { unmount() {} };
   };
 
-  // Crop the drawing to what it actually draws, so it fills the card, then let it build itself in.
-  // Measured before the build-in starts, since the parts begin moved and shrunk.
+  // Crop the drawing so it fills the card, then let it build itself in.
   function build(host) {
-    const svg = host.querySelector(".hero-art svg");
-    if (!svg) return;
-    if (svg.isConnected) {
-      const b = svg.getBBox(), pad = 10;
-      if (b.width && b.height) svg.setAttribute("viewBox", `${b.x - pad} ${b.y - pad} ${b.width + 2 * pad} ${b.height + 2 * pad}`);
-    }
-    svg.classList.add("build");
+    const svg = T.cropArt(host.querySelector(".hero-art svg"));
+    if (svg) svg.classList.add("build");
   }
 
   const check = () => s("svg", { class: "icon", viewBox: "0 0 24 24", "aria-hidden": "true" }, s("path", { d: "M5 12.5l4.5 4.5L19 7.5" }));

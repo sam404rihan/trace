@@ -38,6 +38,7 @@
     left: "M15 6l-6 6 6 6",
     right: "M9 6l6 6-6 6",
     lock: ["M6 11h12v9H6z", "M8.5 11V8a3.5 3.5 0 0 1 7 0v3"],
+    check: "M5 12.5l4.5 4.5L19 7.5",
     home: ["M4 11l8-6.5 8 6.5", "M6.5 9.5V19h11V9.5"],
     road: ["M9 5L4 7v12l5-2 6 2 5-2V5l-5 2z", "M9 5v12", "M15 7v12"],
     plan: ["M8 6h11", "M8 12h11", "M8 18h11", "M4.5 6h.01", "M4.5 12h.01", "M4.5 18h.01"],
@@ -688,8 +689,12 @@
         h("a", { class: "btn ghost small", href: prev ? link(prev) : home, "aria-label": "Previous" }, icon(ICONS.left)),
         h("a", { class: "btn ghost small", href: next ? link(next) : home, "aria-label": "Next" }, icon(ICONS.right))));
 
-    // left pane
+    // left pane, under a band in the stage colour: the topic's name and its drawing, like the home card
     const left = h("div", { class: "pane-left" });
+    const band = h("a", { class: "ws-topic", href: `#/t/${topic.id}`, title: `Back to ${topicTitle(topic)}` },
+      h("span", { class: "ws-topic-text" }, h("span", { class: "ws-topic-name" }, topicTitle(topic)),
+        h("span", { class: "ws-topic-stage" }, `Stage ${stageOf(topic)} · ${topic.stage}`)),
+      T.topicArt(topic.n));
     function renderLeft() {
       const tabs = h("div", { class: "tabs", role: "tablist" },
         [["problem", "Problem"], ["solution", "Solution"]].map(([id, label]) =>
@@ -711,7 +716,7 @@
                 S.progress = (await api("/api/unlock", { name })).progress;
                 route();
               } }, "Open anyway"))));
-        left.replaceChildren(tabs, body);
+        left.replaceChildren(band, tabs, body);
         return;
       }
       if (tab === "problem") {
@@ -757,7 +762,7 @@
             renderLeft();
           } }, "Show the solution")));
       }
-      left.replaceChildren(tabs, body);
+      left.replaceChildren(band, tabs, body);
     }
     renderLeft();
 
@@ -768,6 +773,7 @@
     const resetBtn = h("button", { class: "btn ghost small", type: "button", title: "Put the starter code back" }, icon(ICONS.reset), "Reset");
     const editorWrap = h("div", { class: "editor-wrap" });
     const summary = h("span", { class: "summary" });
+    const strip = h("div", { class: "test-strip", role: "group", "aria-label": "Tests" });
     const timing = h("span", { class: "timing" });
     const customToggle = h("button", { class: "btn ghost small", type: "button" }, "Try a call");
     const consoleBody = h("div", {},
@@ -786,13 +792,14 @@
       editorWrap,
       h("div", { class: "gutter-h", role: "separator", "aria-orientation": "horizontal", "aria-label": "Resize console" }),
       h("section", { class: "console", "aria-label": "Results" },
-        h("div", { class: "console-bar" }, summary, timing, h("span", { class: "spacer" }), customToggle),
+        h("div", { class: "console-bar" }, summary, strip, timing, h("span", { class: "spacer" }), customToggle),
         h("div", { class: "console-body" }, customRow, consoleBody)));
 
     const split = h("div", { class: "split", style: `--left:${local.get("trace.left", 42)}%` }, left,
       h("div", { class: "gutter", role: "separator", "aria-orientation": "vertical", "aria-label": "Resize panels" }), right);
     right.style.setProperty("--console", `${local.get("trace.console", 38)}%`);
     app.replaceChildren(h("div", { class: "ws-grid" }, bar, split));
+    T.cropArt(band.querySelector("svg"), 6);
 
     const cm = CodeMirror(editorWrap, {
       value: p.code, mode: "python", theme: "trace", lineNumbers: true, indentUnit: 4, tabSize: 4,
@@ -847,6 +854,7 @@
       runBtn.firstChild.replaceWith(h("span", { class: "spinner", "aria-hidden": "true" }));
       summary.className = "summary";
       summary.textContent = "Running…";
+      strip.replaceChildren();
       timing.textContent = "in a fresh sandbox";
       consoleBody.replaceChildren(h("div", { "aria-busy": "true" },
         T.range(Math.min(5, stepCount ? p.steps[Math.min(stepsDone(), stepCount - 1)].tests + 1 : p.tests)).map(() => sk("sk-test"))));
@@ -921,7 +929,8 @@
       const nowSteps = stepsDone();
       if (solved(name) && passed === tests.length && !todo) {
         const nx = inPlan ? (next ? { name: next, plan: true } : { done: true, plan: true }) : nextItem(name);
-        kids.push(h("div", { class: "notice ok" },
+        kids.push(h("div", { class: "notice ok solved-card" },
+          h("span", { class: "solved-mark", "aria-hidden": "true" }, icon(ICONS.check)),
           h("strong", {}, wasSolved ? "All tests pass." : "Solved."),
           nx && nx.name ? h("a", { class: "btn small primary", href: link(nx.name) }, `Next: ${S.problems[nx.name].title}`, icon(ICONS.right))
             : nx && nx.plan ? h("a", { class: "btn small primary", href: home }, `Back to ${plan.title}`, icon(ICONS.right))
@@ -940,6 +949,7 @@
             c.output ? h("pre", { class: "out" }, c.output) : null)));
       }
       let firstFail = null;
+      const rows = new Map();
       const testRow = (t) => {
         const bad = ["fail", "error", "timeout"].includes(t.status);
         const det = h("details", { class: "test " + t.status, open: bad && !firstFail ? true : null },
@@ -952,6 +962,7 @@
             t.error ? h("pre", { class: "err" }, t.error) : null,
             t.output ? h("pre", { class: "out" }, t.output) : null));
         if (bad && !firstFail) { firstFail = det; if (t.error) markError(t.error); }
+        rows.set(t, det);
         return det;
       };
       if (stepCount) {
@@ -970,6 +981,13 @@
       } else {
         tests.forEach((t) => kids.push(testRow(t)));
       }
+      // One square per test, like the drawings' cells; a square opens its test.
+      const bucket = (st) => (st === "pass" ? "pass" : ["fail", "error", "timeout"].includes(st) ? "fail" : "todo");
+      strip.replaceChildren(...tests.map((t, k) => h("button", {
+        class: "cell", type: "button", "data-status": bucket(t.status), style: `--i:${k}`,
+        "aria-label": `Test ${k + 1}: ${t.status === "pass" ? "passed" : t.status}`, title: t.call,
+        onclick: () => { const row = rows.get(t); if (!row) return; row.open = true; row.scrollIntoView({ block: "nearest", behavior: "smooth" }); },
+      })));
       consoleBody.replaceChildren(...kids);
       if (firstFail) firstFail.scrollIntoView({ block: "nearest" });
     }

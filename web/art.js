@@ -230,6 +230,15 @@
     27: "text", 28: "triangle", 29: "negcycle", 30: "numbers", 31: "hull", 32: "lift", 33: "flow", 34: "digits",
   };
 
+  // Trim a drawing's viewBox to what it actually draws (it must be in the document to be measured),
+  // so it fills whatever box it's given. Measure before any build-in starts: parts begin moved and shrunk.
+  T.cropArt = (svg, pad = 10) => {
+    if (!svg || !svg.isConnected) return svg;
+    const b = svg.getBBox();
+    if (b.width && b.height) svg.setAttribute("viewBox", `${b.x - pad} ${b.y - pad} ${b.width + 2 * pad} ${b.height + 2 * pad}`);
+    return svg;
+  };
+
   T.topicArt = (n) => {
     order = 0;
     const kind = T.ART_KINDS[n] || "graph";

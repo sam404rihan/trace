@@ -12,6 +12,7 @@ starts Trace on an empty workspace with a fresh browser profile:
     bash tests/browser/fresh.sh 8175 stage_5.mjs
     bash tests/browser/fresh.sh 8176 stage_6.mjs
     bash tests/browser/fresh.sh 8177 calm_home.mjs
+    bash tests/browser/fresh.sh 8180 workspace.mjs
 
 These aren't part of `python -m unittest`; run them when you change a screen.
 
