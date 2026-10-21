@@ -20,7 +20,7 @@ check("topic 07 lists its techniques in teaching order",
 await p.reload(BASE + "/#/t/10_sorting_and_intervals");
 const list10 = await techList(p);
 check("topic 10 lists its techniques in teaching order",
-  list10.join(" | ") === "Do two intervals overlap? | Absorbing an overlap | Sort by start, then compare neighbours | Earliest end first", list10.join(" | "));
+  list10.join(" | ") === "Do two intervals overlap? | Absorbing an overlap | Merge sort, counting while merging | Sort by start, then compare neighbours | Earliest end first", list10.join(" | "));
 
 // Solo problems open once the snippet and guided problem are solved (a locked page shows no box).
 check("solve slide_sum", await solve(p, "slide_sum"));

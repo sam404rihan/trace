@@ -12,7 +12,7 @@ in code. Every topic is a ladder:
 | 4 Build | A small real program that uses the idea: a rate limiter, an LRU cache, a route planner, a sudoku solver, a line diff… |
 
 The next rung unlocks when you pass the current one ("Open anyway" if you want to skip).
-34 topics in 6 stages, 412 coding exercises and 71 drills, with at least two hard problems in
+34 topics in 6 stages, 414 coding exercises and 71 drills, with at least two hard problems in
 every topic. Stage 6 (specialist topics) covers number theory, computational geometry, binary
 lifting and rerooting, network flow and matching, and digit DP with monotonic-queue DP. Study
 plans (Blind 75, NeetCode 150, Beyond NeetCode) cut across the topics.
