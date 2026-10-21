@@ -10,7 +10,7 @@ Example:
         person 2 knows 0 and 1, person 3 knows 2: 3 + 1.
 
 Aim for:  O(2^k * people). Trying every team is O(2^people), and the last test
-          has 60 people.
+          has 120 people with similar costs.
 Hint:     Write a set of skills as a bitmask: skill s is bit 1 << s. best[mask] = cheapest
           team that knows at least the skills in mask, starting with best[0] = 0. Go through
           the masks in increasing order, and for each person p, best[mask | p_mask] can be
@@ -38,8 +38,8 @@ def _fast(people, costs, k):
 def _big():
     import random
     rng = random.Random(2501)
-    people = [rng.sample(range(12), rng.randint(1, 3)) for _ in range(60)]
-    costs = [rng.randint(1, 1000) for _ in range(60)]
+    people = [rng.sample(range(12), rng.randint(1, 2)) for _ in range(120)]
+    costs = [rng.randint(100, 110) for _ in range(120)]    # close costs: pruning rarely cuts
     return (people, costs, 12), _fast(people, costs, 12)
 
 

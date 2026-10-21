@@ -376,6 +376,12 @@ TECHNIQUES = {
                    "its distance is now final. Relax its edges, pushing every improvement. Skip a popped entry whose "
                    "distance is worse than the one already recorded: it's out of date.",
     },
+    "sp.bellman_ford": {
+        "name": "Bellman-Ford",
+        "explain": "When some edges are negative, Dijkstra can settle a node too early. Instead, relax EVERY edge, "
+                   "and repeat that n - 1 times: a cheapest path uses at most n - 1 edges, and each round makes one "
+                   "more of them final. Stop early when a round changes nothing. It's O(n · edges).",
+    },
     "graph.mst": {
         "name": "Minimum spanning tree",
         "explain": "To connect every node as cheaply as possible, take the cheapest edges first and skip any edge "

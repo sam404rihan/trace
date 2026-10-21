@@ -479,11 +479,12 @@ class Stage4Audit(AuditBase):
     def test_topic_21(self):
         self.assert_audited("21_weighted_graphs")
         self.assert_teaches({"relax": ["sp.relax"], "cheapest_path": ["sp.dijkstra"], "mst_cost": ["graph.mst"],
-                             "euler_path": ["graph.euler"]})
+                             "euler_path": ["graph.euler"], "bellman_ford": ["sp.bellman_ford"]})
+        self.assert_uses({"cheapest_flights": ["sp.relax", "sp.bellman_ford"]})
         self.assert_uses({"min_cost_connect_points": ["heap.lazy_delete", "graph.mst"],
                           "reconstruct_itinerary": ["graph.euler"], "min_cost_in_time": ["bfs.state", "sp.dijkstra"],
                           "swim_rising_water": ["grid.neighbors", "sp.dijkstra"], "route_planner": ["bfs.path", "sp.dijkstra"]})
-        for name in ("mst_cost", "euler_path"):
+        for name in ("mst_cost", "euler_path", "bellman_ford"):
             self.assertEqual(self.problems[name]["difficulty"], "easy", name)
 
 
@@ -540,12 +541,17 @@ class Stage4Audit(AuditBase):
         big("groups_after_each", lambda a, w: a[0] >= 100_000 and len(a[1]) >= 100_000)       # BFS per edge
         big("subsets_ii", lambda a, w: len(a[0]) >= 24 and len(w) <= 200)                     # all 2^n, then dedupe
         big("coin_change", lambda a, w: a[1] >= 5_000)                                         # plain recursion
+        big("coin_change", lambda a, w: a[1] >= 4_000 and w == -1)                             # backtracking with a prune
         big("longest_increasing_subsequence", lambda a, w: len(a[0]) >= 100_000)               # O(n²) DP
         big("palindromic_substrings", lambda a, w: len(a[0]) >= 100_000)                       # every substring
         big("partition_equal_subset", lambda a, w: len(a[0]) >= 100)                           # every subset
+        big("partition_equal_subset", lambda a, w: len(a[0]) >= 40 and w is False)             # DFS with a prune
+        big("partition_equal_subset", lambda a, w: a == ([3, 3, 2, 2, 2, 2],) and w is True)   # largest-first greedy
         big("stock_cooldown", lambda a, w: len(a[0]) >= 100_000)                               # plain recursion
         big("matrix_chain", lambda a, w: len(a[0]) >= 150)                                     # every bracketing
         big("cheapest_team", lambda a, w: len(a[0]) >= 60)                                     # every team
+        big("cheapest_team", lambda a, w: len(a[0]) >= 120 and max(a[1]) - min(a[1]) <= 10)    # backtracking with a prune
+        big("bellman_ford", lambda a, w: a[0] >= 300 and len(a[1]) >= 3_000)
 
 
 if __name__ == "__main__":
