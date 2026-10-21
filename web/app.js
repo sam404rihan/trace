@@ -196,6 +196,38 @@
     return null;
   }
 
+  // Where you stopped: the last problem, drill or walkthrough that actually opened (a lock screen you
+  // backed away from doesn't count, nor does the review drill). Kept per machine, like the theme.
+  const recordStop = (hash) => local.set("trace.lastStop", { hash });
+  const ITEM_LABEL = { snippet: "Snippet", guided: "Guided problem", build: "Build" };
+  function describeStop(t) {
+    if (t.kind === "drill") return { href: `#/d/${t.dt.id}/${t.drill.id}`, topic: t.topic, kind: "drill", title: t.drill.name, itemLabel: "Intuition drill", plan: null };
+    if (t.kind === "walkthrough") return { href: `#/w/${t.topic.id}`, topic: t.topic, kind: "walkthrough", title: "Build the pattern, one piece at a time", itemLabel: "Read the code", plan: null };
+    const p = S.problems[t.name];
+    return { href: t.plan ? `#/p/${t.name}/plan/${t.plan.id}` : `#/p/${t.name}`, topic: t.topic, kind: "problem", title: p.title,
+      itemLabel: ITEM_LABEL[p.kind] || `${p.difficulty[0].toUpperCase()}${p.difficulty.slice(1)} problem`,
+      plan: t.plan ? { id: t.plan.id, title: t.plan.title } : null };
+  }
+  // What Continue opens: where you stopped if it still exists and isn't finished, else the course's next step.
+  function resumeTarget() {
+    const stop = local.get("trace.lastStop", null);
+    const [, kind, a, b, c] = (stop && typeof stop.hash === "string" ? stop.hash : "").split("/");
+    let t = null;
+    if (kind === "p" && S.problems[a] && topicOf(a) && !solved(a)) {
+      const plan = b === "plan" ? (S.plans.plans || []).find((pl) => pl.id === c && planItemsOf(pl).includes(a)) || null : null;
+      t = { kind: "problem", topic: topicOf(a), name: a, plan };
+    } else if (kind === "d" && T.byId[a] && T.byId[a].n !== 99) {
+      const dt = T.byId[a], drill = dt.drills.find((d) => d.id === b), topic = S.topics.find((x) => x.n === dt.n);
+      if (drill && topic && !T.DrillProgress.solid(dt, drill)) t = { kind: "drill", topic, dt, drill };
+    } else if (kind === "w") {
+      const topic = S.topics.find((x) => x.id === a);
+      if (topic && topic.has_walkthrough && !wtDone(topic)) t = { kind: "walkthrough", topic };
+    }
+    if (!t) t = nextUp();
+    return t ? describeStop(t) : null;
+  }
+  T.resumeTarget = resumeTarget;
+
   function topicOf(name) { return S.topics.find((t) => t.items.includes(name)); }
   // 1-based position of the topic's stage among the course's stages, in course order.
   const stageNames = () => [...new Set(S.topics.map((t) => t.stage))];
@@ -545,6 +577,7 @@
       problemHref: (name) => `#/p/${name}`,
       topicHref: `#/t/${id}`,
     });
+    recordStop(`#/w/${topic.id}`);
     S.cleanup = () => m.unmount();
   }
 
@@ -562,6 +595,7 @@
         h("p", { style: "margin-top:24px" }, h("a", { class: "btn", href: "#/" }, "Back to the topics"))));
       return;
     }
+    if (dt.n !== 99) recordStop(`#/d/${dt.id}/${drill.id}`);
     const tabs = h("div", { class: "drill-tabs", role: "tablist" });
     const renderTabs = () => tabs.replaceChildren(...dt.drills.map((d) =>
       h("a", { class: "drill-tab", role: "tab", href: `#/d/${dt.id}/${d.id}`, "aria-selected": String(d === drill) }, d.name, T.pips(T.DrillProgress.rec(dt, d).clean))));
@@ -638,6 +672,7 @@
     const dt = drillTopic(topic);
     document.title = `${p.title} | Trace`;
     crumbs(...here, { label: p.title });
+    if (unlocked(name)) recordStop(inPlan ? `#/p/${name}/plan/${plan.id}` : `#/p/${name}`);
 
     const st = () => pstate(name);
     const stepCount = p.steps.length;
