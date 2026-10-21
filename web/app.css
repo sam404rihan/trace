@@ -166,7 +166,6 @@ body.ws #app { overflow: hidden; }
 .page h1 { font-size: 40px; line-height: 1.1; letter-spacing: -0.03em; font-weight: 700; margin: 0; }
 .lede { font-size: 18.5px; color: var(--ink-2); margin: 12px 0 0; max-width: 62ch; }
 .hero-actions { display: flex; align-items: center; gap: 16px; margin-top: 24px; flex-wrap: wrap; }
-.hero-stat { color: var(--ink-3); font-size: 14px; }
 .section-title { font-size: 14px; font-weight: 600; color: var(--ink-3); margin: 48px 0 10px; }
 
 .topic-list { display: grid; gap: 2px; }
@@ -658,8 +657,6 @@ button.gcell { cursor: pointer; }
 /* ── Study plans ─────────────────────────────────────── */
 .plan-meter { display: grid; grid-template-columns: auto 64px; align-items: center; gap: 10px; font: 500 12.5px var(--mono); color: var(--ink-3); }
 .plan-meter i { height: 6px; border-radius: 3px; background: linear-gradient(to right, var(--ok) calc(var(--share) * 100%), var(--fill-2) 0); }
-.plan-sec { display: flex; justify-content: space-between; max-width: 100%; }
-.plan-sec span:last-child { font-family: var(--mono); font-weight: 500; }
 .reported-dot { margin-left: 10px; font-size: 12px; font-weight: 500; color: var(--warn); }
 .badge.plan { color: var(--ink-2); background: var(--fill-2); }
 .badge.reported { color: var(--warn); background: color-mix(in srgb, var(--warn) 12%, transparent); cursor: help; }

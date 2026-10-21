@@ -15,12 +15,19 @@ starts Trace on an empty workspace with a fresh browser profile:
     bash tests/browser/fresh.sh 8180 workspace.mjs
     bash tests/browser/fresh.sh 8183 drills.mjs
     bash tests/browser/fresh.sh 8190 contest.mjs
+    bash tests/browser/fresh.sh 8200 topic_page.mjs
 
 These aren't part of `python -m unittest`; run them when you change a screen.
 
 `contest.mjs` covers contest mode. Headless Chrome won't grant fullscreen without a real user
 gesture, so the check stubs `document.fullscreenElement` and fires `fullscreenchange` to test the
 lock, and moves the countdown forward by replacing `Trace.now`.
+
+`topic_page.mjs` covers the topic and study-plan pages (one primary action and where it goes, the
+ladder and plan sections folded with every item still linked, the 390px layout) and the shell: no
+text glyph stands in for an icon in the sidebar, crumbs, palette or console (text and `::before` /
+`::after` content are both scanned), no element asks for a weight the vendored fonts lack, and text on
+the new surfaces clears 4.5:1 in light and dark against its composited background.
 
 Two helpers take screenshots for looking at, not checks:
 
