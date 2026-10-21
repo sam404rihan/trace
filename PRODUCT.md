@@ -20,7 +20,7 @@ and make progress", not "browse a catalogue".
 
 Trace teaches DSA in two passes, first in your head and then in code. Each of its 34 topics (in 6
 stages) is a ladder: Intuition drills, Snippet, Guided, Problems, Build. It has 415 coding
-exercises and 71 drills, a first-run placement check, and study plans (Blind 75, NeetCode 150,
+exercises and 71 drills, an optional placement check, and study plans (Blind 75, NeetCode 150,
 Beyond NeetCode) that cut across the topics.
 
 Success: a beginner opens Trace, sees one clear next step, and keeps coming back because it feels

@@ -8,7 +8,7 @@
 
   const go = () => s("svg", { class: "icon", viewBox: "0 0 24 24", "aria-hidden": "true" }, s("path", { d: "M5 12h13M13 6l6 6-6 6" }));
 
-  // ctx: { target, started, stageNo, stageName, topicTitle, topicDone, topicTotal, placement }
+  // ctx: { target, started, stageNo, stageName, topicTitle, topicDone, topicTotal }
   // target is resumeTarget() from app.js; null when the whole course is done.
   T.mountHome = (host, ctx) => {
     const t = ctx.target;
@@ -36,9 +36,7 @@
         h("p", { class: "hero-progress" },
           h("span", { class: "meter", style: `--share:${ctx.topicTotal ? ctx.topicDone / ctx.topicTotal : 0}`, "aria-hidden": "true" }, h("i")),
           `${ctx.topicDone} of ${ctx.topicTotal} in ${ctx.topicTitle}`),
-        h("a", { class: "home-road", href: "#/roadmap" }, "See the roadmap", go())),
-      ctx.placement ? null
-        : h("p", { class: "home-check" }, "Not sure where to start? ", h("a", { class: "link", href: "#/start" }, "Take the starting check"))));
+        h("a", { class: "home-road", href: "#/roadmap" }, "See the roadmap", go()))));
     build(host);
     return { unmount() {} };
   };

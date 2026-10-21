@@ -107,11 +107,16 @@ await post(p, "/api/placement", { door: "skip" });
 await p.eval(`localStorage.clear()`);
 await p.reload(BASE + "/#/");
 check("Start before anything is done", (await p.eval(`document.querySelector(".hero-go")?.textContent.trim()`)) === "Start");
-// One with progress but no starting check is offered it, quietly.
+// Nobody is asked where to start: a brand-new learner opens straight onto home, and home never asks.
 await post(p, "/api/reset-progress", {});
+await p.eval(`localStorage.clear()`);
+await p.reload(BASE + "/");
+check("a first visit opens home, not the starting check", (await p.eval(`location.hash`)) !== "#/start" && await p.eval(`!!document.querySelector(".hero-go")`),
+  await p.eval(`location.hash`));
+check("home never asks where to start", await p.eval(`!document.querySelector('#app a[href="#/start"]')`));
 check("solve two_sum after reset", await solve(p, "two_sum"));
 await p.reload(BASE + "/#/");
-check("offers the starting check before placement", await p.eval(`!!document.querySelector('#app a[href="#/start"]')`));
+check("still no starting-check prompt on home", await p.eval(`!document.querySelector('#app a[href="#/start"]')`));
 await post(p, "/api/placement", { door: "skip" });
 
 // ── The roadmap holds the whole course ──

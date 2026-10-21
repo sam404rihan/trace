@@ -17,9 +17,9 @@ every topic. Stage 6 (specialist topics) covers number theory, computational geo
 lifting and rerooting, network flow and matching, and digit DP with monotonic-queue DP. Study
 plans (Blind 75, NeetCode 150, Beyond NeetCode) cut across the topics.
 
-The first time you open Trace, it asks where you're starting: new to programming, some Python, or
-DSA before. A short check (28 questions at most) puts you at your first gap. Topics you place out
-of stay open, and you can retake the check from the home page.
+Trace opens straight onto home: one next step and a Continue button. Every topic is open, so start
+wherever you like from the roadmap. If you'd rather be placed, an optional starting check (28
+questions at most) is on the roadmap; topics you place out of stay open.
 
 ## Start it
 

@@ -129,12 +129,6 @@
     if (topic.has_walkthrough) return `#/w/${topic.id}`;
     return topic.items.length ? `#/p/${topic.items[0]}` : `#/t/${topic.id}`;
   }
-  // Nothing done yet and no starting check taken: the first visit, which opens "Where are you starting?".
-  function firstVisit() {
-    const p = S.progress;
-    if (p.placement || Object.keys(p.problems || {}).length || (p.unlocked || []).length || Object.keys(p.walkthroughs || {}).length) return false;
-    return !T.topics.some((dt) => dt.drills.some((d) => T.DrillProgress.rec(dt, d).runs > 0));
-  }
   const placedOut = (topic) => (S.progress.placement?.placed_out || []).includes(topic.id);
   T.reachedTopics = () => {
     const out = new Set(S.progress.placement?.placed_out || []);
@@ -300,7 +294,6 @@
   }
 
   async function viewStart() {
-    S.startShown = true;                         // redirect a first visit here once per session, never in a loop
     document.title = "Where are you starting? | Trace";
     crumbs({ label: "Roadmap", href: "#/roadmap" }, { label: "Where are you starting?" });
     const host = h("div", { class: "start-page", "aria-busy": "true" }, sk("sk-title"), sk("sk-line", "width:70%"));
@@ -338,7 +331,7 @@
     const target = resumeTarget();
     const topic = target && target.topic;
     T.mountHome(app, {
-      target, started: started(), placement: !!S.progress.placement,
+      target, started: started(),
       stageNo: topic ? stageOf(topic) : 6, stageName: topic ? topic.stage : "",
       topicTitle: topic ? topicTitle(topic) : "", topicDone: topic ? topic.items.filter(solved).length : 0,
       topicTotal: topic ? topic.items.length : 0,
@@ -1173,7 +1166,6 @@
       if (kind === "w") return await viewWalkthrough(a);
       if (kind === "start") return await viewStart();
       if (kind === "roadmap") return viewRoadmap();
-      if (!kind && !S.startShown && firstVisit()) { history.replaceState(null, "", "#/start"); return await viewStart(); }
       return viewHome();
     } catch (err) {
       console.error(err);

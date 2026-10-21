@@ -824,7 +824,6 @@ button, .crumbs, .tabs, .stepper, .ws-bar, .drill-tabs, .badge, .console-bar, .r
 .home-road { display: inline-flex; align-items: center; gap: 8px; color: var(--accent); font-weight: 700; text-decoration: none; font-size: 16px; }
 .home-road:hover { text-decoration: underline; text-underline-offset: 4px; }
 .home-road .icon { stroke-width: 2.4; }
-.home-check { margin: 18px 8px 0; color: var(--ink-3); font-size: 15px; }
 
 @media (max-width: 760px) {
   .home { padding: 20px 16px 48px; }
