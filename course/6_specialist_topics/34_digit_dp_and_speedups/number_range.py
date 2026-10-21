@@ -112,6 +112,8 @@ def _session(seed, lo, hi, q, big):
     return calls, want
 
 
+USES = ["recursion.memo", "prefix.sums", "dp.digit", "dp.digit_started"]
+
 TESTS = [([("NumberRange", 1, 100), ("with_digit_sum", 10), ("digit_sum_divisible_by", 5), ("without_digit", 0),
            ("no_equal_neighbours",)], [None, 9, 19, 90, 90]),
          ([("NumberRange", 7, 7), ("with_digit_sum", 7), ("without_digit", 7), ("no_equal_neighbours",), ("digit_sum_divisible_by", 1)],

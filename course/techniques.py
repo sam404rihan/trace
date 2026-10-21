@@ -633,6 +633,18 @@ TECHNIQUES = {
                    "take) → each allowed choice (capacity 1) → sink (capacity: how many each choice needs). Each unit "
                    "of max flow is one assignment, and the capacities enforce every rule at once.",
     },
+    "dp.digit": {
+        "name": "Digit DP",
+        "explain": "To count numbers up to N with some digit property, build them digit by digit from the left. A "
+                   "`tight` flag says the digits so far equal N's: then the next digit can only go up to N's digit, "
+                   "otherwise up to 9. Memoise on (position, tight, whatever the property needs).",
+    },
+    "dp.digit_started": {
+        "name": "Leading zeros in digit DP",
+        "explain": "Numbers with fewer digits than N appear in digit DP as numbers with leading zeros. Carry a "
+                   "`started` flag that turns on at the first non-zero digit, and let leading zeros skip the property "
+                   "checks (a leading 0 isn't a digit of the number, nor anyone's neighbour).",
+    },
     "grid.neighbors": {
         "name": "Grid neighbours",
         "explain": "A cell (r, c) has up to four neighbours: (r - 1, c), (r + 1, c), (r, c - 1) and (r, c + 1). "

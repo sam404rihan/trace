@@ -39,5 +39,8 @@ def _cases():
     return out
 
 
+TEACHES = ["dp.digit"]
+USES = []
+
 TESTS = [(([3, 5, 2], 1, True), _ref([3, 5, 2], 1, True)), (([3, 5, 2], 1, False), _ref([3, 5, 2], 1, False)),
          (([1, 0, 0], 2, True), [(0, True)]), (([9], 0, True), _ref([9], 0, True))] + _cases()

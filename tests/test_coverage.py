@@ -678,5 +678,28 @@ class Stage6Audit(AuditBase):
             self.assertEqual(self.problems[name]["difficulty"], "easy", name)
 
 
+    def test_topic_34(self):
+        self.assert_audited("34_digit_dp_and_speedups")
+        self.assert_teaches({"digit_choices": ["dp.digit"], "count_without_digit": ["dp.digit_started"]})
+        self.assert_uses({"count_stepping_numbers": ["recursion.memo", "prefix.sums", "dp.digit", "dp.digit_started"],
+                          "constrained_subset_sum": ["greedy.kadane", "deque.monotonic", "dp.recurrence"],
+                          "jump_game_vi": ["deque.monotonic", "dp.recurrence"], "count_digit_one": []})
+
+    def test_every_stage_6_topic_keeps_two_hard_problems(self):
+        for topic_id in STAGE_6:
+            hards = [n for n in self.items(topic_id) if self.problems[n]["difficulty"] == "hard"]
+            self.assertGreaterEqual(len(hards), 2, (topic_id, hards))
+
+    def test_teacher_big_tests_reject_the_naive_solution(self):
+        # Solving a teacher marks its technique learned, so its big test must time out without it.
+        def big(name, ok):
+            self.assertTrue(any(ok(args, want) for args, want in self.cases_of(name)), name)
+        big("prime_factors", lambda a, w: a[0] >= 10**11 and len(w) == 1)          # every number up to n
+        big("extended_gcd", lambda a, w: min(a) >= 10**15)                          # search for x
+        big("lca_queries", lambda a, w: len(a[0]) >= 50_000 and len(a[1]) >= 50_000)    # walk up one by one
+        big("min_edge_reversals", lambda a, w: a[0] >= 20_000)                      # BFS from every node
+        big("subtree_sizes", lambda a, w: a[0] >= 100_000)                          # recursion: too deep
+
+
 if __name__ == "__main__":
     unittest.main()

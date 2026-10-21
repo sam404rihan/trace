@@ -37,6 +37,9 @@ def _dp(n, d):
     return go(0, True, False)
 
 
+TEACHES = ["dp.digit_started"]
+USES = ["recursion.memo", "dp.digit"]
+
 STEPS = [
     {
         "title": "Make it work",

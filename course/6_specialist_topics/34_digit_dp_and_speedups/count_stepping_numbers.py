@@ -78,6 +78,8 @@ def _cases():
     return out
 
 
+USES = ["recursion.memo", "prefix.sums", "dp.digit", "dp.digit_started"]
+
 TESTS = [
     (("1", "11"), 10),
     (("90", "101"), 2),
