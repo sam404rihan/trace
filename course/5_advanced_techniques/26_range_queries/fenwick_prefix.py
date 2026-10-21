@@ -39,5 +39,8 @@ def _cases():
     return out
 
 
+TEACHES = ["fenwick.prefix"]
+USES = ["bits.clear_lowest"]
+
 TESTS = [((_build([3, 2, -1, 6, 5]), 4), 10), ((_build([3, 2, -1, 6, 5]), 5), 15), ((_build([3, 2, -1, 6, 5]), 0), 0),
          ((_build([7]), 1), 7)] + _cases()

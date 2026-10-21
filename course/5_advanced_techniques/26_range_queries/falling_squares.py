@@ -93,6 +93,8 @@ def _cases():
     return out
 
 
+USES = ["segtree.basic", "array.rank_compress"]
+
 TESTS = [
     (([[1, 2], [2, 3], [6, 1]],), [2, 5, 5]),
     (([[100, 100], [200, 100]],), [100, 100]),

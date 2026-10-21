@@ -99,6 +99,9 @@ def _cases(seed, count, n, m):
 
 _BIG = _big()
 
+TEACHES = ["fenwick.update"]
+USES = ["fenwick.prefix"]
+
 STEPS = [
     {
         "title": "Make it work",

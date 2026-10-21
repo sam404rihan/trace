@@ -495,6 +495,30 @@ TECHNIQUES = {
                    "While merging, when the right half's item goes first, it is smaller than every item still "
                    "waiting on the left, so `len(left) - i` pairs can be counted in one step. It's O(n log n).",
     },
+    "fenwick.prefix": {
+        "name": "Fenwick tree: prefix sums",
+        "explain": "A Fenwick tree is a list where `tree[k]` holds the sum of the `k & -k` elements ending at "
+                   "position k (counting from 1). To add up the first i elements, take `tree[i]` and strip i's "
+                   "lowest set bit, `i -= i & -i`, until i is 0: at most log n steps.",
+    },
+    "fenwick.update": {
+        "name": "Fenwick tree: updates",
+        "explain": "To add delta to element k, add it to `tree[k]` and climb to the next block that covers k with "
+                   "`k += k & -k`, until k passes n. Together with prefix sums, range sums over changing values "
+                   "are O(log n) both ways. To set a value, add the difference from the old one.",
+    },
+    "segtree.basic": {
+        "name": "Segment tree",
+        "explain": "A segment tree keeps one value (a max, a sum) for blocks of the array that halve level by level. "
+                   "In a list of length 2 · size, the leaves start at size and node i covers nodes 2i and 2i + 1. "
+                   "Changing one element fixes the log n nodes above it; a range query combines about 2 log n blocks.",
+    },
+    "array.rank_compress": {
+        "name": "Compressing values to ranks",
+        "explain": "When values are huge or spread out but only their order matters, replace each with its rank: "
+                   "`rank = {v: i + 1 for i, v in enumerate(sorted(set(nums)))}`. Then the values can index small "
+                   "arrays and trees directly, from 1 up to the number of distinct values.",
+    },
     "grid.neighbors": {
         "name": "Grid neighbours",
         "explain": "A cell (r, c) has up to four neighbours: (r - 1, c), (r + 1, c), (r, c - 1) and (r, c + 1). "

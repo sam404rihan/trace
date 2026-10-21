@@ -47,4 +47,6 @@ def _cases():
     return out
 
 
+USES = ["fenwick.prefix", "fenwick.update", "array.rank_compress"]
+
 TESTS = [(([5, 2, 6, 1],), [2, 1, 1, 0]), (([-1],), [0]), (([-1, -1],), [0, 0]), (([3, 2, 1],), [2, 1, 0])] + _cases()

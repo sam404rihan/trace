@@ -572,5 +572,16 @@ class Stage5Audit(AuditBase):
         self.assertEqual(self.problems["count_inversions"]["difficulty"], "easy")
 
 
+    def test_topic_26(self):
+        self.assert_audited("26_range_queries")
+        self.assert_teaches({"fenwick_prefix": ["fenwick.prefix"], "num_array": ["fenwick.update"],
+                             "range_max_updates": ["segtree.basic"], "rank_transform": ["array.rank_compress"]})
+        self.assert_uses({"count_smaller": ["fenwick.prefix", "fenwick.update", "array.rank_compress"],
+                          "falling_squares": ["segtree.basic", "array.rank_compress"], "reverse_pairs": ["sort.merge_count"],
+                          "price_board": ["segtree.basic"], "num_matrix": ["prefix.sums"]})
+        for name in ("range_max_updates", "rank_transform"):
+            self.assertEqual(self.problems[name]["difficulty"], "easy", name)
+
+
 if __name__ == "__main__":
     unittest.main()

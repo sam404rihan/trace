@@ -52,5 +52,7 @@ def _cases():
     return [_case(rng, rng.randint(1, 6), rng.randint(1, 6), 10) for _ in range(5)] + [_case(rng, 300, 300, 100_000, fast=True)]
 
 
+USES = ["prefix.sums"]
+
 TESTS = [([("NumMatrix", [[3, 0, 1], [5, 6, 3], [1, 2, 0]]), ("sum_region", 1, 1, 2, 2), ("sum_region", 0, 0, 0, 0),
            ("sum_region", 0, 0, 2, 2)], [None, 11, 3, 21])] + _cases()

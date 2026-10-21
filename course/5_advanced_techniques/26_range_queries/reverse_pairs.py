@@ -54,6 +54,8 @@ def _cases():
     return out
 
 
+USES = ["sort.merge_count"]
+
 TESTS = [
     (([1, 3, 2, 3, 1],), 2),
     (([2, 4, 3, 5, 1],), 3),

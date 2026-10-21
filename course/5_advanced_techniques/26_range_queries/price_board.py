@@ -123,6 +123,8 @@ def _cases():
     return out
 
 
+USES = ["segtree.basic"]
+
 TESTS = [([("PriceBoard", [5, 3, 8, 6]), ("max_in", 0, 3), ("sum_in", 1, 2), ("update", 2, 1), ("max_in", 0, 3),
            ("argmax", 0, 3)], [None, 8, 11, None, 6, 3]),
          ([("PriceBoard", [4, 4, 4]), ("argmax", 0, 2), ("argmax", 1, 2), ("sum_in", 0, 0)], [None, 0, 1, 4])] + _cases()
