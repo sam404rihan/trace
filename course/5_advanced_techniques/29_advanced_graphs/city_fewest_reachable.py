@@ -46,6 +46,8 @@ def _rand(seed, count, lo, hi):
     return out
 
 
+USES = ["sp.floyd"]
+
 STEPS = [
     {
         "title": "All-pairs distances",

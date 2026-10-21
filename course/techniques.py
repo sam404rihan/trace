@@ -531,6 +531,12 @@ TECHNIQUES = {
                    "k, how much of the pattern matches right now. On a mismatch, fall back with `k = pi[k - 1]` "
                    "instead of starting over; when k reaches the pattern's length, that's a match. O(text + pattern).",
     },
+    "sp.floyd": {
+        "name": "Floyd–Warshall",
+        "explain": "For the shortest path between every pair of nodes, allow each node k as a stopover in turn: for "
+                   "every pair (i, j), `dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j])`. Once every k has "
+                   "had its turn, dist holds every shortest distance. It's O(n³).",
+    },
     "grid.neighbors": {
         "name": "Grid neighbours",
         "explain": "A cell (r, c) has up to four neighbours: (r - 1, c), (r + 1, c), (r, c - 1) and (r, c + 1). "

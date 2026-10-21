@@ -37,5 +37,7 @@ def _describe(n, k):
     return f"a string of length {k ** n + n - 1} containing all {k ** n} passwords"
 
 
+USES = ["graph.euler"]
+
 TESTS = [((n, k), _describe(n, k)) for n, k in
          [(1, 1), (1, 2), (2, 2), (1, 10), (3, 2), (2, 3), (4, 2), (3, 4), (2, 10), (4, 5), (12, 2), (4, 8), (3, 10)]]

@@ -598,5 +598,26 @@ class Stage5Audit(AuditBase):
                           "stickers_to_spell": ["bfs.shortest", "bfs.implicit", "dp.bitmask"]})
 
 
+    def test_topic_29(self):
+        self.assert_audited("29_advanced_graphs")
+        self.assert_teaches({"floyd_step": ["sp.floyd"]})
+        self.assert_uses({"city_fewest_reachable": ["sp.floyd"], "has_negative_cycle": ["sp.bellman_ford"],
+                          "cracking_safe": ["graph.euler"], "critical_mst_edges": ["uf.find", "uf.union", "graph.mst"],
+                          "find_arbitrage": ["bfs.path", "sp.bellman_ford"]})
+
+    def test_every_stage_5_topic_keeps_two_hard_problems(self):
+        for topic_id in STAGE_5:
+            hards = [n for n in self.items(topic_id) if self.problems[n]["difficulty"] == "hard"]
+            self.assertGreaterEqual(len(hards), 2, (topic_id, hards))
+
+    def test_teacher_big_tests_reject_the_naive_solution(self):
+        # Solving a teacher marks its technique learned, so its big test must time out without it.
+        def big(name, ok):
+            self.assertTrue(any(ok(args, want) for args, want in self.cases_of(name)), name)
+        big("count_inversions", lambda a, w: len(a[0]) >= 200_000)        # O(n²) pairs, or insort
+        big("rank_transform", lambda a, w: len(a[0]) >= 100_000)          # count smaller values per number
+        big("range_max_updates", lambda ops, w: len(ops) >= 60_000)       # max() over the range
+
+
 if __name__ == "__main__":
     unittest.main()

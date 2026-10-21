@@ -42,5 +42,7 @@ def _cases():
     return out
 
 
+USES = ["graph.components"]
+
 TESTS = [(([[1, 3], [0, 2], [1, 3], [0, 2]],), True), (([[1, 2, 3], [0, 2], [0, 1, 3], [0, 2]],), False), (([[]],), True),
          (([[1], [0], [3], [2]],), True)] + _cases()

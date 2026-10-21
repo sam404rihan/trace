@@ -40,5 +40,8 @@ def _cases():
     return out
 
 
+TEACHES = ["sp.floyd"]
+USES = []
+
 TESTS = [(([[0, 4, INF], [INF, 0, 1], [2, INF, 0]], 1), [[0, 4, 5], [INF, 0, 1], [2, INF, 0]]),
          (([[0]], 0), [[0]])] + _cases()

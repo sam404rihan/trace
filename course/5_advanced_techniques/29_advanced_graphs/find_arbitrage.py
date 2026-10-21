@@ -89,5 +89,7 @@ def _cases():
 
 
 _EX = [["USD", "EUR", 0.9], ["EUR", "GBP", 0.9], ["GBP", "USD", 1.3]]
+USES = ["bfs.path", "sp.bellman_ford"]
+
 TESTS = [((_EX,), _describe(_EX)), (([["USD", "EUR", 0.9], ["EUR", "USD", 1.1]],), _describe([["USD", "EUR", 0.9], ["EUR", "USD", 1.1]])),
          (([["A", "B", 2.0], ["B", "A", 0.5]],), []), (([],), [])] + _cases()
