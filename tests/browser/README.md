@@ -15,12 +15,19 @@ starts Trace on an empty workspace with a fresh browser profile:
     bash tests/browser/fresh.sh 8180 workspace.mjs
     bash tests/browser/fresh.sh 8183 drills.mjs
     bash tests/browser/fresh.sh 8190 contest.mjs
+    bash tests/browser/fresh.sh 8210 pages.mjs
 
 These aren't part of `python -m unittest`; run them when you change a screen.
 
 `contest.mjs` covers contest mode. Headless Chrome won't grant fullscreen without a real user
 gesture, so the check stubs `document.fullscreenElement` and fires `fullscreenchange` to test the
 lock, and moves the countdown forward by replacing `Trace.now`.
+
+`pages.mjs` covers the intuition-drill, "Read the code" and starting-check pages: no label above a
+heading, icons drawn rather than typed, the stage colour on the drill board and console, answers by click
+and by number key, a clean run recorded, walkthrough layers revealed and recorded, the starting check
+placing you, no sideways scroll at 390px, and every text pair at 4.5:1 or better on all six stages in both
+themes. It waits a moment after switching theme or stage, because buttons fade their colours.
 
 Two helpers take screenshots for looking at, not checks:
 

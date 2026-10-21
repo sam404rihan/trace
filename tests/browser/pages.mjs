@@ -35,7 +35,7 @@ const noEyebrows = async (p, where) => {
   check(`${where}: icons are drawn, not characters`, g.length === 0, g.join(" "));
 };
 const themes = async (p, fn) => {
-  for (const mode of ["light", "dark"]) { await p.eval(`document.documentElement.dataset.theme = "${mode}"`); await fn(mode); }
+  for (const mode of ["light", "dark"]) { await p.eval(`document.documentElement.dataset.theme = "${mode}"`); await sleep(400); await fn(mode); }   // let colour transitions settle
   await p.eval(`delete document.documentElement.dataset.theme`);
 };
 const readable = (name, pairs) => {
@@ -112,6 +112,7 @@ const pairs = { light: {}, dark: {} };
 await themes(p, async (mode) => {
   for (let s = 1; s <= 6; s++) {
     await p.eval(`document.body.dataset.stage = "${s}"`);
+    await sleep(250);
     Object.assign(pairs[mode], await ev(p, `({
       "s${s} result": pair(".dprompt .result"), "s${s} summary": pair(".dprompt .summary"), "s${s} next": pair(".options .opt.primary span"),
       "s${s} next key": pair(".options .opt.primary kbd"), "s${s} tool": pair(".dtools .btn"),
@@ -122,6 +123,7 @@ await p.key("n");
 await themes(p, async (mode) => {
   for (let s = 1; s <= 6; s++) {
     await p.eval(`document.body.dataset.stage = "${s}"`);
+    await sleep(250);
     Object.assign(pairs[mode], await ev(p, `(() => { const board = bgOf(document.querySelector(".board")); const out = {
       "s${s} blurb": pair(".blurb"), "s${s} index": pair(".board .idx"), "s${s} cell": pair(".board .cell"), "s${s} pointer": pair(".board .ptr"),
       "s${s} line": pair(".board .line"), "s${s} prompt": pair(".dprompt p"), "s${s} option": pair(".options .opt span"),
