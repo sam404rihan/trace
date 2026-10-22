@@ -494,7 +494,7 @@ details.fold[open] > summary:hover { background: none; }
 
 /* The finish line: a check pops in for a clean run, and the clean runs so far are drawn as tiles. */
 .result-head { display: flex; align-items: center; gap: 14px; }
-.dprompt .result { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
+.dprompt .result { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; }
 .clean-mark {
   width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; flex: none;
   background: var(--bg); color: var(--ok);
@@ -892,10 +892,10 @@ button, .crumbs, .tabs, .stepper, .ws-bar, .drill-tabs, .badge, .console-bar, .r
   margin-top: 28px; padding: 32px 32px 32px 36px; border-radius: var(--radius-lg);
   background: var(--stage); color: var(--on-stage);
 }
-.start-page .start-card h2 { margin: 0; font-size: 32px; line-height: 1.1; letter-spacing: -0.025em; font-weight: 800; text-wrap: balance; }
+.start-page .start-card h2 { margin: 0; font-size: 32px; line-height: 1.1; letter-spacing: -0.025em; font-weight: 700; text-wrap: balance; }
 .start-card p { margin: 10px 0 0; font-size: 15px; font-weight: 600; }
 .start-card .hero-go {
-  margin-top: 24px; height: 54px; padding: 0 26px; border-radius: 16px; font-size: 18px; font-weight: 800;
+  margin-top: 24px; height: 54px; padding: 0 26px; border-radius: 16px; font-size: 18px; font-weight: 700;
   background: var(--bg); color: var(--ink); box-shadow: 0 5px 0 var(--stage-ink);
 }
 .start-card .hero-go:hover { background: var(--bg); filter: none; box-shadow: 0 5px 0 var(--stage-ink); }
