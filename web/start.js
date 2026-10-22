@@ -2,7 +2,12 @@
 /* "Where are you starting?": three doors, a short adaptive check, and where it places you. */
 (function () {
   const T = window.Trace;
-  const { h } = T;
+  const { h, s } = T;
+  const icon = (d) => s("svg", { class: "icon", viewBox: "0 0 24 24", "aria-hidden": "true" }, s("path", { d }));
+  const ICON = { go: "M5 12h13M13 6l6 6-6 6", check: "M5 12.5l4.5 4.5L19 7.5", out: "M14 5h5v5M19 5l-8 8M18 14v4a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h4" };
+  // A small staircase of tiles: how far into programming each door starts you.
+  const stairs = (k) => s("svg", { class: "door-art", viewBox: "0 0 64 50", "aria-hidden": "true" },
+    T.range(3).map((j) => s("rect", { x: 2 + j * 21, y: 46 - (j + 1) * 14, width: 18, height: (j + 1) * 14, rx: 5, class: j < k ? "on" : null })));
 
   const COURSES = [
     ["The official Python tutorial", "https://docs.python.org/3/tutorial/"],
@@ -19,7 +24,8 @@
   ];
 
   // check: the /api/starting-check payload. place(payload) -> Promise of the new progress.
-  T.mountStart = function mountStart(container, check, { place, topicTitle, startHref }) {
+  // stageOf(id) and topicNo(id) let the result draw where you start on its stage colour.
+  T.mountStart = function mountStart(container, check, { place, topicTitle, startHref, stageOf = () => 1, topicNo = (id) => parseInt(id, 10) || 1 }) {
     let door = null, gen = null, count = 0, busy = false;
     let ready = {}, answers = {};
 
@@ -30,14 +36,14 @@
     }
 
     function doors() {
-      const choice = (id, title, sub) => h("button", { class: "door", type: "button", onclick: () => begin(id) },
-        h("strong", {}, title), h("span", {}, sub));
+      const choice = (id, title, sub, k) => h("button", { class: "door", type: "button", onclick: () => begin(id) },
+        stairs(k), h("span", { class: "door-text" }, h("strong", {}, title), h("span", { class: "door-sub" }, sub)), icon(ICON.go));
       page(h("h1", {}, "Where are you starting?"),
         h("p", { class: "lede" }, "Pick the closest. A few questions find where to begin, and every topic stays open whatever you choose."),
         h("div", { class: "doors" },
-          choice("new", "I'm new to programming", "Start from the very beginning."),
-          choice("python", "I can write some Python", "Six Python questions, then the first two stages."),
-          choice("dsa", "I've done DSA before", "One question per topic, to find your gaps.")),
+          choice("new", "I'm new to programming", "Start from the very beginning.", 1),
+          choice("python", "I can write some Python", "Six Python questions, then the first two stages.", 2),
+          choice("dsa", "I've done DSA before", "One question per topic, to find your gaps.", 3)),
         h("p", { class: "start-skip" }, h("button", { class: "link", type: "button", onclick: () => finish("skip") }, "I can program, show me everything")));
     }
 
@@ -90,26 +96,23 @@
       function choose(k) {
         if (answered !== null) return;
         answered = k === q.answer;
-        opts.forEach((b, j) => {
-          b.disabled = true;
-          if (j === q.answer) b.classList.add("right");
-          else if (j === k) b.classList.add("wrong");
-        });
+        T.markOptions(opts, q.answer, k);
         explain.hidden = false;
         explain.className = "wt-explain " + (answered ? "ok" : "bad");
-        explain.replaceChildren(h("strong", {}, answered ? "Right. " : "Not quite. "), ...T.inline(q.explain));
+        explain.replaceChildren(h("span", { class: "explain-mark" }, T.markIcon(answered)),
+          h("p", {}, h("strong", {}, answered ? "Right. " : "Not quite. "), ...T.inline(q.explain)));
         next.disabled = false;
         next.focus({ preventScroll: true });
       }
-      page(h("p", { class: "start-label" }, `${label}, question ${count}`),
+      page(h("h1", { class: "start-q" }, T.inline(q.question)),
+        h("p", { class: "start-sub" }, `${label} · question ${count}`),
         q.code ? h("pre", { class: "start-code" }, q.code) : null,
-        h("section", { class: "wt-check" }, h("p", { class: "wt-q" }, T.inline(q.question)), h("div", { class: "wt-opts" }, opts), explain),
+        h("section", { class: "wt-check", "aria-label": "Answers" }, h("div", { class: "wt-opts" }, opts), explain),
         h("nav", { class: "wt-nav" }, h("button", { class: "link", type: "button", onclick: () => finish(door) }, "Stop here"), next));
     }
 
     function suggest(missed) {
-      page(h("p", { class: "start-label" }, "Python basics"),
-        h("h1", {}, `You missed ${missed} of the ${check.ready.length} Python questions`),
+      page(h("h1", {}, `You missed ${missed} of the ${check.ready.length} Python questions`),
         h("p", { class: "lede" }, "Trace expects you to read and write small Python programs. A short Python course first might help more, but it's your call."),
         h("div", { class: "start-actions" },
           h("button", { class: "btn primary", type: "button", onclick: () => step(false) }, "Show me where to learn Python"),
@@ -137,10 +140,10 @@
     function newcomer() {
       page(h("h1", {}, "Start with Python"),
         h("p", { class: "lede" }, "Trace teaches data structures and algorithms in Python, so it expects you to read and write small programs first. You're ready when you can:"),
-        h("ul", { class: "start-list" }, SKILLS.map((s) => h("li", {}, s))),
-        h("p", { class: "start-note" }, "These free courses teach exactly that:"),
-        h("ul", { class: "start-list" }, COURSES.map(([name, url]) =>
-          h("li", {}, h("a", { class: "link", href: url, target: "_blank", rel: "noopener" }, name)))),
+        h("ul", { class: "start-skills" }, SKILLS.map((skill) => h("li", {}, h("span", { class: "start-tick" }, icon(ICON.check)), skill))),
+        h("h2", {}, "Free courses that teach exactly that"),
+        h("ul", { class: "start-courses" }, COURSES.map(([name, url]) =>
+          h("li", {}, h("a", { href: url, target: "_blank", rel: "noopener" }, h("span", {}, name), icon(ICON.out))))),
         h("div", { class: "start-actions" },
           h("button", { class: "btn primary", type: "button", onclick: () => begin("python") }, "Take the ready check"),
           h("a", { class: "link", href: "#/" }, "Look around first")));
@@ -148,13 +151,23 @@
 
     function result(placement) {
       const placed = placement.placed_out || [];
-      page(h("h1", {}, placement.start ? "Here's where to start" : "You placed out of everything we asked about"),
-        placement.start ? h("p", { class: "lede" }, "Start with ", h("strong", {}, topicTitle(placement.start)), ".") : null,
-        placed.length ? [h("p", { class: "start-label" }, "Placed out (still open any time)"),
-          h("ul", { class: "start-list" }, placed.map((id) => h("li", {}, topicTitle(id))))] : null,
+      const start = placement.start;
+      const stage = start ? stageOf(start) : 1;
+      page(h("h1", {}, start ? "Here's where to start" : "You placed out of everything we asked about"),
+        start ? h("section", { class: "start-card", "data-stage": String(stage), "aria-label": "Where you start" },
+          h("div", { class: "start-card-text" },
+            h("h2", {}, topicTitle(start)),
+            h("p", {}, `Stage ${stage}` + (T.stageNames && T.stageNames[stage - 1] ? ` · ${T.stageNames[stage - 1]}` : "")),
+            h("a", { class: "btn primary hero-go", href: startHref(start) }, "Start here", icon(ICON.go))),
+          h("div", { class: "start-card-art" }, T.topicArt ? T.topicArt(topicNo(start)) : null)) : null,
+        placed.length ? h("section", { class: "start-placed" },
+          h("h2", {}, "You placed out of these"),
+          h("ul", {}, placed.map((id) => h("li", {}, h("span", { class: "start-tick" }, icon(ICON.check)), topicTitle(id)))),
+          h("p", { class: "start-note" }, "They stay open any time.")) : null,
         h("div", { class: "start-actions" },
-          h("a", { class: "btn primary", href: placement.start ? startHref(placement.start) : "#/roadmap" }, placement.start ? "Start here" : "Go to the roadmap"),
-          placement.start ? h("a", { class: "link", href: "#/roadmap" }, "See the roadmap") : null));
+          start ? h("a", { class: "link", href: "#/roadmap" }, "See the roadmap")
+            : h("a", { class: "btn primary", href: "#/roadmap" }, "Go to the roadmap")));
+      if (T.cropArt) T.cropArt(container.querySelector(".start-card-art svg"));
     }
 
     function onKey(e) {

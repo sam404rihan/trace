@@ -335,6 +335,8 @@
       place: async (payload) => (S.progress = (await api("/api/placement", payload)).progress),
       topicTitle: (id) => (find(id) ? topicTitle(find(id)) : id),
       startHref: (id) => (find(id) ? firstStep(find(id)) : "#/"),
+      stageOf: (id) => (find(id) ? stageOf(find(id)) : 1),
+      topicNo: (id) => (find(id) ? find(id).n : 1),
     });
     S.cleanup = () => m.unmount();
   }
@@ -704,7 +706,7 @@
     if (!topic || !topic.has_walkthrough) return viewTopic(id);
     document.title = `${topicTitle(topic)}: read the code | Trace`;
     crumbs({ label: "Roadmap", href: "#/roadmap" }, { label: topicTitle(topic), href: `#/t/${topic.id}` }, { label: "Read the code" });
-    const host = h("div", { class: "wt-page", "aria-busy": "true" }, sk("", "height:4px"), sk("sk-title", "margin-top:30px"), sk("sk-line", "width:90%"), sk("sk-line", "width:70%"));
+    const host = h("div", { class: "wt-page", "aria-busy": "true" }, sk("sk-title"), sk("sk-line", "width:30%"), sk("sk-line", "width:90%;margin-top:26px"), sk("sk-line", "width:70%"));
     app.replaceChildren(host);
     const wt = await api(`/api/walkthrough?topic=${encodeURIComponent(id)}`);
     if (!host.isConnected) return;               // you navigated away while it loaded
@@ -749,8 +751,9 @@
     const host = h("div");
     const first = course && course.items[0];
     app.replaceChildren(h("div", { class: "drill-page" },
-      h("div", { class: "drill-top" }, h("h1", {}, dt.title), h("span", { style: "color:var(--ink-3)" }, "Intuition drills"),
-        first ? h("a", { class: "btn small", href: `#/p/${first}`, style: "margin-left:auto" }, "Start coding", icon(ICONS.right)) : null),
+      h("div", { class: "drill-top" },
+        h("div", { class: "drill-head" }, h("h1", {}, dt.title), h("p", { class: "drill-sub" }, "Intuition drills")),
+        first ? h("a", { class: "btn small", href: `#/p/${first}` }, "Start coding", icon(ICONS.right)) : null),
       tabs, host));
     const m = T.mountDrill(host, dt, drill, { onFinish: renderTabs });
     S.cleanup = () => m.unmount();
