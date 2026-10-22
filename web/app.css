@@ -1310,3 +1310,19 @@ body.contest .main { grid-template-rows: minmax(0, 1fr); }
   .road-extra .topic-row .sub { -webkit-line-clamp: 2; }
   .road-extra .plan-meter { justify-content: start; }
 }
+
+/* ── Examples: input, output, why ────────────────────── */
+.st-examples { display: grid; gap: 12px; margin: 22px 0 0; }
+.st-ex { padding: 14px 16px 16px; background: var(--fill); border-radius: var(--radius); display: grid; gap: 10px; }
+.st-ex h3 { margin: 0; font-size: 14px; font-weight: 700; color: var(--accent); }
+.st-ex-src { font-weight: 500; color: var(--ink-3); }
+.st-ex h4 { margin: 0 0 6px; font-size: 12px; font-weight: 700; color: var(--ink-3); }
+.st-in, .st-out { display: grid; gap: 8px; min-width: 0; }
+.st-arg { min-width: 0; font-size: 14px; }
+.st-arg.drawn { display: grid; gap: 4px; }
+.st-arg-name { font-size: 13px; font-weight: 600; }
+.st-val { font-size: 13px; background: var(--bg); padding: 2px 7px; border-radius: 6px; overflow-wrap: anywhere; }
+.st-why { margin: 0; font-size: 14px; color: var(--ink-2); }
+.st-why::before { content: "Why: "; font-weight: 700; color: var(--ink); }
+.test-figs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 6px; }
+.test-figs .st-figure { padding: 8px 10px 6px; }

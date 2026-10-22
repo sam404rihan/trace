@@ -54,43 +54,59 @@ check("no sideways scroll at 390px", await phone.eval(`document.documentElement.
 check("statement fits at 390px", await phone.eval(`[...document.querySelectorAll(".statement > *")].every((e) => e.getBoundingClientRect().right <= 391)`));
 await phone.close();
 
-// ── The statement: sections, and the first test's inputs drawn ──
-const fig = (kind) => p.eval(`(() => { const svg = document.querySelector('.st-figure svg[data-kind="${kind}"]'); return svg ? {
+// ── The statement: each example as input, output and why, with structures drawn ──
+const fig = (kind, scope = ".st-ex") => p.eval(`(() => { const svg = document.querySelector('${scope} svg[data-kind="${kind}"]'); return svg ? {
   nodes: svg.querySelectorAll(".v-node").length, cells: svg.querySelectorAll(".v-cell").length,
   heads: svg.querySelectorAll(".v-head").length, labels: [...svg.querySelectorAll(".v-weight")].map((t) => t.textContent) } : null; })()`);
-for (const n of ["max_depth", "course_schedule", "num_islands", "two_sum", "lru_cache", "network_delay"]) await post(p, "/api/unlock", { name: n });
+const txt = (sel) => p.eval(`document.querySelector(${JSON.stringify(sel)})?.textContent || ""`);
+for (const n of ["max_depth", "course_schedule", "num_islands", "two_sum", "lru_cache", "network_delay", "rotate_image", "reverse_list"])
+  await post(p, "/api/unlock", { name: n });
 
 await p.reload(BASE + "/#/p/max_depth");
-check("statement has an Example section", (await p.eval(`document.querySelector(".st-example h2")?.textContent`)) === "Example");
-check("the problem text comes before the example", await p.eval(`(() => { const d = document.querySelector(".st-desc"), e = document.querySelector(".st-example");
+check("examples are cards with an input and an output", await p.eval(`!!document.querySelector(".st-ex .st-in") && !!document.querySelector(".st-ex .st-out")`));
+check("the problem text comes before the examples", await p.eval(`(() => { const d = document.querySelector(".st-desc"), e = document.querySelector(".st-examples");
   return !!d && !!e && (d.compareDocumentPosition(e) & Node.DOCUMENT_POSITION_FOLLOWING) > 0; })()`));
-check("aim for is its own line", (await p.eval(`document.querySelector(".st-aim")?.textContent || ""`)).includes("O(n)"));
-const tree = await fig("tree");
+check("aim for is its own line", (await txt(".st-aim")).includes("O(n)"));
+const tree = await fig("tree", ".st-ex .st-in");
 check("a tree input is drawn as a tree", tree?.nodes === 5, JSON.stringify(tree));
-await p.reload(BASE + "/#/p/course_schedule");
-const graph = await fig("graph");
-check("prerequisites are drawn as a directed graph", graph?.nodes === 2 && graph.heads >= 1, JSON.stringify(graph));
-await p.reload(BASE + "/#/p/num_islands");
-const grid = await fig("grid");
-check("a grid input is drawn as a grid", grid?.cells === 20, JSON.stringify(grid));
-check("the drawing says which test it is and what it returns", (await p.eval(`document.querySelector(".st-figures-head")?.textContent || ""`)) === "First test, drawn · returns 1",
-  await p.eval(`document.querySelector(".st-figures-head")?.textContent`));
-check("long example lines wrap instead of hiding the answer", (await p.eval(`getComputedStyle(document.querySelector(".st-example-code")).whiteSpace`)) === "pre-wrap");
-await p.reload(BASE + "/#/p/two_sum");
-const arr = await fig("array");
-check("an array input is drawn as cells", arr?.cells === 4, JSON.stringify(arr));
-check("scalars aren't drawn", (await p.eval(`document.querySelectorAll(".st-figure").length`)) === 1);
-await p.reload(BASE + "/#/p/network_delay");
-const weighted = await fig("graph");
-check("weighted edges show their weights", weighted?.nodes === 4 && weighted.labels.join(",") === "1,1,1" && weighted.heads === 3, JSON.stringify(weighted));
+check("the output is shown", (await txt(".st-ex .st-out")).includes("3"));
+check("no ASCII art once the example is drawn", await p.eval(`!document.querySelector(".st-example-code")`));
 
-await post(p, "/api/unlock", { name: "reverse_list" });
+await p.reload(BASE + "/#/p/course_schedule");
+check("every written example becomes a card", (await p.eval(`document.querySelectorAll(".st-ex").length`)) === 2);
+check("the example's explanation is kept", (await txt(".st-ex .st-why")) === "take 0, then 1", await txt(".st-ex .st-why"));
+const graph = await fig("graph", ".st-ex .st-in");
+check("prerequisites are drawn as a directed graph", graph?.nodes === 2 && graph.heads >= 1, JSON.stringify(graph));
+
+await p.reload(BASE + "/#/p/num_islands");
+const grid = await fig("grid", ".st-ex .st-in");
+check("a matrix written in text is drawn as a grid", grid?.cells === 20, JSON.stringify(grid));
+check("its answer is the written one", (await txt(".st-ex .st-out")).includes("3"), await txt(".st-ex .st-out"));
+
+await p.reload(BASE + "/#/p/rotate_image");
+const out = await fig("grid", ".st-ex .st-out");
+check("a matrix output is drawn too", out?.cells === 9, JSON.stringify(out));
+
+await p.reload(BASE + "/#/p/two_sum");
+const arr = await fig("array", ".st-ex .st-in");
+check("an array input is drawn as cells", arr?.cells === 4, JSON.stringify(arr));
+check("scalar inputs are shown as values", (await txt(".st-ex .st-in")).includes("target") && (await txt(".st-ex .st-in")).includes("9"));
+await p.reload(BASE + "/#/p/network_delay");
+const weighted = await fig("graph", ".st-ex .st-in");
+check("weighted edges show their weights", weighted?.nodes === 4 && weighted.labels.join(",") === "1,1,1" && weighted.heads === 3, JSON.stringify(weighted));
 await p.reload(BASE + "/#/p/reverse_list");
-const list = await fig("list");
+const list = await fig("list", ".st-ex .st-in");
 check("a linked list input is drawn as nodes and arrows", list?.nodes === 5, JSON.stringify(list));
 await p.reload(BASE + "/#/p/lru_cache");
-check("class problems draw nothing", (await p.eval(`document.querySelectorAll(".st-figure").length`)) === 0);
+check("class problems draw nothing", (await p.eval(`document.querySelectorAll(".st-ex svg.viz").length`)) === 0);
 check("figures are named for screen readers", await p.eval(`[...document.querySelectorAll(".st-figure")].every((f) => f.querySelector("figcaption"))`));
+
+// Test results draw their inputs too: open a failing test and see its matrix.
+await p.reload(BASE + "/#/p/num_islands");
+await run(p, "def num_islands(grid):\n    return 0\n");
+check("a failing test draws its matrix", await p.eval(`!!document.querySelector('details.test[open] .test-detail svg.viz[data-kind="grid"]')`));
+check("passing rows draw theirs when opened", await p.eval(`(() => { const row = [...document.querySelectorAll("details.test")].find((d) => !d.open);
+  if (!row) return true; row.open = true; row.dispatchEvent(new Event("toggle")); return !!row.querySelector("svg.viz"); })()`));
 
 check("no console errors", p.logs.length === 0, p.logs.join(" | "));
 await p.close();

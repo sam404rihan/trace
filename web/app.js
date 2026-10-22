@@ -893,16 +893,15 @@
             ? T.howToCard({ onClose: () => { showHowTo = false; local.set("trace.howtoSeen", true); renderLeft(); } })
             : h("button", { class: "link howto-link", type: "button", onclick: () => { showHowTo = true; renderLeft(); } }, "How to work a problem"),
           ...(contest ? [] : T.techniqueBoxes(S.problems[name], techCtx())));
-        // The problem, then one worked example with its inputs drawn, then what to aim for.
+        // The problem, then each example as input, output and why (structures drawn), then what to aim for.
+        // The written example block shows as it is only when none of its examples could be read.
         const parts = splitStatement(p.statement);
-        const figures = T.inputFigures(p.params, (p.examples || [])[0]);
+        const examples = p.examples || [];
         body.append(h("section", { class: "st-desc body-text", "aria-label": "Problem" }, renderStatement(parts.desc)));
-        if (parts.example || figures.length) body.append(h("section", { class: "st-example" },
-          h("h2", {}, "Example"),
-          parts.example ? h("pre", { class: "st-example-code" }, parts.example) : null,
-          figures.length ? [h("p", { class: "st-figures-head" }, "First test, drawn · returns ", h("code", {}, T.pyRepr(p.examples[0].expected))),
-            h("div", { class: "st-figures" }, figures)] : null,
-          parts.notes.trim() ? h("div", { class: "body-text st-notes" }, renderStatement(parts.notes)) : null));
+        if (examples.length) body.append(h("section", { class: "st-examples", "aria-label": "Examples" },
+          examples.map((ex, k) => exampleCard(ex, k, examples.length))));
+        else if (parts.example) body.append(h("section", { class: "st-example" }, h("h2", {}, "Example"), h("pre", { class: "st-example-code" }, parts.example)));
+        if (parts.notes.trim()) body.append(h("div", { class: "body-text st-notes" }, renderStatement(parts.notes)));
         if (p.aim) body.append(h("p", { class: "st-aim" }, h("span", { class: "st-aim-label" }, "Aim for"), h("span", {}, inline(p.aim))));
         if (stepCount) {
           const done = stepsDone();
@@ -936,6 +935,18 @@
       left.replaceChildren(...[band, tabs, body].filter(Boolean));
     }
     renderLeft();
+
+    function argsOf(values) {
+      return (p.params || []).map((pr, i) => ({ name: pr.name, type: pr.type, value: values[i] }));
+    }
+    function exampleCard(ex, k, total) {
+      const args = argsOf(ex.args);
+      return h("article", { class: "st-ex" },
+        h("h3", {}, total > 1 ? `Example ${k + 1}` : "Example", ex.source === "tests" ? h("span", { class: "st-ex-src" }, " · the first test") : null),
+        h("div", { class: "st-in" }, h("h4", {}, "Input"), args.map((a) => T.valueBlock(a.value, a, args))),
+        h("div", { class: "st-out" }, h("h4", {}, "Output"), T.valueBlock(ex.expected, { name: "", type: p.returns || "" }, args)),
+        ex.note ? h("p", { class: "st-why" }, inline(ex.note)) : null);
+    }
 
     // editor
     const fileName = h("span", { class: "file-name" }, `${name}.py`);
@@ -1143,6 +1154,16 @@
             t.output ? h("pre", { class: "out" }, t.output) : null));
         if (bad && !firstFail) { firstFail = det; if (t.error) markError(t.error); }
         rows.set(t, det);
+        // A test's inputs, drawn the first time its row is open.
+        const drawArgs = () => {
+          if (!det.open || det.dataset.drawn || !t.args) return;
+          det.dataset.drawn = "1";
+          const args = argsOf(t.args);
+          const figs = args.map((a) => T.drawValue(a.value, a, args) ? T.valueBlock(a.value, a, args) : null).filter(Boolean);
+          if (figs.length) det.querySelector(".test-detail").prepend(h("div", { class: "test-figs" }, figs));
+        };
+        det.addEventListener("toggle", drawArgs);
+        drawArgs();
         return det;
       };
       if (stepCount) {

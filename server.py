@@ -692,32 +692,143 @@ def _plain(value):
     raise TypeError(type(value).__name__)
 
 
-def problem_examples(module, limit=3, longest=400):
-    """The first few small tests as {args, expected}, so the page can draw real inputs. None for class problems."""
+def _closing(text, i):
+    """Index just past the bracket group opening at text[i], skipping quoted strings; -1 if it never closes."""
+    pairs, stack, quote = {"(": ")", "[": "]", "{": "}"}, [], None
+    for j in range(i, len(text)):
+        c = text[j]
+        if quote:
+            if c == quote and text[j - 1] != "\\":
+                quote = None
+        elif c in "'\"":
+            quote = c
+        elif c in pairs:
+            stack.append(pairs[c])
+        elif stack and c == stack[-1]:
+            stack.pop()
+            if not stack:
+                return j + 1
+    return -1
+
+
+def _top_level(text):
+    """text split on its top-level commas (commas inside brackets or strings stay)."""
+    parts, depth, quote, cur = [], 0, None, ""
+    for i, c in enumerate(text):
+        if quote:
+            quote = None if c == quote and text[i - 1] != "\\" else quote
+        elif c in "'\"":
+            quote = c
+        elif c in "([{":
+            depth += 1
+        elif c in ")]}":
+            depth -= 1
+        elif c == "," and depth == 0:
+            parts.append(cur)
+            cur = ""
+            continue
+        cur += c
+    return [x.strip() for x in parts + [cur] if x.strip()]
+
+
+def example_calls(statement, fname):
+    """Each `fname(args) -> result   note` in the statement's example block, calls over several lines included,
+    as (argument sources, result source, note)."""
+    m = re.search(r"^\s*Examples?:\s*$", statement, re.M)
+    if not m:
+        return []
+    block, out = statement[m.end():], []
+    for call in re.finditer(rf"\b{re.escape(fname)}\(", block):
+        start = call.end() - 1
+        end = _closing(block, start)
+        arrow = re.match(r"\s*->\s*", block[end:]) if end > 0 else None
+        if not arrow:
+            continue
+        r = end + arrow.end()
+        if r < len(block) and block[r] in "([{":
+            rend = _closing(block, r)
+        else:
+            tok = re.match(r"\S+(?: \S+)*?(?=\s{2,}|\n|$)", block[r:])
+            rend = r + tok.end() if tok else -1
+        if rend < 0:
+            continue
+        line_end = block.find("\n", rend)
+        note = block[rend: len(block) if line_end < 0 else line_end].strip().lstrip("#").strip()
+        out.append((_top_level(block[start + 1:end - 1]), block[r:rend], note))
+    return out
+
+
+_UNKNOWN = object()
+
+
+def _literal(src):
+    try:
+        return _plain(ast.literal_eval(src))
+    except (ValueError, SyntaxError, TypeError, MemoryError, RecursionError):
+        return _UNKNOWN
+
+
+def problem_examples(module, statement="", fname="", limit=3, longest=400):
+    """The statement's own examples as {args, expected, note, source}, so the page can show each one as input and
+    output with drawings. An argument written as a name (`num_islands(grid)`, the grid drawn in text beside it) is
+    filled in from the test with the same answer and the same written arguments. With no example call at all, the
+    first small test stands in (source "tests"). Class problems have none."""
     if module.get("CLASS"):
         return []
-    tests = module.get("TESTS") or ((module.get("STEPS") or [{}])[0].get("tests") or [])
-    out = []
-    for args, expected in tests:
+    tests = []
+    for args, expected in module.get("TESTS") or ((module.get("STEPS") or [{}])[0].get("tests") or []):
         try:
-            ex = {"args": _plain(list(args)), "expected": _plain(expected)}
+            tests.append({"args": _plain(list(args)), "expected": _plain(expected)})
         except TypeError:
-            continue
-        if len(repr(ex["args"])) <= longest:
-            out.append(ex)
+            pass
+    small = [t for t in tests if len(repr(t["args"])) <= longest]
+    out = []
+    for arg_srcs, result_src, note in example_calls(statement, fname):
+        args, expected = [_literal(a) for a in arg_srcs], _literal(result_src)
+        if any(a is _UNKNOWN for a in args) or expected is _UNKNOWN:
+            def fits(t):
+                return (len(t["args"]) == len(args) and (expected is _UNKNOWN or t["expected"] == expected)
+                        and all(a is _UNKNOWN or a == b for a, b in zip(args, t["args"])))
+            match = next((t for t in small if fits(t)), None)
+            if not match:
+                continue
+            args, expected = match["args"], match["expected"]
+        if len(repr(args)) <= longest:
+            out.append({"args": args, "expected": expected, "note": note, "source": "statement"})
         if len(out) == limit:
             break
+    if not out and small:
+        out.append({**small[0], "note": "", "source": "tests"})
+    return out
+
+
+def case_args(problem, upto=None, longest=400):
+    """Every test's arguments in the order the judge reports them (None when too big to draw); [] for classes."""
+    path = next(COURSE.glob(f"*/{problem['topic_id']}/{problem['name']}.py"), None)
+    module = load_module(path) if path else {}
+    if not module or module.get("CLASS"):
+        return []
+    steps = module.get("STEPS")
+    cases = [t for st in steps[: upto or len(steps)] for t in st["tests"]] if steps else module.get("TESTS") or []
+    out = []
+    for args, _ in cases:
+        try:
+            plain = _plain(list(args))
+        except TypeError:
+            plain = None
+        out.append(plain if plain is not None and len(repr(plain)) <= longest else None)
     return out
 
 
 def problem_params(tree):
-    """The first public function's parameters, with their annotations as written."""
+    """The first public function's parameters with their annotations as written, and its return annotation."""
     for node in tree.body:
         if isinstance(node, ast.FunctionDef) and not node.name.startswith("_"):
-            return [{"name": a.arg, "type": ast.unparse(a.annotation) if a.annotation else ""} for a in node.args.args]
+            return ([{"name": a.arg, "type": ast.unparse(a.annotation) if a.annotation else ""} for a in node.args.args],
+                    ast.unparse(node.returns) if node.returns else "")
         if isinstance(node, ast.ClassDef) and not node.name.startswith("_"):
-            return []
-    return []
+            return [], ""
+    return [], ""
 
 
 def parse_problem(path):
@@ -770,8 +881,9 @@ def parse_problem(path):
         "has_solution": (SOLUTIONS / f"{path.stem}.py").exists(),
         "uses": module.get("USES", []),
         "teaches": module.get("TEACHES", []),
-        "params": problem_params(tree),
-        "examples": problem_examples(module),
+        "params": problem_params(tree)[0],
+        "returns": problem_params(tree)[1],
+        "examples": problem_examples(module, statement, path.stem),
         "audited": "USES" in module or "TEACHES" in module,
     }
 
@@ -1112,7 +1224,7 @@ class Handler(BaseHTTPRequestHandler):
             saved = saved_code_path(problem["name"])
             data = public_problem(problem)
             data["starter"] = problem["starter"]
-            data["params"], data["examples"] = problem["params"], problem["examples"]
+            data["params"], data["returns"], data["examples"] = problem["params"], problem["returns"], problem["examples"]
             plans = load_plans()
             data["reported"] = plans.get("reported", {}).get(problem["name"], [])
             data["reported_note"] = plans.get("reported_note", "")
@@ -1220,6 +1332,9 @@ class Handler(BaseHTTPRequestHandler):
             upto = data.get("upto")
             reply = run_tests(problem, code, str(data.get("custom") or "")[:2000], int(upto) if upto else None)
             tests = reply.get("report", {}).get("tests", [])
+            for t, args in zip(tests, case_args(problem, int(upto) if upto else None)):
+                if args is not None:
+                    t["args"] = args                # so the page can draw each test's inputs
             if record and tests and not all(t["status"] == "todo" for t in tests):
                 record_result(problem, tests)
             reply["progress"] = load_progress()

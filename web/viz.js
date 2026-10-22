@@ -123,6 +123,13 @@
     if (!Array.isArray(value) || value.length < 1) return null;
     if (/TreeNode/.test(type)) return tree(value);
     if (/ListNode/.test(type)) return value.length <= 12 && value.every(scalar) ? linked(value) : null;
+    const ints = value.every((e) => Array.isArray(e) && e.every(isInt));
+    if (ints && /^(graph|adj\w*|neighbou?rs|g)$/i.test(name) && value.length <= 12) {
+      const flat = value.flat(), one = flat.length && !flat.includes(0) && Math.max(...flat) === value.length;
+      const edges = [];
+      value.forEach((nbrs, i) => nbrs.forEach((j) => { const u = one ? i + 1 : i; if (u < j || /directed/i.test(type)) edges.push([u, j]); }));
+      return edges.length ? graph(edges, "edges", []) : null;
+    }
     const pairs = value.every((e) => Array.isArray(e) && (e.length === 2 || e.length === 3) && e.every(isInt));
     if (pairs && /edge|prereq|time|flight|road|connection|pair|link|wire|trust|graph/i.test(name)) return graph(value, name, others);
     const rect = value.length >= 2 && value.every((r) => Array.isArray(r) && r.length === value[0].length && r.length >= 2 && r.every(scalar));
@@ -135,6 +142,19 @@
   T.pyRepr = (v) => v === null ? "None" : v === true ? "True" : v === false ? "False"
     : Array.isArray(v) ? `[${v.map(T.pyRepr).join(", ")}]` : typeof v === "string" ? `'${v}'`
       : typeof v === "object" ? `{${Object.entries(v).map(([k, x]) => `'${k}': ${T.pyRepr(x)}`).join(", ")}}` : String(v);
+
+  T.drawValue = draw;
+
+  // A value as a figure when it has a shape to draw (named for screen readers), else as Python code.
+  // `name` labels an input; an output passes no name.
+  T.valueBlock = (value, param, others = []) => {
+    const pic = draw(value, param, others.filter((o) => o.name !== param.name));
+    const label = param.name ? T.h("code", { class: "st-arg-name" }, param.name) : null;
+    if (!pic) return T.h("div", { class: "st-arg" }, label, label ? " = " : null, T.h("code", { class: "st-val" }, T.pyRepr(value)));
+    const what = { tree: "a tree", graph: "a graph", grid: "a grid", list: "a linked list", array: "an array" }[pic.dataset.kind];
+    return T.h("div", { class: "st-arg drawn" }, label,
+      T.h("figure", { class: "st-figure" }, pic, T.h("figcaption", {}, param.name ? `${param.name}, as ${what}` : `the answer, as ${what}`)));
+  };
 
   // One figure per drawable parameter of the first example, at most two. Returns [] when nothing draws.
   T.inputFigures = (params, example) => {
